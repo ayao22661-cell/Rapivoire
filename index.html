@@ -1818,41 +1818,56 @@ let totalStreamsThisWeek = 0;
     const charismeLevel = game.player.skills.charisme || 0;
     const charismeMult = (typeof PERKS_TREE !== 'undefined' && PERKS_TREE.charisme) ? PERKS_TREE.charisme.levels[charismeLevel] : 1;
     
-    game.player.inventory.released.forEach(song => {
-        song.weeksOld = song.weeksOld || 0;
-        song.weeksOld++;
+    // --- SYSTÈME DE CALENDRIER (MOIS) ---
+const NOMS_MOIS = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"];
+const moisIndex = Math.floor(game.week / 4) % 12;
+const anneeActuelle = 2026 + Math.floor(game.week / 48);
+const moisNom = NOMS_MOIS[moisIndex];
 
-        // Initialise le détail par plateforme s'il n'existe pas
-        if (!song.platformStreams) {
-            song.platformStreams = { youtube: 0, boomplay: 0, spotify: 0, apple: 0 };
-        }
+game.player.inventory.released.forEach(song => {
+    song.weeksOld = song.weeksOld || 0;
+    song.weeksOld++;
+
+    if (!song.platformStreams) {
+        song.platformStreams = { youtube: 0, boomplay: 0, spotify: 0, apple: 0 };
+    }
+    
+    // ==========================================
+    // LOGIQUE DE QUALITÉ : Le multiplicateur décisif
+    // ==========================================
+    const qualityFactor = song.quality / 100; // Transforme 80% en 0.8
+    
+    // Hype (décroissance avec le temps)
+    let hypeMultiplier = Math.max(0.1, 1 - (song.weeksOld * 0.05)); 
+    
+    // CALCUL DU VOLUME : On intègre le qualityFactor
+    // Si la qualité est basse, baseVolume sera très faible.
+    let baseVolume = Math.floor((game.player.buzz * charismeMult * 100) * qualityFactor * hypeMultiplier);
+    
+    if(isNaN(baseVolume)) baseVolume = 0;
+
+    // MULTIPLICATEUR ALBUM
+    if (song.isAlbum) {
+        baseVolume = baseVolume * 10; 
+        hypeMultiplier = Math.max(0.2, 1 - (song.weeksOld * 0.02)); 
+    }
+
+    // Répartition par plateforme
+    Object.keys(PLATFORMS).forEach(pKey => {
+        const p = PLATFORMS[pKey];
+        const variation = 0.8 + (Math.random() * 0.4);
+        const pNewStreams = Math.floor(baseVolume * p.weight * variation);
         
-        // Volume de base (Hype)
-        let hypeMultiplier = Math.max(0.1, 1 - (song.weeksOld * 0.05)); 
-        let baseVolume = Math.floor((song.quality * game.player.buzz * charismeMult * 10) * hypeMultiplier);
-        
-        if(isNaN(baseVolume)) baseVolume = 0;
-        // --- NOUVEAU : MULTIPLICATEUR ALBUM ---
-        if (song.isAlbum) {
-            baseVolume = baseVolume * 10; // Un album compte comme 10 morceaux !
-            hypeMultiplier = Math.max(0.2, 1 - (song.weeksOld * 0.02)); // Un album dure plus longtemps dans le temps
-        }
-
-        // Répartition par plateforme
-        Object.keys(PLATFORMS).forEach(pKey => {
-            const p = PLATFORMS[pKey];
-            // On ajoute une petite variation aléatoire pour le réalisme (+/- 20%)
-            const variation = 0.8 + (Math.random() * 0.4);
-            const pNewStreams = Math.floor(baseVolume * p.weight * variation);
-            
-            song.platformStreams[pKey] += pNewStreams;
-            totalStreamsThisWeek += pNewStreams;
-            incomeThisWeek += (pNewStreams * p.pay);
-        });
-
-        // Mise à jour du total du morceau
-        song.streams = Object.values(song.platformStreams).reduce((a, b) => a + b, 0);
+        song.platformStreams[pKey] += pNewStreams;
+        totalStreamsThisWeek += pNewStreams;
+        incomeThisWeek += (pNewStreams * p.pay);
     });
+
+    song.streams = Object.values(song.platformStreams).reduce((a, b) => a + b, 0);
+});
+
+// Utilisation du mois dans la notification de fin de semaine
+addNews(`Bilan : ${moisNom} ${anneeActuelle} (Semaine ${(game.week % 4) + 1})`, "info");
 
     // --- GESTION DES REVENUS STREAMS & LABELS ---
     if(totalStreamsThisWeek > 0) {
@@ -2174,6 +2189,7 @@ window.onload = function() {
 </body>
 
 </html>
+
 
 
 
