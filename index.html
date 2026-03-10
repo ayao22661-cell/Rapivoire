@@ -2082,7 +2082,19 @@ function startGameOnboarding() {
 }
 
 // Lancement
-window.onload = init;
+window.onload = function() {
+    // Vérifier si une sauvegarde existe
+    const savedData = localStorage.getItem('rapIvoireSaveData'); // Remplacez par le nom de votre clé de sauvegarde
+    
+    if (savedData) {
+        // Si elle existe, on charge le jeu directement
+        loadGame(); 
+        document.getElementById('loading-screen').classList.add('hidden');
+    } else {
+        // Si aucune sauvegarde, on lance l'onboarding pour enregistrer le nom
+        showOnboarding();
+    }
+};
 </script>
 <div id="onboarding-overlay" class="fixed inset-0 bg-black/95 backdrop-blur-xl z-[500] flex items-center justify-center p-4 transition-opacity duration-500">
     <div class="bg-[#1C1D26] border border-white/20 w-full max-w-md rounded-2xl shadow-2xl p-6 max-h-[90vh] overflow-y-auto">
@@ -2132,6 +2144,7 @@ window.onload = init;
 </body>
 
 </html>
+
 
 
 
