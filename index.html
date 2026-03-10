@@ -1920,7 +1920,118 @@ function executeFinalClash(target) {
     updateUI();
     renderActions();
 }
+// ==========================================
+// SYSTÈME DE VIE PRIVÉE ET D'ÉVÉNEMENTS
+// ==========================================
 
+const LIFE_EVENTS = [
+    // --- ÉVÉNEMENTS PETITE AMIE ---
+    {
+        id: 'gf_resto',
+        icon: '👩🏽',
+        title: 'Soirée avec ta Go',
+        condition: () => game.player.life.status === 'en couple',
+        desc: 'Ta petite amie se plaint que tu passes trop de temps au studio. Elle veut aller manger dans un bon resto à Bietry.',
+        choices: [
+            { text: 'L\'emmener (💰 -30,000 F)', action: () => { 
+                if(game.player.cash < 30000) { notify('Fonds insuffisants, elle est fâchée !', 'error'); game.player.life.gfAffection -= 15; return; }
+                game.player.cash -= 30000; game.player.life.gfAffection += 20; game.player.energy += 10; notify('Super soirée ! (+20 Affection, +10⚡)', 'success'); 
+            }},
+            { text: 'Dire que tu dois bosser (💔 -20 Affection)', action: () => { 
+                game.player.life.gfAffection -= 20; addXP(20); notify('Elle te fait la tête, mais tu as pu bosser (+20 XP).'); 
+            }}
+        ]
+    },
+    {
+        id: 'gf_marriage',
+        icon: '💍',
+        title: 'Demande en Mariage ?',
+        condition: () => game.player.life.status === 'en couple' && game.player.life.gfAffection >= 80 && game.player.cash >= 2000000 && (game.player.level || 1) >= 5,
+        desc: 'Votre relation est au top. Tes amis et sa famille te mettent la pression pour la dot et le mariage (Coût estimé : 2 Millions).',
+        choices: [
+            { text: 'Faire la demande (💰 -2 Millions)', action: () => { 
+                game.player.cash -= 2000000; game.player.life.status = 'marié'; game.player.buzz += 30; game.player.life.gfAffection = 100;
+                notify('Félicitations ! Les réseaux sont en feu 🔥 (+30 Buzz !)', 'success'); 
+            }},
+            { text: 'Pas encore prêt (💔 -30 Affection)', action: () => { 
+                game.player.life.gfAffection -= 30; notify('Elle est très déçue... L\'ambiance est glaciale.', 'error'); 
+            }}
+        ]
+    },
+    {
+        id: 'gf_breakup',
+        icon: '💔',
+        title: 'C\'est fini...',
+        condition: () => game.player.life.status === 'en couple' && game.player.life.gfAffection <= 15,
+        desc: 'Tu l\'as trop négligée. Elle a fait ses valises et t\'a quitté pour un brouteur qui s\'occupe mieux d\'elle.',
+        choices: [
+            { text: 'Transformer la douleur en musique (⚡ -50)', action: () => { 
+                game.player.energy -= 50; game.player.life.status = 'célibataire'; game.player.buzz += 15; 
+                notify('Célibataire. Mais ton son triste a fait le buzz (+15 Buzz) !', 'success'); 
+            }}
+        ]
+    },
+
+    // --- ÉVÉNEMENTS PARENTS ---
+    {
+        id: 'parents_money',
+        icon: '🏠',
+        title: 'Problème au quartier',
+        condition: () => true,
+        desc: 'Ta mère t\'appelle. Ton petit frère a été renvoyé de l\'école parce que la scolarité n\'est pas payée (50,000 F).',
+        choices: [
+            { text: 'Payer la scolarité (💰 -50,000 F)', action: () => { 
+                if(game.player.cash < 50000) { notify('Tu n\'as pas l\'argent... Ta mère raccroche en pleurant.', 'error'); game.player.life.parentsAffection -= 20; return; }
+                game.player.cash -= 50000; game.player.life.parentsAffection += 20; game.player.buzz += 5; notify('La famille d\'abord ! Les gens du quartier te respectent (+5 Buzz).', 'success'); 
+            }},
+            { text: 'Ignorer l\'appel (💔 -20 Affection)', action: () => { 
+                game.player.life.parentsAffection -= 20; game.player.energy -= 10; notify('Tu as ignoré ta famille. Mauvaise conscience (-10⚡).', 'error'); 
+            }}
+        ]
+    }
+];
+
+function showLifeEventModal(event) {
+    const overlay = document.createElement('div');
+    overlay.className = "fixed inset-0 bg-black/80 z-[1000] flex items-center justify-center p-4 backdrop-blur-sm";
+    overlay.id = "life-event-modal";
+    
+    let buttonsHtml = '';
+    event.choices.forEach((choice, index) => {
+        buttonsHtml += `
+            <button onclick="handleLifeChoice(${index})" 
+                    class="pill-button w-full mt-3 py-3 rounded-xl font-bold btn-secondary hover:bg-white/10 transition-all text-sm">
+                ${choice.text}
+            </button>`;
+    });
+
+    window.currentLifeChoices = event.choices; 
+
+    overlay.innerHTML = `
+        <div class="bg-[#15161D] border border-white/10 rounded-2xl p-6 max-w-sm w-full text-center shadow-2xl transform scale-100">
+            <div class="text-5xl mb-4">${event.icon}</div>
+            <h2 class="text-xl font-black text-white mb-2 uppercase">${event.title}</h2>
+            <p class="text-[14px] text-[#A1A1AA] mb-6 leading-relaxed">${event.desc}</p>
+            <div class="flex flex-col">
+                ${buttonsHtml}
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(overlay);
+}
+
+window.handleLifeChoice = function(index) {
+    const choice = window.currentLifeChoices[index];
+    choice.action(); 
+    
+    // On s'assure que l'affection reste entre 0 et 100
+    game.player.life.gfAffection = Math.max(0, Math.min(100, game.player.life.gfAffection));
+    game.player.life.parentsAffection = Math.max(0, Math.min(100, game.player.life.parentsAffection));
+
+    document.getElementById('life-event-modal').remove();
+    updateUI();
+}
 // ==========================================
 // MOTEUR PRINCIPAL : FIN DE SEMAINE & BOUCLE
 // ==========================================
@@ -2083,6 +2194,25 @@ game.player.inventory.released.forEach(song => {
                 }
             }
         });
+    }
+    // --- NOUVEAU : SYSTÈME DE VIE QUOTIDIENNE ---
+    // Si le joueur n'a pas encore de variables de vie (vieille sauvegarde), on les crée
+    if (!game.player.life) {
+        game.player.life = { gfAffection: 50, parentsAffection: 50, status: 'en couple' };
+    }
+
+    // Chaque semaine, il y a 15% de chance (0.15) de déclencher un choix de vie
+    if (Math.random() < 0.15) {
+        // On cherche les événements qui sont possibles actuellement
+        const possibleEvents = LIFE_EVENTS.filter(e => e.condition());
+        
+        if (possibleEvents.length > 0) {
+            // On tire un événement au sort parmi ceux qui sont possibles
+            const randomEvent = possibleEvents[Math.floor(Math.random() * possibleEvents.length)];
+            
+            // On affiche le menu de choix à l'écran
+            showLifeEventModal(randomEvent);
+        }
     }
     // --------------------------------------------------------------
 
@@ -2370,6 +2500,7 @@ window.onload = function() {
 </body>
 
 </html>
+
 
 
 
