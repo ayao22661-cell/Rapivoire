@@ -935,7 +935,6 @@ let currentTab = 'inventory';
 // ==========================================
 
 function init() {
-    // 1. On récupère le résultat de loadGame() (vrai ou faux)
     let aUneSauvegarde = loadGame();
 
     setTimeout(() => {
@@ -946,19 +945,15 @@ function init() {
             setTimeout(() => {
                 screen.style.display = 'none';
                 
-                // --- AJOUT DE LA CONDITION DE SAUVEGARDE ---
                 if (aUneSauvegarde) {
-                    // Si on a chargé une sauvegarde, on cache l'écran de création du nom
-                    const welcomeScreen = document.getElementById('welcome-screen'); // Vérifie que c'est bien l'ID de ton écran d'accueil
-                    if(welcomeScreen) welcomeScreen.style.display = 'none';
+                    // On cible le BON ID pour cacher l'onboarding
+                    const welcomeScreen = document.getElementById('onboarding-overlay'); 
+                    if(welcomeScreen) welcomeScreen.classList.add('hidden');
                     
-                    // Message de retour personnalisé
                     addNews("Bon retour dans le Game, " + game.player.name + " !", "info");
                 } else {
-                    // Si nouveau joueur, on laisse l'écran de création du nom
                     addNews("Bienvenue dans le Game. Le chemin sera long.", "info");
                 }
-                // ------------------------------------------
 
                 updateUI();
                 renderActions();
@@ -2082,18 +2077,9 @@ function startGameOnboarding() {
 }
 
 // Lancement
+// Lancement
 window.onload = function() {
-    // Vérifier si une sauvegarde existe
-    const savedData = localStorage.getItem('rapIvoireSaveData'); // Remplacez par le nom de votre clé de sauvegarde
-    
-    if (savedData) {
-        // Si elle existe, on charge le jeu directement
-        loadGame(); 
-        document.getElementById('loading-screen').classList.add('hidden');
-    } else {
-        // Si aucune sauvegarde, on lance l'onboarding pour enregistrer le nom
-        showOnboarding();
-    }
+    init();
 };
 </script>
 <div id="onboarding-overlay" class="fixed inset-0 bg-black/95 backdrop-blur-xl z-[500] flex items-center justify-center p-4 transition-opacity duration-500">
@@ -2144,6 +2130,7 @@ window.onload = function() {
 </body>
 
 </html>
+
 
 
 
