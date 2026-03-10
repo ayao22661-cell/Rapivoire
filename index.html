@@ -1575,32 +1575,81 @@ function renderConcerts() {
 
 function bookConcert(id, cost) {
     const venue = CONCERT_VENUES.find(v => v.id === id);
+    if(!venue) return;
+
+    // 1. Vérification du Cooldown (4 semaines d'attente entre deux concerts)
+    if (game.world.week - (game.player.lastConcertWeek || -4) < 4) {
+        notify("Tu viens de faire un concert ! Laisse tes fans respirer (Attends 4 semaines).");
+        return; 
+    }
+
+    // 2. Vérifications de base (Argent, Conditions, Énergie)
     if(game.player.cash < cost) { notify("Pas assez d'argent pour louer la salle."); return; }
     if(game.player.fans < venue.reqFans || game.player.inventory.released.length < venue.reqSongs) { notify("Conditions non remplies."); return; }
     if(game.player.energy < 80) { notify("Trop fatigué. Il faut 80⚡ minimum."); return; }
     
-    // Calcul des billets vendus basé sur la hype (Buzz + Fans)
+    // 3. Paiement des coûts
     game.player.cash -= cost;
     game.player.energy -= 80;
     
-    // Algorithme de remplissage
-    const fillRate = Math.min(1.0, (game.player.fans / venue.reqFans) * (game.player.buzz / 50));
+    // 4. Algorithme de remplissage réaliste
+    const baseFill = (game.player.fans / venue.reqFans); 
+    const buzzFactor = (game.player.buzz / 100) * 0.5; // Bonus lié au buzz (jusqu'à +50%)
+    const randomFactor = 0.7 + (Math.random() * 0.5);  // Aléatoire entre 0.7 et 1.2 (météo, jour de la semaine...)
+    
+    let fillRate = baseFill * (0.5 + buzzFactor) * randomFactor;
+    fillRate = Math.min(1.0, fillRate); // On plafonne à 100% max
+    
     const ticketsSold = Math.floor(venue.capacity * fillRate);
     const revenue = ticketsSold * venue.ticketPrice;
     
     game.player.cash += revenue;
-    game.player.buzz += 10;
-    addXP(venue.rewardXP);
+    
+    // 5. Conséquences dynamiques (Succès, Moyen, Flop)
+    let buzzGain = 0;
+    let xpGain = 0;
+    let modalTitle = "";
+    let modalDesc = "";
+    let modalIcon = '🔥';
+
+    if (fillRate >= 0.8) {
+        // Gros succès
+        buzzGain = 15;
+        xpGain = venue.rewardXP;
+        modalTitle = "🎉 Concert Incroyable !";
+        modalDesc = `Tu as rempli la salle à ${Math.floor(fillRate*100)}% (${ticketsSold.toLocaleString()} places). Le public était en feu !`;
+    } else if (fillRate >= 0.4) {
+        // Succès moyen
+        buzzGain = 5;
+        xpGain = Math.floor(venue.rewardXP / 2);
+        modalTitle = "👍 Concert Correct";
+        modalDesc = `La salle était remplie à ${Math.floor(fillRate*100)}% (${ticketsSold.toLocaleString()} places). L'ambiance était bonne.`;
+    } else {
+        // Flop (salle vide)
+        buzzGain = -10;
+        xpGain = Math.floor(venue.rewardXP / 4);
+        modalTitle = "😬 Gros Flop...";
+        modalDesc = `Seulement ${Math.floor(fillRate*100)}% de la salle remplie (${ticketsSold.toLocaleString()} places)... C'était très vide.`;
+        modalIcon = '📉'; // Icône de baisse pour le flop
+    }
+
+    // 6. Mise à jour des statistiques du joueur
+    game.player.buzz = Math.max(0, Math.min(100, game.player.buzz + buzzGain)); // Bloque le buzz entre 0 et 100
+    addXP(xpGain);
     game.stats.concertsDone++;
+    game.player.lastConcertWeek = game.world.week; // Sauvegarde la date du concert pour le cooldown
     
     closeAllMenus();
     updateUI();
     
-    // Afficher résultat via Event Popup
+    // 7. Affichage du résultat avec ton système d'Event Popup
     showEventModal(
-        "🎉 Concert Terminé !", 
-        `Tu as rempli la salle à ${Math.floor(fillRate*100)}% (${ticketsSold.toLocaleString()} places). Le public était en feu !`,
-        [{ icon: '💰', val: `+${revenue.toLocaleString()} F` }, { icon: '🔥', val: '+10 Buzz' }]
+        modalTitle, 
+        modalDesc,
+        [
+            { icon: '💰', val: `+${revenue.toLocaleString()} F` }, 
+            { icon: modalIcon, val: `${buzzGain > 0 ? '+' : ''}${buzzGain} Buzz` }
+        ]
     );
 }
 
@@ -2185,6 +2234,7 @@ window.onload = function() {
 </body>
 
 </html>
+
 
 
 
