@@ -1475,41 +1475,112 @@ function renderShop() {
         const owned = game.player.inventory.items.includes(item.id);
         const canAfford = game.player.cash >= item.price;
         
+        // --- GESTION DE LA CONDITION ET RÉPARATION ---
+        let condition = 100;
+        let repairCost = 0;
+        let canAffordRepair = false;
+        
+        if (owned) {
+            if (!game.player.itemConditions) game.player.itemConditions = {};
+            // On récupère l'état, 100 par défaut si non défini
+            condition = game.player.itemConditions[item.id] !== undefined ? game.player.itemConditions[item.id] : 100;
+            
+            // Calcul du coût de réparation (jusqu'à 20% du prix d'achat)
+            const missingCondition = 100 - condition;
+            repairCost = Math.floor(item.price * 0.20 * (missingCondition / 100));
+            canAffordRepair = game.player.cash >= repairCost;
+        }
+        // ---------------------------------------------
+        
         const div = document.createElement('div');
-        // Application de la Gestalt : carte aérée et structurée
         div.className = "bg-[#15161D] border border-white/5 rounded-2xl p-5 mb-4 flex flex-col gap-3";
         
-        div.innerHTML = `
+        // 1. Haut de la carte (Infos + Badge Acquis)
+        let htmlContent = `
             <div class="flex justify-between items-start">
-                <div>
+                <div class="flex-1 pr-3">
                     <div class="text-3xl mb-2">${item.icon}</div>
                     <h3 class="text-base font-black text-white m-0 tracking-tight">${item.name}</h3>
                     <p class="text-[13px] text-[#A1A1AA] mt-1 leading-snug">${item.desc}</p>
                 </div>
-                ${owned ? '<span class="bg-white/10 text-white px-2 py-1 rounded text-[10px] font-black tracking-wider">✔ ACQUIS</span>' : ''}
+                ${owned ? '<span class="bg-white/10 text-white px-2 py-1 rounded text-[10px] font-black tracking-wider whitespace-nowrap">✔ ACQUIS</span>' : ''}
             </div>
-            
-            <div class="flex justify-between items-center mt-auto pt-3 border-t border-white/5">
-                <span class="px-3 py-1 rounded-lg text-xs font-bold ${canAfford && !owned ? 'bg-[#00E676]/10 text-[#00E676]' : 'bg-white/5 text-[#A1A1AA]'}">
+        `;
+        
+        // 2. Milieu de la carte (Barre de condition, affichée uniquement si possédé)
+        if (owned) {
+            let colorClass = condition > 50 ? 'bg-[#00E676]' : (condition > 20 ? 'bg-[#FF9100]' : 'bg-[#FF5252]');
+            htmlContent += `
+                <div class="mt-2 bg-white/5 p-2 rounded-lg border border-white/5">
+                    <div class="flex justify-between text-[10px] text-[#A1A1AA] mb-1.5 font-bold tracking-wide">
+                        <span>ÉTAT D'USURE</span>
+                        <span class="${condition <= 20 ? 'text-[#FF5252]' : ''}">${condition}%</span>
+                    </div>
+                    <div class="w-full bg-black/50 rounded-full h-1.5 overflow-hidden">
+                        <div class="h-1.5 rounded-full ${colorClass} transition-all duration-300" style="width: ${condition}%"></div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // 3. Bas de la carte (Prix et Boutons dynamiques)
+        htmlContent += `<div class="flex justify-between items-center mt-auto pt-3 border-t border-white/5">`;
+        
+        if (!owned) {
+            // --- CAS 1 : Non possédé -> Affichage Achat Classique ---
+            htmlContent += `
+                <span class="px-3 py-1 rounded-lg text-xs font-bold ${canAfford ? 'bg-[#00E676]/10 text-[#00E676]' : 'bg-white/5 text-[#A1A1AA]'}">
                     💰 ${item.price.toLocaleString()} F
                 </span>
                 <button onclick="buyItem('${item.id}', ${item.price})" 
-                        class="pill-button px-4 py-2 text-xs w-auto ${owned ? 'btn-secondary opacity-50' : (canAfford ? 'btn-primary text-black' : 'btn-secondary opacity-50')}" 
-                        ${(!canAfford || owned) ? 'disabled' : ''}>
-                    ${owned ? 'POSSÉDÉ' : (canAfford ? 'ACHETER' : 'TROP CHER')}
+                        class="pill-button px-4 py-2 text-xs w-auto ${canAfford ? 'btn-primary text-black' : 'btn-secondary opacity-50'}" 
+                        ${!canAfford ? 'disabled' : ''}>
+                    ${canAfford ? 'ACHETER' : 'TROP CHER'}
                 </button>
-            </div>
-        `;
+            `;
+        } else if (condition < 100) {
+            // --- CAS 2 : Possédé et Abîmé -> Affichage Réparation ---
+            htmlContent += `
+                <span class="px-3 py-1 rounded-lg text-xs font-bold ${canAffordRepair ? 'bg-[#FF9100]/10 text-[#FF9100]' : 'bg-[#FF5252]/10 text-[#FF5252]'}">
+                    🔧 ${repairCost.toLocaleString()} F
+                </span>
+                <button onclick="repairItem('${item.id}', ${item.price})" 
+                        class="pill-button px-4 py-2 text-xs w-auto font-bold transition-colors ${canAffordRepair ? 'bg-[#FF9100] hover:bg-[#FF9100]/80 text-black' : 'bg-white/5 text-[#A1A1AA] opacity-50'}" 
+                        ${!canAffordRepair ? 'disabled' : ''}>
+                    ${canAffordRepair ? 'RÉPARER' : 'TROP CHER'}
+                </button>
+            `;
+        } else {
+            // --- CAS 3 : Possédé et Neuf (100%) -> Affichage Désactivé ---
+            htmlContent += `
+                <span class="px-3 py-1 rounded-lg text-xs font-bold bg-white/5 text-[#A1A1AA]">
+                    💰 ---
+                </span>
+                <button class="pill-button px-4 py-2 text-xs w-auto btn-secondary opacity-50" disabled>
+                    POSSÉDÉ (NEUF)
+                </button>
+            `;
+        }
+        
+        htmlContent += `</div>`; // Fin du bas de carte
+        
+        div.innerHTML = htmlContent;
         container.appendChild(div);
     });
 }
 
 function buyItem(id, price) {
-    if(game.player.inventory.items.includes(id)) return;
+    if(game.player.inventory.items.includes(id)) { notify("Déjà possédé."); return; }
     if(game.player.cash < price) { notify("Fonds insuffisants !"); return; }
     
+    // Paiement et ajout à l'inventaire
     game.player.cash -= price;
     game.player.inventory.items.push(id);
+    
+    // --- NOUVEAU : Initialisation de la condition de l'objet à 100% ---
+    if (!game.player.itemConditions) game.player.itemConditions = {};
+    game.player.itemConditions[id] = 100;
+    // ------------------------------------------------------------------
     
     // Appliquer boosts immédiats si nécessaire (Ex: Max Energy)
     const item = SHOP_ITEMS.find(i => i.id === id);
@@ -1523,9 +1594,43 @@ function buyItem(id, price) {
     
     addXP(30);
     notify(`Achat validé : ${item.name}`);
-    renderShop();
+    
+    renderShop(); // Met à jour l'affichage avec la nouvelle barre de condition
     updateUI();
 }
+    function repairItem(id, price) {
+    const item = SHOP_ITEMS.find(i => i.id === id);
+    if (!item) return;
+    
+    if (!game.player.itemConditions) game.player.itemConditions = {};
+    const currentCondition = game.player.itemConditions[id] || 0;
+    
+    if (currentCondition >= 100) {
+        notify("Cet article est déjà en parfait état !");
+        return;
+    }
+    
+    // Le coût de réparation représente jusqu'à 20% du prix de base de l'objet
+    // On utilise le "price" passé en paramètre ou on le récupère via SHOP_ITEMS
+    const itemPrice = price || item.price || 0; 
+    const missingCondition = 100 - currentCondition;
+    const repairCost = Math.floor(itemPrice * 0.20 * (missingCondition / 100));
+    
+    if (game.player.cash < repairCost) {
+        notify(`Fonds insuffisants. Il faut ${repairCost.toLocaleString()} F pour réparer.`);
+        return;
+    }
+    
+    // Paiement et remise à 100%
+    game.player.cash -= repairCost;
+    game.player.itemConditions[id] = 100;
+    
+    notify(`🔧 ${item.name} réparé(e) pour ${repairCost.toLocaleString()} F !`);
+    
+    renderShop(); // Rafraîchit l'affichage
+    updateUI();
+}
+    
 
 function renderConcerts() {
     const container = document.getElementById('concerts-list');
@@ -1949,6 +2054,37 @@ game.player.inventory.released.forEach(song => {
     if(game.player.buzz > 5 && game.world.week % 2 === 0) {
         game.player.buzz -= 1; // Perd 1 de buzz toutes les 2 semaines
     }
+    // --- NOUVEAU : Dégradation des objets (Usure hebdomadaire) ---
+    if (game.player.inventory.items && game.player.inventory.items.length > 0) {
+        if (!game.player.itemConditions) game.player.itemConditions = {};
+        
+        game.player.inventory.items.forEach(itemId => {
+            // Si l'objet n'a pas de condition enregistrée, on l'initialise à 100%
+            if (game.player.itemConditions[itemId] === undefined) {
+                game.player.itemConditions[itemId] = 100;
+            }
+            
+            let currentCondition = game.player.itemConditions[itemId];
+            
+            if (currentCondition > 0) {
+                // L'objet perd entre 1% et 4% de son état chaque semaine
+                const degradation = Math.floor(Math.random() * 4) + 1;
+                game.player.itemConditions[itemId] = Math.max(0, currentCondition - degradation);
+                
+                // Si l'objet tombe à 0% cette semaine, on déclenche une alerte
+                if (game.player.itemConditions[itemId] === 0) {
+                    // On cherche le nom de l'objet pour l'afficher dans la notification
+                    const itemData = typeof SHOP_ITEMS !== 'undefined' ? SHOP_ITEMS.find(i => i.id === itemId) : null;
+                    const itemName = itemData ? itemData.name : "article";
+                    
+                    if (typeof notify === "function") {
+                        notify(`⚠️ Ton/Ta ${itemName} est complètement mort(e) ! Va le/la réparer.`, 'error');
+                    }
+                }
+            }
+        });
+    }
+    // --------------------------------------------------------------
 
     // Update UI et Sauvegarde (Fait AVANT l'événement aléatoire)
     updateUI();
@@ -2234,6 +2370,7 @@ window.onload = function() {
 </body>
 
 </html>
+
 
 
 
