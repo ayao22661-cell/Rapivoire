@@ -1366,16 +1366,23 @@ function releaseSong(id) {
     game.player.inventory.songs.splice(index, 1);
     game.player.inventory.released.unshift(song); // Ajout au début
     
-    // Bonus immédiat à la sortie basé sur Qualité et Buzz actuel
-    const initialHype = (song.quality / 100) * game.player.buzz;
-    const fanBoost = Math.floor(initialHype * 5);
+    // MODIFICATION : Le multiplicateur dépend de la qualité (song.quality / 100)
+    // Si la qualité est basse (ex: 30%), l'impact du buzz est divisé.
+    const qualityFactor = song.quality / 100;
+    
+    const initialHype = qualityFactor * game.player.buzz;
+    const fanBoost = Math.floor(initialHype * 5); // Le boost de fans est proportionnel à la qualité
     const buzzBoost = Math.floor(song.quality / 20);
     
     game.player.fans += fanBoost;
     game.player.buzz += buzzBoost;
     addXP(50);
     
-    addNews(`Sortie de "${song.name}" ! Gros engouement sur les réseaux.`, "success");
+    // Notification dynamique selon la qualité
+    let message = `Sortie de "${song.name}" ! Gros engouement sur les réseaux.`;
+    if(song.quality < 50) message = `Sortie de "${song.name}". Les critiques sont mitigées...`;
+    
+    addNews(message, song.quality >= 50 ? "success" : "info");
     notify(`Son publié ! +${fanBoost} Fans`);
     
     switchSongTab('released');
@@ -2167,6 +2174,7 @@ window.onload = function() {
 </body>
 
 </html>
+
 
 
 
