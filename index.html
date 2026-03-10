@@ -1404,8 +1404,8 @@ function releaseAlbum() {
     game.player.cash -= cost;
     game.player.energy -= energyReq;
 
-    // Un album a toujours une qualité excellente (entre 80 et 100)
-    let albumQuality = Math.floor(Math.random() * 20) + 80; 
+    // Détermination de la qualité (entre 80 et 100)
+    let albumQuality = Math.floor(Math.random() * 21) + 80; 
     
     let newAlbum = {
         id: 'album_' + Date.now(),
@@ -1413,27 +1413,34 @@ function releaseAlbum() {
         theme: "Album Complet (10 Titres)",
         quality: albumQuality,
         weeksOld: 0,
-        isAlbum: true, // C'EST ÇA LE SECRET !
+        isAlbum: true, 
         streams: 0,
         platformStreams: { youtube: 0, boomplay: 0, spotify: 0, apple: 0 }
     };
 
-    // Un album sort direct en ligne, pas besoin de passer par le stock
     game.player.inventory.released.push(newAlbum);
     
-    // Gros boost immédiat pour la sortie
-    const fansGain = 50000;
-    const buzzGain = 150;
+    // ============================================================
+    // CALCUL DYNAMIQUE : BASE 10K * NIVEAU * QUALITÉ
+    // ============================================================
+    // Si niveau 1 et 100% qualité = 10 000 fans
+    // Si niveau 5 et 80% qualité = 40 000 fans (50k * 0.8)
+    const baseFans = 10000 * game.player.level;
+    const qualityFactor = albumQuality / 100;
+    
+    const fansGain = Math.floor(baseFans * qualityFactor);
+    const buzzGain = Math.floor((100 + (game.player.level * 20)) * qualityFactor);
+    
     game.player.fans += fansGain;
     game.player.buzz += buzzGain;
     
     // Notifications
-    addNews(`🔥 ÉVÉNEMENT : L'album "${albumName}" est disponible partout !`, "success");
+    addNews(`🔥 ÉVÉNEMENT : L'album "${albumName}" (${albumQuality}%) est disponible !`, "success");
     
     if(typeof showEventModal === "function") {
         showEventModal(
             "💿 ALBUM EN LIGNE !", 
-            `Ton projet "${albumName}" est sorti. Toute la Côte d'Ivoire ne parle que de ça. Prépare-toi à voir tes streams exploser !`,
+            `Ton projet "${albumName}" est sorti avec une qualité de ${albumQuality}%. Le public réagit immédiatement !`,
             [
                 { icon: '👥', val: `+${fansGain.toLocaleString()} Fans` },
                 { icon: '🔥', val: `+${buzzGain} Buzz` },
@@ -1441,7 +1448,7 @@ function releaseAlbum() {
             ]
         );
     } else {
-        notify("Nouvel Album sorti avec succès !");
+        notify(`Album sorti ! +${fansGain.toLocaleString()} fans`);
     }
     
     updateUI();
@@ -2160,6 +2167,7 @@ window.onload = function() {
 </body>
 
 </html>
+
 
 
 
