@@ -1865,10 +1865,6 @@ game.player.inventory.released.forEach(song => {
 
     song.streams = Object.values(song.platformStreams).reduce((a, b) => a + b, 0);
 });
-
-// Utilisation du mois dans la notification de fin de semaine
-addNews(`Bilan : ${moisNom} ${anneeActuelle} (Semaine ${(game.week % 4) + 1})`, "info");
-
     // --- GESTION DES REVENUS STREAMS & LABELS ---
     if(totalStreamsThisWeek > 0) {
         incomeThisWeek = Math.floor(incomeThisWeek);
@@ -2189,6 +2185,7 @@ window.onload = function() {
 </body>
 
 </html>
+
 
 
 
