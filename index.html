@@ -704,19 +704,123 @@ const BEATS_POOL = [
 ];
 
 const SHOP_ITEMS = [
-    { id: 's_sapes', name: "Sapes de Marque (Fausse)", price: 15000, type: 'buzz', boost: 2, icon: '👕', desc: "+2% de Buzz permanent. Qualité Adjamé." },
-    { id: 's_chain', name: "Chaîne en Or (Plaqué)", price: 50000, type: 'fans_multiplier', boost: 1.1, icon: '⛓️', desc: "Gagne 10% de fans en plus à chaque action." },
-    { id: 's_iphone', name: "iPhone 15 Pro Max", price: 900000, type: 'buzz', boost: 5, icon: '📱', desc: "Meilleurs lives en 4K. +5% de Buzz permanent." },
-    { id: 's_car1', name: "Voiture d'Occasion (France Au Revoir)", price: 3500000, type: 'energy_max', boost: 20, icon: '🚗', desc: "Moins de fatigue dans les wôrô-wôrô. +20 Énergie Max." },
-    { id: 's_studio', name: "Home Studio Pro", price: 2500000, type: 'quality_boost', boost: 10, icon: '🎛️', desc: "Matériel lourd. Tes sons ont +10% de qualité de base." },
-    { id: 's_mercedes', name: "Mercedes Classe G (AMG)", price: 85000000, type: 'fans_multiplier', boost: 1.5, icon: '🚙', desc: "Gagne 50% de fans en plus. Le vrai statut de Boss !" }
+    // --- NIVEAU DÉBUTANT / INTERMÉDIAIRE ---
+    { 
+        id: 'item_drip', 
+        name: "Garde-robe de Luxe (Drip)", 
+        desc: "Des sapes de créateurs. Augmente ton charisme et tes fans gagnés (+10%).", 
+        price: 500000, 
+        icon: "✦", // Plus sobre que le blouson
+        type: 'fans_multiplier', 
+        boost: 0.10 
+    },
+    { 
+        id: 'item_smartphone', 
+        name: "Dernier Smartphone Pro", 
+        desc: "Qualité 4K pour tes réseaux (TikTok, Insta). Petit boost de fans (+5%).", 
+        price: 1500000, 
+        icon: "📱", 
+        type: 'fans_multiplier', 
+        boost: 0.05 
+    },
+    { 
+        id: 'item_chaine', 
+        name: "Chaîne en Diamant VVS", 
+        desc: "Le vrai symbole de la réussite. Gros boost de Buzz direct !", 
+        price: 2500000, 
+        icon: "◆", // Représentation géométrique du diamant
+        type: 'buzz_boost', 
+        boost: 50 
+    },
+    { 
+        id: 'item_homestudio', 
+        name: "Home Studio Pro", 
+        desc: "Enregistre à la maison. Qualité minimale de tes sons augmentée (+10%).", 
+        price: 4000000, 
+        icon: "🎤", 
+        type: 'quality_boost', 
+        boost: 10 
+    },
+
+    // --- NIVEAU STAR ---
+    { 
+        id: 'item_beatmaker', 
+        name: "Beatmaker Exclusif", 
+        desc: "Un producteur attitré pour des prods sur mesure. Qualité des sons (+20%).", 
+        price: 15000000, 
+        icon: "🎹", 
+        type: 'quality_boost', 
+        boost: 20 
+    },
+    { 
+        id: 'item_rolex', 
+        name: "Montre de Luxe (Rolex)", 
+        desc: "L'heure c'est l'heure, mais en diamants. Énorme boost de Buzz !", 
+        price: 25000000, 
+        icon: "⌚", 
+        type: 'buzz_boost', 
+        boost: 150 
+    },
+    { 
+        id: 'item_gclass', 
+        name: "Mercedes Classe G", 
+        desc: "Tu roules comme un boss. Multiplie l'XP gagné à chaque action (+20%).", 
+        price: 85000000, 
+        icon: "🚗", 
+        type: 'xp_multiplier', 
+        boost: 0.20 
+    },
+
+    // --- NIVEAU LÉGENDE DU GAME ---
+    { 
+        id: 'item_villa', 
+        name: "Villa à la Riviera / Miami", 
+        desc: "Le sommet du Game. 50% de fans en plus à chaque action !", 
+        price: 250000000, 
+        icon: "🏛️", // Icône d'édifice/manoir classique, plus "luxe" que la petite maison
+        type: 'fans_multiplier', 
+        boost: 0.50 
+    },
+    { 
+        id: 'item_jet', 
+        name: "Jet Privé", 
+        desc: "Tu ne touches plus le sol. Le statut de légende absolue. Fans x2 (+100%) !", 
+        price: 1500000000, 
+        icon: "✈︎", // Symbole d'avion stylisé et fin, au lieu de l'émoji cartoon
+        type: 'fans_multiplier', 
+        boost: 1.00 
+    }
 ];
 
 const CONCERT_VENUES = [
-    { id: 'c_maquis', name: "Maquis du Quartier", cost: 25000, reqFans: 500, reqSongs: 1, capacity: 100, ticketPrice: 1000, rewardXP: 50 },
-    { id: 'c_allo', name: "Allocodrome", cost: 150000, reqFans: 2500, reqSongs: 3, capacity: 500, ticketPrice: 2000, rewardXP: 150 },
-    { id: 'c_palais', name: "Palais de la Culture (4000 pl.)", cost: 3500000, reqFans: 15000, reqSongs: 8, capacity: 4000, ticketPrice: 5000, rewardXP: 500 },
-    { id: 'c_stade', name: "Stade Ebimpé", cost: 65000000, reqFans: 100000, reqSongs: 15, capacity: 60000, ticketPrice: 5000, rewardXP: 2000 }
+    // --- Salles Locales (Côte d'Ivoire) ---
+    // Le maquis ne demande pas trop de marketing, juste quelques affiches
+    { id: 'c_maquis', name: "Maquis du Quartier", cost: 50000, reqFans: 500, reqSongs: 1, capacity: 100, ticketPrice: 1000, rewardXP: 50 },
+    
+    // Pour l'Allocodrome, il faut payer les "gros bras" et louer la sono
+    { id: 'c_allo', name: "Allocodrome", cost: 350000, reqFans: 2500, reqSongs: 3, capacity: 500, ticketPrice: 2000, rewardXP: 150 },
+    
+    // Remplir le Palais demande des spots TV et des 4x3 dans tout Abidjan
+    { id: 'c_palais', name: "Palais de la Culture", cost: 8500000, reqFans: 15000, reqSongs: 8, capacity: 4000, ticketPrice: 5000, rewardXP: 500 },
+    
+    // Remplir Ebimpé est un projet d'État : budget promo colossal
+    { id: 'c_stade', name: "Stade Ebimpé", cost: 120000000, reqFans: 100000, reqSongs: 15, capacity: 60000, ticketPrice: 5000, rewardXP: 2000 },
+    
+    // --- Salles Internationales (France) ---
+    // Expatriation : Billets d'avion, hôtels, et promo parisienne
+    { id: 'c_cigale', name: "La Cigale (Paris)", cost: 6000000, reqFans: 10000, reqSongs: 5, capacity: 1000, ticketPrice: 15000, rewardXP: 300 },
+    
+    // L'Olympia demande une campagne dans le métro parisien
+    { id: 'c_olympia', name: "L'Olympia", cost: 15000000, reqFans: 30000, reqSongs: 10, capacity: 2000, ticketPrice: 25000, rewardXP: 800 },
+    
+    // Le Zénith : Partenariat avec des radios (Skyrock, Mouv') et gros influenceurs
+    { id: 'c_zenith', name: "Le Zénith de Paris", cost: 35000000, reqFans: 80000, reqSongs: 12, capacity: 6800, ticketPrice: 35000, rewardXP: 1500 },
+    
+    // Bercy : Affichage national, street marketing, équipes énormes
+    { id: 'c_bercy', name: "Accor Arena (Bercy)", cost: 95000000, reqFans: 200000, reqSongs: 20, capacity: 20000, ticketPrice: 45000, rewardXP: 3000 },
+    
+    // Stade de France : L'ultime consécration, marketing mondial
+    { id: 'c_stade_france', name: "Stade de France", cost: 300000000, reqFans: 1000000, reqSongs: 30, capacity: 80000, ticketPrice: 50000, rewardXP: 10000 }
 ];
 
 const PERKS_TREE = {
@@ -2007,5 +2111,6 @@ window.onload = init;
 </body>
 
 </html>
+
 
 
