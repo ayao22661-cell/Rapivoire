@@ -973,18 +973,36 @@ function loadGame() {
     if (saved) {
         try {
             let parsed = JSON.parse(saved);
-            if(parsed.version === game.version) {
-                game = parsed; 
-                console.log("Save loaded");
-                return true; // <-- AJOUT IMPORTANT
-            } else {
-                console.log("Save version mismatch, starting fresh");
+            
+            // 1. Gestion des mises à jour : on accepte les anciennes saves
+            if (parsed.version !== game.version) {
+                console.log(`Mise à jour de la save : v${parsed.version} -> v${game.version}`);
+                parsed.version = game.version; 
             }
+
+            // 2. Deep Merge (Fusion intelligente) : on garde la structure par défaut de la nouvelle version
+            // tout en injectant la progression du joueur.
+            game = {
+                ...game, // Charge la structure de base (sécurité pour les nouvelles variables)
+                ...parsed, // Écrase avec les données sauvegardées
+                player: {
+                    ...game.player,
+                    ...parsed.player,
+                    skills: { ...game.player.skills, ...(parsed.player.skills || {}) },
+                    inventory: { ...game.player.inventory, ...(parsed.player.inventory || {}) }
+                },
+                world: { ...game.world, ...(parsed.world || {}) },
+                stats: { ...game.stats, ...(parsed.stats || {}) }
+            };
+
+            console.log("Save loaded successfully");
+            return true;
+            
         } catch(e) { 
-            console.error("Error loading save", e); 
+            console.error("Save corrupted or error loading", e); 
         }
     }
-    return false; // <-- AJOUT IMPORTANT
+    return false;
 }
 
 function resetGame() {
@@ -2130,6 +2148,7 @@ window.onload = function() {
 </body>
 
 </html>
+
 
 
 
