@@ -935,7 +935,9 @@ let currentTab = 'inventory';
 // ==========================================
 
 function init() {
-    loadGame();
+    // 1. On récupère le résultat de loadGame() (vrai ou faux)
+    let aUneSauvegarde = loadGame();
+
     setTimeout(() => {
         document.getElementById('loading-text').textContent = "Chargement terminé...";
         setTimeout(() => {
@@ -943,9 +945,23 @@ function init() {
             screen.classList.add('opacity-0');
             setTimeout(() => {
                 screen.style.display = 'none';
+                
+                // --- AJOUT DE LA CONDITION DE SAUVEGARDE ---
+                if (aUneSauvegarde) {
+                    // Si on a chargé une sauvegarde, on cache l'écran de création du nom
+                    const welcomeScreen = document.getElementById('welcome-screen'); // Vérifie que c'est bien l'ID de ton écran d'accueil
+                    if(welcomeScreen) welcomeScreen.style.display = 'none';
+                    
+                    // Message de retour personnalisé
+                    addNews("Bon retour dans le Game, " + game.player.name + " !", "info");
+                } else {
+                    // Si nouveau joueur, on laisse l'écran de création du nom
+                    addNews("Bienvenue dans le Game. Le chemin sera long.", "info");
+                }
+                // ------------------------------------------
+
                 updateUI();
                 renderActions();
-                addNews("Bienvenue dans le Game. Le chemin sera long.", "info");
                 checkLevelUp();
             }, 500);
         }, 800);
@@ -963,13 +979,17 @@ function loadGame() {
         try {
             let parsed = JSON.parse(saved);
             if(parsed.version === game.version) {
-                game = parsed;
+                game = parsed; 
                 console.log("Save loaded");
+                return true; // <-- AJOUT IMPORTANT
             } else {
                 console.log("Save version mismatch, starting fresh");
             }
-        } catch(e) { console.error("Error loading save", e); }
+        } catch(e) { 
+            console.error("Error loading save", e); 
+        }
     }
+    return false; // <-- AJOUT IMPORTANT
 }
 
 function resetGame() {
@@ -2041,6 +2061,7 @@ function submitPseudo() {
     document.getElementById('step-pseudo').classList.add('hidden');
     document.getElementById('step-tutorial').classList.remove('hidden');
     document.getElementById('welcome-pseudo-text').innerText = `Bienvenue dans le game, ${pseudo} !`;
+    saveGame();
 }
 
 // Fonction déclenchée quand le joueur a fini de lire le tuto
@@ -2111,6 +2132,7 @@ window.onload = init;
 </body>
 
 </html>
+
 
 
 
