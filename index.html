@@ -2038,7 +2038,6 @@ window.handleLifeChoice = function(index) {
 
 function processNextWeek() {
     // --- 1. SÉCURITÉ INTERFACE ---
-    // Empêcher de passer la semaine s'il reste des actions (évite le spam/perte de ressources)
     if(game.world.actionsLeft > 0) {
         if (typeof notify === "function") {
             notify("Utilise toutes tes actions avant de terminer la semaine !", "warning");
@@ -2046,12 +2045,11 @@ function processNextWeek() {
         return; 
     }
 
-    // Fermer les menus ouverts
     const overlay = document.getElementById('event-overlay');
     if(overlay) overlay.style.display = 'none';
     if(typeof closeAllMenus === 'function') closeAllMenus();
 
-    // --- 2. GESTION DU TEMPS (Correction game.world.week) ---
+    // --- 2. GESTION DU TEMPS ---
     game.world.week++;
     if(game.world.week > 48) {
         game.world.week = 1;
@@ -2059,29 +2057,26 @@ function processNextWeek() {
         if(typeof addNews === "function") addNews(`🥂 Bonne année ${game.world.year} !`, "info");
     }
 
-    // Calcul du calendrier (Correction des références game.week -> game.world.week)
     const NOMS_MOIS = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"];
     const moisIndex = Math.floor((game.world.week - 1) / 4) % 12;
     const anneeActuelle = 2026 + Math.floor((game.world.week - 1) / 48);
     const moisNom = NOMS_MOIS[moisIndex];
     
-    // --- 3. SÉCURITÉ ANTI-BUG (Initialisation des données) ---
+    // --- 3. SÉCURITÉ ANTI-BUG ---
     game.player.energyMax = game.player.energyMax || 100;
     game.world.actionsMax = game.world.actionsMax || 3;
     if (!game.stats) game.stats = { totalEarnings: 0, concertsDone: 0 };
     if (!game.player.skills) game.player.skills = { flow: 0, lyrics: 0, charisme: 0, biz: 0 };
     if (!game.player.inventory.released) game.player.inventory.released = [];
 
-    // Réinitialiser les ressources
     game.world.actionsLeft = game.world.actionsMax;
     game.player.energy = game.player.energyMax; 
 
-    // --- 4. CALCUL DES STREAMS PASSIFS ---
+    // --- 4. CALCUL DES STREAMS PASSIFS (MIS À JOUR : FANS, NIVEAU & CLASSIQUES) ---
     let totalStreamsThisWeek = 0;
     let incomeThisWeek = 0;
     
     const charismeLevel = game.player.skills.charisme || 0;
-    // Vérification de sécurité pour PERKS_TREE
     let charismeMult = 1;
     if (typeof PERKS_TREE !== 'undefined' && PERKS_TREE.charisme && PERKS_TREE.charisme.levels) {
         charismeMult = PERKS_TREE.charisme.levels[charismeLevel] || 1;
@@ -2093,22 +2088,43 @@ function processNextWeek() {
         if (!song.platformStreams) {
             song.platformStreams = { youtube: 0, boomplay: 0, spotify: 0, apple: 0 };
         }
-        
-        // Logique de Qualité & Hype
-        const qualityFactor = (song.quality || 50) / 100; 
-        let hypeMultiplier = Math.max(0.1, 1 - (song.weeksOld * 0.05)); 
-        
-        // Calcul du Volume de base
-        let baseVolume = Math.floor((game.player.buzz * charismeMult * 100) * qualityFactor * hypeMultiplier);
-        if(isNaN(baseVolume)) baseVolume = 0;
 
-        // Bonus Album
-        if (song.isAlbum) {
-            baseVolume = baseVolume * 10; 
-            hypeMultiplier = Math.max(0.2, 1 - (song.weeksOld * 0.02)); 
+        // 4.1 LOGIQUE DU CLASSIQUE (Nouveau)
+        // Un son devient "Classique" s'il a 12 semaines d'âge ET une qualité >= 85
+        if (!song.isClassic && song.weeksOld >= 12 && song.quality >= 85) {
+            song.isClassic = true;
+            if (typeof addNews === "function") {
+                addNews(`🏆 HISTORIQUE : "${song.name || "Un de tes sons"}" est devenu un Classique !`, "success");
+            }
         }
 
-        // Répartition par plateforme (Vérification de l'existence de PLATFORMS)
+        // 4.2 GESTION DE LA HYPE (Décroissance ou Éternité)
+        let hypeMultiplier;
+        if (song.isClassic) {
+            // Un classique est immortel, sa hype reste bloquée à 80% minimum
+            hypeMultiplier = 0.8; 
+        } else {
+            // Un son normal perd de la hype (plus lent pour un album)
+            let decayRate = song.isAlbum ? 0.02 : 0.05;
+            hypeMultiplier = Math.max(0.1, 1 - (song.weeksOld * decayRate));
+        }
+        
+        // 4.3 VARIABLES DE CALCUL (Impact Fans, Niveau, Qualité)
+        const qualityFactor = (song.quality || 50) / 100; 
+        const fanImpact = (game.player.fans || 0) * 0.5; // 50% des fans écoutent
+        const levelBonus = 1 + ((game.player.level || 1) * 0.10); // +10% par niveau
+        const buzzImpact = (game.player.buzz * 200); // Le buzz frappe fort
+
+        // 4.4 VOLUME DE BASE
+        let baseVolume = Math.floor((buzzImpact + fanImpact) * levelBonus * charismeMult * qualityFactor * hypeMultiplier);
+        if(isNaN(baseVolume)) baseVolume = 0;
+
+        // 4.5 BONUS ALBUM
+        if (song.isAlbum) {
+            baseVolume = baseVolume * 10; 
+        }
+
+        // 4.6 RÉPARTITION PLATEFORMES
         if (typeof PLATFORMS !== 'undefined') {
             Object.keys(PLATFORMS).forEach(pKey => {
                 const p = PLATFORMS[pKey];
@@ -2139,7 +2155,7 @@ function processNextWeek() {
         game.stats.totalEarnings = (game.stats.totalEarnings || 0) + incomeThisWeek;
         
         if(typeof addNews === "function") {
-            addNews(`Streams : +${totalStreamsThisWeek.toLocaleString()} écoutes cette semaine.`, "info");
+            addNews(`Streams : +${totalStreamsThisWeek.toLocaleString()} écoutes.`, "info");
             addNews(`Argent : +${incomeThisWeek.toLocaleString()} F CFA.`, "success");
         }
     }
@@ -2167,22 +2183,20 @@ function processNextWeek() {
                 if (game.player.itemConditions[itemId] === 0) {
                     const itemData = typeof SHOP_ITEMS !== 'undefined' ? SHOP_ITEMS.find(i => i.id === itemId) : null;
                     const itemName = itemData ? itemData.name : "un accessoire";
-                    if (typeof notify === "function") notify(`⚠️ Ton ${itemName} est cassé !`, 'error');
+                    if (typeof notify === "function") notify(`⚠️ Ton/Ta ${itemName} est cassé(e) !`, 'error');
                 }
             }
         });
     }
 
     // --- 8. FIN DE TOUR & MISE À JOUR ---
-    // Décroissance du Buzz
     if(game.player.buzz > 5 && game.world.week % 2 === 0) {
         game.player.buzz -= 1;
     }
 
-    // Appels vitaux pour que les changements soient visibles et enregistrés
     if (typeof checkContracts === "function") checkContracts();
-    if (typeof updateUI === "function") updateUI(); // <-- INDISPENSABLE
-    if (typeof saveGame === "function") saveGame(); // <-- INDISPENSABLE
+    if (typeof updateUI === "function") updateUI(); 
+    if (typeof saveGame === "function") saveGame(); 
 }
 
 function triggerRandomEvent() {
@@ -2453,6 +2467,7 @@ window.onload = function() {
 </body>
 
 </html>
+
 
 
 
