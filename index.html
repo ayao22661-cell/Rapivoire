@@ -2210,6 +2210,140 @@ function processNextWeek() {
         }
     });
 
+Avec ce nouveau processnexstweek, lorsqu'on passe à une nouvelle année, les boutons concert reste bloqué. Même quand le délai de 4 semaine est passée.
+function processNextWeek() {
+    // --- 1. SÉCURITÉ INTERFACE ---
+    if(game.world.actionsLeft > 0) {
+        if (typeof notify === "function") notify("Utilise toutes tes actions avant de terminer la semaine !", "warning");
+        return; 
+    }
+
+    const overlay = document.getElementById('event-overlay');
+    if(overlay) overlay.style.display = 'none';
+    if(typeof closeAllMenus === 'function') closeAllMenus();
+
+    // --- 2. GESTION DU TEMPS ---
+    game.world.week++;
+    if(game.world.week > 48) {
+        game.world.week = 1;
+        game.world.year++;
+        if(typeof addNews === "function") addNews(`🥂 Bonne année ${game.world.year} !`, "info");
+    }
+    
+    // --- 3. SÉCURITÉ ANTI-BUG ---
+    game.player.energyMax = game.player.energyMax || 100;
+    game.world.actionsMax = game.world.actionsMax || 3;
+    if (!game.stats) game.stats = { totalEarnings: 0, concertsDone: 0 };
+    if (!game.player.skills) game.player.skills = { flow: 0, lyrics: 0, charisme: 0, biz: 0 };
+    if (!game.player.inventory.released) game.player.inventory.released = [];
+
+    game.world.actionsLeft = game.world.actionsMax;
+    game.player.energy = game.player.energyMax; 
+
+    // --- 4. CALCUL DES STREAMS PASSIFS (JUSTE MILIEU) ---
+    let totalStreamsThisWeek = 0;
+    let incomeThisWeek = 0;
+    
+    const charismeLevel = game.player.skills.charisme || 0;
+    let charismeMult = 1;
+    if (typeof PERKS_TREE !== 'undefined' && PERKS_TREE.charisme && PERKS_TREE.charisme.levels) {
+        charismeMult = PERKS_TREE.charisme.levels[charismeLevel] || 1;
+    }
+
+    game.player.inventory.released.forEach(song => {
+        song.weeksOld = (song.weeksOld || 0) + 1;
+        if (!song.platformStreams) song.platformStreams = { youtube: 0, boomplay: 0, spotify: 0, apple: 0 };
+
+        // 4.1 LOGIQUE DU CLASSIQUE
+        if (!song.isClassic && song.weeksOld >= 12 && song.quality >= 85) {
+            song.isClassic = true;
+            if (typeof addNews === "function") addNews(`🏆 HISTORIQUE : "${song.name || "Un son"}" est devenu un Classique !`, "success");
+        }
+
+        // 4.2 GESTION DE LA HYPE
+        let hypeMultiplier;
+        if (song.isClassic) {
+            hypeMultiplier = 0.8; 
+        } else {
+            let decayRate = song.isAlbum ? 0.02 : 0.05;
+            hypeMultiplier = Math.max(0.1, 1 - (song.weeksOld * decayRate));
+        }
+        
+        // ----------------------------------------------------------------------
+        // 4.3 CALCUL DES VOLUMES (LE JUSTE MILIEU)
+        // ----------------------------------------------------------------------
+        const qualityFactor = (song.quality || 50) / 100; 
+        
+        // Les fans : 1 fan génère environ 0.8 stream par semaine
+        const fanImpact = (game.player.fans || 0) * 0.8; 
+        
+        // Le Niveau : +15% de puissance par niveau (Lvl 10 = x2.5)
+        const levelBonus = 1 + ((game.player.level || 1) * 0.15); 
+        
+        // Le Buzz : Multiplicateur modéré
+        const buzzImpact = (game.player.buzz * 500); 
+
+        // VOLUME DE BASE
+        let baseVolume = Math.floor((buzzImpact + fanImpact) * levelBonus * charismeMult * qualityFactor * hypeMultiplier);
+        if(isNaN(baseVolume)) baseVolume = 0;
+
+        // BONUS ALBUM (x10 streams car c'est un projet de plusieurs titres)
+        if (song.isAlbum) baseVolume *= 10; 
+
+        // 4.4 RÉPARTITION PLATEFORMES
+        if (typeof PLATFORMS !== 'undefined') {
+            Object.keys(PLATFORMS).forEach(pKey => {
+                const p = PLATFORMS[pKey];
+                const variation = 0.8 + (Math.random() * 0.4);
+                const pNewStreams = Math.floor(baseVolume * p.weight * variation);
+                
+                song.platformStreams[pKey] += pNewStreams;
+                totalStreamsThisWeek += pNewStreams;
+                incomeThisWeek += (pNewStreams * p.pay);
+            });
+        }
+
+        // MAJ DU TOTAL DES STREAMS DU SON
+        song.streams = Object.values(song.platformStreams).reduce((a, b) => a + b, 0);
+
+        // ----------------------------------------------------------------------
+        // 4.5 CERTIFICATIONS SNEP (Vrais Chiffres)
+        // ----------------------------------------------------------------------
+        const paliers = song.isAlbum ? {
+            or: 75000000, platine: 150000000, diamant: 750000000
+        } : {
+            or: 15000000, platine: 30000000, diamant: 50000000
+        };
+
+        if (!song.certifications) song.certifications = []; 
+        let nouvelleCertif = null;
+        let prime = 0;
+        let cName = song.name || "Ton projet";
+
+        // Vérification dans le code SNEP, on s'assure de ne pas donner la certif en double
+        if (song.streams >= paliers.diamant && !song.certifications.includes('Diamant')) {
+            nouvelleCertif = 'Diamant 💎'; song.certifications.push('Diamant');
+            prime = song.isAlbum ? 50000000 : 10000000;
+        } 
+        else if (song.streams >= paliers.platine && !song.certifications.includes('Platine') && !song.certifications.includes('Diamant')) {
+            nouvelleCertif = 'Platine 💿'; song.certifications.push('Platine');
+            prime = song.isAlbum ? 20000000 : 5000000;
+        } 
+        else if (song.streams >= paliers.or && !song.certifications.includes('Or') && !song.certifications.includes('Platine') && !song.certifications.includes('Diamant')) {
+            nouvelleCertif = 'Or 📀'; song.certifications.push('Or');
+            prime = song.isAlbum ? 5000000 : 1000000;
+        }
+
+        if (nouvelleCertif) {
+            game.player.cash += prime;
+            game.player.buzz += (song.isAlbum ? 50 : 20); 
+            if (typeof addNews === "function") {
+                addNews(`🚨 OFFICIEL SNEP : "${cName}" certifié Disque d'${nouvelleCertif} !`, "success");
+                addNews(`🎁 Bonus Label : +${prime.toLocaleString()} F CFA !`, "info");
+            }
+        }
+    });
+
     // --- 5. REVENUS & LABELS ---
     if(totalStreamsThisWeek > 0) {
         incomeThisWeek = Math.floor(incomeThisWeek);
@@ -2528,6 +2662,7 @@ window.onload = function() {
 </body>
 
 </html>
+
 
 
 
