@@ -1747,8 +1747,8 @@ function bookConcert(id, cost) {
     game.player.buzz = Math.max(0, Math.min(100, game.player.buzz + buzzGain)); // Bloque le buzz entre 0 et 100
     addXP(xpGain);
     game.stats.concertsDone++;
-    game.player.lastConcertWeek = game.world.week; // Sauvegarde la date du concert pour le cooldown
-    
+    game.player.lastConcertWeek = game.world.week; // Sauvegarde la date du concert pour le cooldow
+    game.player.concertCooldown = 4;
     closeAllMenus();
     updateUI();
     
@@ -2052,19 +2052,21 @@ function processNextWeek() {
     if(overlay) overlay.style.display = 'none';
     if(typeof closeAllMenus === 'function') closeAllMenus();
 
+    // --- 🚨 NOUVEAU : GESTION DU COOLDOWN DES CONCERTS ---
+    // On fait baisser le compte à rebours de 1 à chaque semaine passée
+    if (game.player.concertCooldown > 0) {
+        game.player.concertCooldown--;
+    }
+
     // --- 2. GESTION DU TEMPS ---
     game.world.week++;
+    
+    // Passage à la nouvelle année (le calcul de concert n'a plus besoin d'être ici !)
     if(game.world.week > 48) {
         game.world.week = 1;
         game.world.year++;
         if(typeof addNews === "function") addNews(`🥂 Bonne année ${game.world.year} !`, "info");
     }
-    // 🚨 AJOUTE CES 3 LIGNES ICI 🚨
-        // On recule la date du dernier concert de 48 semaines pour que le calcul reste bon !
-        if (game.player.lastConcertWeek !== undefined) {
-            game.player.lastConcertWeek -= 48; 
-        }
-    
     // --- 3. SÉCURITÉ ANTI-BUG ---
     game.player.energyMax = game.player.energyMax || 100;
     game.world.actionsMax = game.world.actionsMax || 3;
@@ -2510,6 +2512,7 @@ window.onload = function() {
 </body>
 
 </html>
+
 
 
 
