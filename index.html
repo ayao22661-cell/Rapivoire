@@ -650,17 +650,17 @@ const SPONSORS = [
 
 const ACTIONS_POOL = [
    
-    {
+   {
         id: "rest",
         title: "🛋️ Chiller au quartier",
-        desc: "Reste posé pour reprendre des forces. Restaure 40 d'énergie.",
+        desc: "Se poser pour récupérer. Rend 25 d'énergie mais fait chuter ton Buzz.",
         reqLevel: 1,
-        energy: -40, // IMPORTANT : En négatif, donc ça te DONNE 40 d'énergie !
+        energy: -25, // On réduit la récupération (au lieu de -40)
         cash: 0,
-        buzz: 0,
+        buzz: -15,   // PERTE DE BUZZ : Tu n'es plus dans l'actualité
         fans: 0,
         xp: 10,
-        color: "bg-[#15161D] border border-[#00E676]/30 text-white"
+        color: "bg-[#15161D] border border-[#FF5252]/30 text-white" 
     },
 { id: 'clash_cible', title: "🥊 Clash Ciblé", energy: 0, cash: 0, buzz: 0, fans: 0, xp: 0, desc: "Choisis une star à éteindre (30 Énergie).", color: 'bg-red-600 text-white border-none', reqLevel: 1 },    // PROMO NIVEAU 2
     ,{ id: 'promo_boomplay', title: "Playlist 'Rap Ivoire'", energy: 20, cash: -5000, buzz: 10, fans: 100, xp: 15, desc: "Payer pour entrer dans les tops Boomplay.", color: 'bg-blue-grad', reqLevel: 2 },
@@ -2540,6 +2540,7 @@ window.onload = function() {
 </body>
 
 </html>
+
 
 
 
