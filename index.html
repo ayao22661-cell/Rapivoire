@@ -2054,6 +2054,12 @@ function processNextWeek() {
         game.world.year++;
         if(typeof addNews === "function") addNews(`🥂 Bonne année ${game.world.year} !`, "info");
     }
+    // 🚨 AJOUTE CES 3 LIGNES ICI 🚨
+        // On recule la date du dernier concert de 48 semaines pour que le calcul reste bon !
+        if (game.player.lastConcertWeek !== undefined) {
+            game.player.lastConcertWeek -= 48; 
+        }
+        }
     
     // --- 3. SÉCURITÉ ANTI-BUG ---
     game.player.energyMax = game.player.energyMax || 100;
@@ -2487,29 +2493,3 @@ window.onload = function() {
 </body>
 
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
