@@ -2052,13 +2052,20 @@ function processNextWeek() {
     // if(typeof closeAllMenus === 'function') closeAllMenus();
     // ------------------------------------
 
-    // 1. Gérer le temps
-    game.world.week++;
-    if(game.world.week > 48) {
-        game.world.week = 1;
-        game.world.year++;
-        addNews(`🥂 Bonne année ${game.world.year} !`, "info");
-    }
+// 1. Gérer le temps
+game.world.week++;
+
+if(game.world.week > 48) {
+    game.world.week = 1;
+    game.world.year++;
+    
+    // --- LA CORRECTION EXACTE ---
+    // On réinitialise le compteur de concerts pour la nouvelle année
+    // Note : Vérifie si tu utilises 'concertsThisYear' dans ta fonction renderConcerts
+    game.player.concertsThisYear = 0; 
+    
+    addNews(`🥂 Bonne année ${game.world.year} ! Tes quotas de concerts sont renouvelés.`, "info");
+}
     
     // --- SÉCURITÉ ANTI-BUG POUR LES ANCIENNES SAUVEGARDES ---
     // On répare automatiquement les données manquantes de ton ancienne partie
@@ -2500,6 +2507,7 @@ window.onload = function() {
 </body>
 
 </html>
+
 
 
 
