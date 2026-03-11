@@ -2148,31 +2148,43 @@ function processNextWeek() {
         if (!song.certifications) song.certifications = []; 
         let nouvelleCertif = null;
         let prime = 0;
+        let buzzGain = 0; // Nouveau : Gain de buzz séparé
+        let fansGain = 0; // Nouveau : Gagner des fans fidèles
         let cName = song.name || "Ton projet";
 
-        // Vérification dans le code SNEP, on s'assure de ne pas donner la certif en double
+        // Vérification SNEP
         if (song.streams >= paliers.diamant && !song.certifications.includes('Diamant')) {
             nouvelleCertif = 'Diamant 💎'; song.certifications.push('Diamant');
-            prime = song.isAlbum ? 50000000 : 10000000;
+            prime = song.isAlbum ? 15000000 : 3000000; // Réduit pour le challenge
+            buzzGain = song.isAlbum ? 25 : 15;         // Récompense forte
+            fansGain = song.isAlbum ? 50000 : 15000;
         } 
         else if (song.streams >= paliers.platine && !song.certifications.includes('Platine') && !song.certifications.includes('Diamant')) {
             nouvelleCertif = 'Platine 💿'; song.certifications.push('Platine');
-            prime = song.isAlbum ? 20000000 : 5000000;
+            prime = song.isAlbum ? 5000000 : 1000000;
+            buzzGain = song.isAlbum ? 15 : 8;
+            fansGain = song.isAlbum ? 20000 : 5000;
         } 
         else if (song.streams >= paliers.or && !song.certifications.includes('Or') && !song.certifications.includes('Platine') && !song.certifications.includes('Diamant')) {
             nouvelleCertif = 'Or 📀'; song.certifications.push('Or');
-            prime = song.isAlbum ? 5000000 : 1000000;
+            prime = song.isAlbum ? 1500000 : 500000; // Reste une belle prime de départ
+            buzzGain = song.isAlbum ? 8 : 4;         // Petit coup de boost de hype
+            fansGain = song.isAlbum ? 10000 : 2500;
         }
 
         if (nouvelleCertif) {
             game.player.cash += prime;
-            game.player.buzz += (song.isAlbum ? 50 : 20); 
+            // On ajoute les nouveaux fans
+            game.player.fans = (game.player.fans || 0) + fansGain;
+            
+            // 🚨 SÉCURITÉ : On bloque le buzz à 100 maximum !
+            game.player.buzz = Math.min(100, game.player.buzz + buzzGain); 
+
             if (typeof addNews === "function") {
                 addNews(`🚨 OFFICIEL SNEP : "${cName}" certifié Disque d'${nouvelleCertif} !`, "success");
-                addNews(`🎁 Bonus Label : +${prime.toLocaleString()} F CFA !`, "info");
+                addNews(`🎁 Bonus Label : +${prime.toLocaleString()} F CFA, +${fansGain.toLocaleString()} Fans !`, "info");
             }
         }
-    });
 
     // --- 5. REVENUS & LABELS ---
     if(totalStreamsThisWeek > 0) {
@@ -2492,4 +2504,5 @@ window.onload = function() {
 </body>
 
 </html>
+
 
