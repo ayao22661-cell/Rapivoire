@@ -1035,10 +1035,13 @@ function updateUI() {
     document.getElementById('player-title').textContent = title;
 
     // Main Dashboard
-    const buzz = Math.max(0, Math.min(100, game.player.buzz));
-    document.getElementById('stat-buzz-text').textContent = Math.floor(buzz) + "%";
-    document.getElementById('bar-buzz').style.width = buzz + "%";
-    
+    // On plafonne directement la vraie variable
+    game.player.buzz = Math.max(0, Math.min(100, game.player.buzz));
+
+// On affiche la vraie variable
+    document.getElementById('stat-buzz-text').textContent = Math.floor(game.player.buzz) + "%";
+    document.getElementById('bar-buzz').style.width = game.player.buzz + "%";
+
     document.getElementById('stat-fans').textContent = Math.floor(game.player.fans).toLocaleString();
     document.getElementById('stat-streams').textContent = Math.floor(game.player.streams).toLocaleString();
     document.getElementById('stat-beats').textContent = game.player.inventory.songs.length + game.player.inventory.released.length;
@@ -2505,6 +2508,7 @@ window.onload = function() {
 </body>
 
 </html>
+
 
 
 
