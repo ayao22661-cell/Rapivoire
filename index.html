@@ -2037,231 +2037,152 @@ window.handleLifeChoice = function(index) {
 // ==========================================
 
 function processNextWeek() {
-    // --- SÉCURITÉ INTERFACE (NOUVEAU) ---
-    // 1. Empêcher le passage de la semaine si l'action n'est pas permise
+    // --- 1. SÉCURITÉ INTERFACE ---
+    // Empêcher de passer la semaine s'il reste des actions (évite le spam/perte de ressources)
     if(game.world.actionsLeft > 0) {
-        if(typeof notify === "function") notify("Il te reste des actions à jouer !", "info");
+        if (typeof notify === "function") {
+            notify("Utilise toutes tes actions avant de terminer la semaine !", "warning");
+        }
         return; 
     }
 
-    // 2. Fermer tous les overlays/menus
+    // Fermer les menus ouverts
     const overlay = document.getElementById('event-overlay');
     if(overlay) overlay.style.display = 'none';
     if(typeof closeAllMenus === 'function') closeAllMenus();
 
-    // --- GESTION DU TEMPS ---
-    // CORRECTIF : On fait avancer la semaine
+    // --- 2. GESTION DU TEMPS (Correction game.world.week) ---
     game.world.week++;
-
     if(game.world.week > 48) {
         game.world.week = 1;
         game.world.year++;
-        
-        // 1. Réinitialisation annuelle
-        game.player.concertsThisYear = 0; 
-
-        // 2. Correction mathématique du cooldown concert
-        if (game.player.lastConcertWeek) {
-            game.player.lastConcertWeek -= 48;
-        }
-        
-        addNews(`🥂 Bonne année ${game.world.year} !`, "info");
+        if(typeof addNews === "function") addNews(`🥂 Bonne année ${game.world.year} !`, "info");
     }
+
+    // Calcul du calendrier (Correction des références game.week -> game.world.week)
+    const NOMS_MOIS = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"];
+    const moisIndex = Math.floor((game.world.week - 1) / 4) % 12;
+    const anneeActuelle = 2026 + Math.floor((game.world.week - 1) / 48);
+    const moisNom = NOMS_MOIS[moisIndex];
     
-    // --- SÉCURITÉ ANTI-BUG POUR LES ANCIENNES SAUVEGARDES ---
+    // --- 3. SÉCURITÉ ANTI-BUG (Initialisation des données) ---
     game.player.energyMax = game.player.energyMax || 100;
     game.world.actionsMax = game.world.actionsMax || 3;
-    if (!game.stats) {
-        game.stats = { totalEarnings: 0, concertsDone: 0 };
-    }
-    if (!game.player.skills) {
-        game.player.skills = { flow: 0, lyrics: 0, charisme: 0, biz: 0 };
-    }
+    if (!game.stats) game.stats = { totalEarnings: 0, concertsDone: 0 };
+    if (!game.player.skills) game.player.skills = { flow: 0, lyrics: 0, charisme: 0, biz: 0 };
+    if (!game.player.inventory.released) game.player.inventory.released = [];
 
-    // 2. Réinitialiser les actions et l'énergie
+    // Réinitialiser les ressources
     game.world.actionsLeft = game.world.actionsMax;
     game.player.energy = game.player.energyMax; 
-    
-    // 3. Calculer les Streams Passifs
+
+    // --- 4. CALCUL DES STREAMS PASSIFS ---
     let totalStreamsThisWeek = 0;
     let incomeThisWeek = 0;
     
     const charismeLevel = game.player.skills.charisme || 0;
-    const charismeMult = (typeof PERKS_TREE !== 'undefined' && PERKS_TREE.charisme) ? PERKS_TREE.charisme.levels[charismeLevel] : 1;
-    
-    // --- SYSTÈME DE CALENDRIER (CORRIGÉ : game.world.week) ---
-    const NOMS_MOIS = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"];
-    const moisIndex = Math.floor((game.world.week - 1) / 4) % 12;
-    const moisNom = NOMS_MOIS[moisIndex];
+    // Vérification de sécurité pour PERKS_TREE
+    let charismeMult = 1;
+    if (typeof PERKS_TREE !== 'undefined' && PERKS_TREE.charisme && PERKS_TREE.charisme.levels) {
+        charismeMult = PERKS_TREE.charisme.levels[charismeLevel] || 1;
+    }
 
     game.player.inventory.released.forEach(song => {
-        song.weeksOld = song.weeksOld || 0;
-        song.weeksOld++;
+        song.weeksOld = (song.weeksOld || 0) + 1;
 
         if (!song.platformStreams) {
             song.platformStreams = { youtube: 0, boomplay: 0, spotify: 0, apple: 0 };
         }
         
-        // 1. Facteur de Qualité
-        const qualityFactor = Math.pow(song.quality / 100, 2); 
+        // Logique de Qualité & Hype
+        const qualityFactor = (song.quality || 50) / 100; 
+        let hypeMultiplier = Math.max(0.1, 1 - (song.weeksOld * 0.05)); 
         
-        // 2. Logique de courbe (Hype)
-        let hypeMultiplier;
-        const week = song.weeksOld;
+        // Calcul du Volume de base
+        let baseVolume = Math.floor((game.player.buzz * charismeMult * 100) * qualityFactor * hypeMultiplier);
+        if(isNaN(baseVolume)) baseVolume = 0;
 
-        if (week <= 4) {
-            let growthRate = (song.quality / 100) * 0.10; 
-            hypeMultiplier = 1 + (week * growthRate); 
-        } else {
-            let decay = Math.pow(0.80, week - 4);
-            const maxHypeReached = 1 + (4 * ((song.quality / 100) * 0.10));
-            hypeMultiplier = Math.max(0.25, maxHypeReached * decay);
-        }
-
-        // 3. Calcul des sources
-        const fanBaseStreams = (game.player.fans || 0) * 0.50; 
-        const viralBuzzStreams = (game.player.buzz || 0) * 500;
-        const levelBonus = 1 + (game.player.level * 0.15);
-
-        // 4. Volume Final
-        let baseVolume = Math.floor(
-            (fanBaseStreams + viralBuzzStreams) * qualityFactor * levelBonus * charismeMult * hypeMultiplier
-        );
-        
-        if(isNaN(baseVolume) || baseVolume < 0) baseVolume = 0;
-
-        // 5. Ajustement Album
+        // Bonus Album
         if (song.isAlbum) {
-            baseVolume = baseVolume * 5; 
-            if (week > 4) {
-                hypeMultiplier = Math.max(0.35, hypeMultiplier);
-            }
+            baseVolume = baseVolume * 10; 
+            hypeMultiplier = Math.max(0.2, 1 - (song.weeksOld * 0.02)); 
         }
 
-        // Répartition par plateforme
-        Object.keys(PLATFORMS).forEach(pKey => {
-            const p = PLATFORMS[pKey];
-            const variation = 0.8 + (Math.random() * 0.4);
-            const pNewStreams = Math.floor(baseVolume * p.weight * variation);
-            
-            song.platformStreams[pKey] += pNewStreams;
-            totalStreamsThisWeek += pNewStreams;
-            incomeThisWeek += (pNewStreams * p.pay);
-        });
+        // Répartition par plateforme (Vérification de l'existence de PLATFORMS)
+        if (typeof PLATFORMS !== 'undefined') {
+            Object.keys(PLATFORMS).forEach(pKey => {
+                const p = PLATFORMS[pKey];
+                const variation = 0.8 + (Math.random() * 0.4);
+                const pNewStreams = Math.floor(baseVolume * p.weight * variation);
+                
+                song.platformStreams[pKey] += pNewStreams;
+                totalStreamsThisWeek += pNewStreams;
+                incomeThisWeek += (pNewStreams * p.pay);
+            });
+        }
 
         song.streams = Object.values(song.platformStreams).reduce((a, b) => a + b, 0);
     });
 
-    // --- GESTION DES REVENUS STREAMS & LABELS ---
+    // --- 5. REVENUS & LABELS ---
     if(totalStreamsThisWeek > 0) {
         incomeThisWeek = Math.floor(incomeThisWeek);
         
         if (game.player.label) {
             let labelCut = Math.floor(incomeThisWeek * game.player.label.cut);
             incomeThisWeek -= labelCut;
-            addNews(`💿 ${game.player.label.name} a pris sa part (${labelCut.toLocaleString()} F).`, "info");
+            if(typeof addNews === "function") addNews(`💿 Part Label : -${labelCut.toLocaleString()} F.`, "info");
         }
 
         game.player.cash += incomeThisWeek;
         game.player.streams = (game.player.streams || 0) + totalStreamsThisWeek;
         game.stats.totalEarnings = (game.stats.totalEarnings || 0) + incomeThisWeek;
         
-        addNews(`Streams : +${totalStreamsThisWeek.toLocaleString()} écoutes cette semaine.`, "info");
-        addNews(`Royalties nettes : +${incomeThisWeek.toLocaleString()} F CFA.`, "success");
+        if(typeof addNews === "function") {
+            addNews(`Streams : +${totalStreamsThisWeek.toLocaleString()} écoutes cette semaine.`, "info");
+            addNews(`Argent : +${incomeThisWeek.toLocaleString()} F CFA.`, "success");
+        }
     }
 
-    // --- REVENUS DES SPONSORS ---
+    // --- 6. SPONSORS ---
     if (game.player.sponsors && game.player.sponsors.length > 0) {
         let sponsorMoney = 0;
         game.player.sponsors.forEach(s => sponsorMoney += s.weekly);
         game.player.cash += sponsorMoney;
         game.stats.totalEarnings = (game.stats.totalEarnings || 0) + sponsorMoney;
-        addNews(`🤝 Sponsors : +${sponsorMoney.toLocaleString()} F reçus cette semaine.`, "success");
+        if(typeof addNews === "function") addNews(`🤝 Sponsors : +${sponsorMoney.toLocaleString()} F.`, "success");
     }
 
-    // --- DÉCROISSANCE DU BUZZ ---
-    if(game.player.buzz > 5 && game.world.week % 2 === 0) {
-        game.player.buzz -= 1;
-    }
-
-    // --- USURE DES OBJETS ---
+    // --- 7. DÉGRADATION DES OBJETS ---
     if (game.player.inventory.items && game.player.inventory.items.length > 0) {
         if (!game.player.itemConditions) game.player.itemConditions = {};
         
         game.player.inventory.items.forEach(itemId => {
-            if (game.player.itemConditions[itemId] === undefined) {
-                game.player.itemConditions[itemId] = 100;
-            }
+            if (game.player.itemConditions[itemId] === undefined) game.player.itemConditions[itemId] = 100;
             
-            let currentCondition = game.player.itemConditions[itemId];
-            if (currentCondition > 0) {
+            if (game.player.itemConditions[itemId] > 0) {
                 const degradation = Math.floor(Math.random() * 4) + 1;
-                game.player.itemConditions[itemId] = Math.max(0, currentCondition - degradation);
+                game.player.itemConditions[itemId] = Math.max(0, game.player.itemConditions[itemId] - degradation);
                 
                 if (game.player.itemConditions[itemId] === 0) {
                     const itemData = typeof SHOP_ITEMS !== 'undefined' ? SHOP_ITEMS.find(i => i.id === itemId) : null;
-                    const itemName = itemData ? itemData.name : "article";
-                    if (typeof notify === "function") {
-                        notify(`⚠️ Ton/Ta ${itemName} est mort(e) ! Va le/la réparer.`, 'error');
-                    }
+                    const itemName = itemData ? itemData.name : "un accessoire";
+                    if (typeof notify === "function") notify(`⚠️ Ton ${itemName} est cassé !`, 'error');
                 }
             }
         });
     }
 
-    // --- FINALISATION ET SAUVEGARDE ---
-    checkContracts(); 
-
-    // Mise à jour de l'affichage
-    if(typeof updateUI === 'function') updateUI();
-    
-    // Sauvegarde automatique
-    if(typeof saveGame === 'function') saveGame();
-
-    // Événements aléatoires
-    if(Math.random() < 0.10 && typeof triggerRandomEvent === 'function') {
-        triggerRandomEvent();
-    }
-    
-    // Scroll en haut pour voir les news
-    const dashboard = document.getElementById('main-dashboard');
-    if(dashboard) dashboard.scrollTo({top: 0, behavior: 'smooth'});
-}
-    // --- NOUVEAU : SYSTÈME DE VIE QUOTIDIENNE ---
-    // Si le joueur n'a pas encore de variables de vie (vieille sauvegarde), on les crée
-    if (!game.player.life) {
-        game.player.life = { gfAffection: 50, parentsAffection: 50, status: 'en couple' };
+    // --- 8. FIN DE TOUR & MISE À JOUR ---
+    // Décroissance du Buzz
+    if(game.player.buzz > 5 && game.world.week % 2 === 0) {
+        game.player.buzz -= 1;
     }
 
-    // Chaque semaine, il y a 15% de chance (0.15) de déclencher un choix de vie
-    if (Math.random() < 0.15) {
-        // On cherche les événements qui sont possibles actuellement
-        const possibleEvents = LIFE_EVENTS.filter(e => e.condition());
-        
-        if (possibleEvents.length > 0) {
-            // On tire un événement au sort parmi ceux qui sont possibles
-            const randomEvent = possibleEvents[Math.floor(Math.random() * possibleEvents.length)];
-            
-            // On affiche le menu de choix à l'écran
-            showLifeEventModal(randomEvent);
-        }
-    }
-    // --------------------------------------------------------------
-
-    // Update UI et Sauvegarde (Fait AVANT l'événement aléatoire)
-    updateUI();
-    saveGame();
-
-    // 5. Événements Aléatoires (10% de chance)
-    // DÉPLACÉ APRÈS LA SAUVEGARDE : Si un événement se lance, il ouvre un modal.
-    // S'il est lancé avant updateUI(), cela peut causer des conflits d'interface.
-    if(Math.random() < 0.10) {
-        if(typeof triggerRandomEvent === 'function') triggerRandomEvent();
-    }
-    
-    // Scroll To Top on main dashboard
-    const dashboard = document.getElementById('main-dashboard');
-    if(dashboard) dashboard.scrollTo({top: 0, behavior: 'smooth'});
+    // Appels vitaux pour que les changements soient visibles et enregistrés
+    if (typeof checkContracts === "function") checkContracts();
+    if (typeof updateUI === "function") updateUI(); // <-- INDISPENSABLE
+    if (typeof saveGame === "function") saveGame(); // <-- INDISPENSABLE
 }
 
 function triggerRandomEvent() {
@@ -2532,6 +2453,7 @@ window.onload = function() {
 </body>
 
 </html>
+
 
 
 
