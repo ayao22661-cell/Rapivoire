@@ -2106,45 +2106,37 @@ game.player.inventory.released.forEach(song => {
     if (!song.platformStreams) {
         song.platformStreams = { youtube: 0, boomplay: 0, spotify: 0, apple: 0 };
     }
-    
-    // ==========================================
-    // LOGIQUE DE QUALITÉ : Le multiplicateur décisif
-    // ==========================================
-    // 1. Facteur de Qualité (Exponentiel)
-    // Un son à 100% garde 100% de son potentiel. Un son à 50% tombe à 25% d'efficacité.
+    // 1. Facteur de Qualité (Toujours exponentiel, c'est la base du talent)
     const qualityFactor = Math.pow(song.quality / 100, 2); 
     
-    // 2. LOGIQUE DE COURBE DYNAMIQUE (CROISSANCE VIRALE PUIS STABILISATION)
+    // 2. LOGIQUE DE COURBE ADOUCIE (CROISSANCE LENTE)
     let hypeMultiplier;
     const week = song.weeksOld;
 
     if (week <= 4) {
-        // PHASE DE CROISSANCE : La vitesse de montée dépend de la qualité.
-        // Un son à 100% gagne +25% par semaine. Un son à 40% ne gagne que +10%.
-        let growthRate = (song.quality / 100) * 0.25; 
+        // CROISSANCE RÉDUITE : +10% max par semaine au lieu de 25%
+        // Un son à 100% gagne 10% par semaine. Un son à 50% ne gagne que 5%.
+        let growthRate = (song.quality / 100) * 0.10; 
         hypeMultiplier = 1 + (week * growthRate); 
     } else {
-        // PHASE DE DESCENTE : Chute de 30% par semaine (multiplié par 0.70)
-        // La descente est deux fois plus rapide qu'avant pour libérer de la place aux nouveaux hits.
-        let decay = Math.pow(0.70, week - 4);
+        // DESCENTE : On perd 20% par semaine (0.80) au lieu de 30%
+        let decay = Math.pow(0.80, week - 4);
         
-        // CALCUL DU PIC ATTEINT : On simule la valeur max au bout de 4 semaines
-        const maxHypeReached = 1 + (4 * ((song.quality / 100) * 0.25));
+        const maxHypeReached = 1 + (4 * ((song.quality / 100) * 0.10));
         
-        // POINT DE STABILISATION : Le son devient un "Classique".
-        // Ne descend JAMAIS en dessous de 30% de sa puissance maximale.
-        hypeMultiplier = Math.max(0.30, maxHypeReached * decay);
+        // STABILISATION : On descend à 25% du pic pour un single
+        hypeMultiplier = Math.max(0.25, maxHypeReached * decay);
     }
 
-    // 3. CALCUL DES SOURCES DE STREAMS (50% DES FANS + BUZZ VIRAL)
-    // Au moins 50% de la base de fans écoute le son chaque semaine.
+    // 3. CALCUL DES SOURCES (ÉQUILIBRAGE DES POIDS)
+    // On garde les 50% de fans (ton exigence), mais on réduit l'impact du Buzz et du Niveau
     const fanBaseStreams = (game.player.fans || 0) * 0.50; 
     
-    // Viralité : Chaque point de buzz (hype temporaire) génère 2000 streams.
-    const viralBuzzStreams = (game.player.buzz || 0) * 2000;
+    // VIRALITÉ RÉDUITE : 500 streams par point de buzz au lieu de 2000
+    const viralBuzzStreams = (game.player.buzz || 0) * 500;
 
-    // Bonus de Prestige : Un niveau 3 ou 4 multiplie naturellement l'impact.
-    const levelBonus = 1 + (game.player.level * 0.4);
+    // BONUS NIVEAU ADOUCI : +15% par niveau au lieu de 40%
+    const levelBonus = 1 + (game.player.level * 0.15);
 
     // 4. CALCUL DU VOLUME FINAL
     let baseVolume = Math.floor(
@@ -2153,14 +2145,15 @@ game.player.inventory.released.forEach(song => {
     
     if(isNaN(baseVolume) || baseVolume < 0) baseVolume = 0;
 
-    // 5. CAS PARTICULIER : ALBUM (Objectif 1 Million+ streams)
+    // 5. AJUSTEMENT ALBUM (MOINS RADICAL)
     if (song.isAlbum) {
-        // Un album cumule les streams de tous les morceaux (x10).
-        baseVolume = baseVolume * 10; 
+        // Un album fait x5 par rapport à un single (au lieu de x10)
+        // C'est plus proche de la réalité d'un projet de 10-12 titres
+        baseVolume = baseVolume * 5; 
         
-        // Un album est plus résistant dans le temps (stabilisation à 40% au lieu de 30%).
+        // Stabilisation plus haute pour les projets longs
         if (week > 4) {
-            hypeMultiplier = Math.max(0.40, hypeMultiplier);
+            hypeMultiplier = Math.max(0.35, hypeMultiplier);
         }
     }
 
@@ -2547,6 +2540,7 @@ window.onload = function() {
 </body>
 
 </html>
+
 
 
 
