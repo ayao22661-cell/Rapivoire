@@ -2065,7 +2065,7 @@ function processNextWeek() {
     game.world.actionsLeft = game.world.actionsMax;
     game.player.energy = game.player.energyMax; 
 
-    // --- 4. CALCUL DES STREAMS PASSIFS (MODE SUPERSTAR & SNEP) ---
+    // --- 4. CALCUL DES STREAMS PASSIFS (JUSTE MILIEU) ---
     let totalStreamsThisWeek = 0;
     let incomeThisWeek = 0;
     
@@ -2095,25 +2095,24 @@ function processNextWeek() {
         }
         
         // ----------------------------------------------------------------------
-        // 4.3 CALCUL DES VOLUMES (RÉVISION FAÇON "DIDI B")
+        // 4.3 CALCUL DES VOLUMES (LE JUSTE MILIEU)
         // ----------------------------------------------------------------------
         const qualityFactor = (song.quality || 50) / 100; 
         
-        // 1. Les fans écoutent le son en boucle (x2.5 au lieu de 0.5)
-        const fanImpact = (game.player.fans || 0) * 2.5; 
+        // Les fans : 1 fan génère environ 0.8 stream par semaine
+        const fanImpact = (game.player.fans || 0) * 0.8; 
         
-        // 2. Le Niveau est un Game Changer : +40% de puissance globale par niveau
-        // (Un niveau 4 aura un multiplicateur de x2.6, un niveau 10 aura x5 !)
-        const levelBonus = 1 + ((game.player.level || 1) * 0.40); 
+        // Le Niveau : +15% de puissance par niveau (Lvl 10 = x2.5)
+        const levelBonus = 1 + ((game.player.level || 1) * 0.15); 
         
-        // 3. Le Buzz frappe très fort : Viralité explosive (x2000 au lieu de 200)
-        const buzzImpact = (game.player.buzz * 2000); 
+        // Le Buzz : Multiplicateur modéré
+        const buzzImpact = (game.player.buzz * 500); 
 
         // VOLUME DE BASE
         let baseVolume = Math.floor((buzzImpact + fanImpact) * levelBonus * charismeMult * qualityFactor * hypeMultiplier);
         if(isNaN(baseVolume)) baseVolume = 0;
 
-        // BONUS ALBUM
+        // BONUS ALBUM (x10 streams car c'est un projet de plusieurs titres)
         if (song.isAlbum) baseVolume *= 10; 
 
         // 4.4 RÉPARTITION PLATEFORMES
@@ -2144,7 +2143,9 @@ function processNextWeek() {
         if (!song.certifications) song.certifications = []; 
         let nouvelleCertif = null;
         let prime = 0;
+        let cName = song.name || "Ton projet";
 
+        // Vérification dans le code SNEP, on s'assure de ne pas donner la certif en double
         if (song.streams >= paliers.diamant && !song.certifications.includes('Diamant')) {
             nouvelleCertif = 'Diamant 💎'; song.certifications.push('Diamant');
             prime = song.isAlbum ? 50000000 : 10000000;
@@ -2160,9 +2161,9 @@ function processNextWeek() {
 
         if (nouvelleCertif) {
             game.player.cash += prime;
-            game.player.buzz += (song.isAlbum ? 50 : 20); // Gagne du buzz avec le succès
+            game.player.buzz += (song.isAlbum ? 50 : 20); 
             if (typeof addNews === "function") {
-                addNews(`🚨 OFFICIEL SNEP : "${song.name || "Ton projet"}" certifié Disque d'${nouvelleCertif} !`, "success");
+                addNews(`🚨 OFFICIEL SNEP : "${cName}" certifié Disque d'${nouvelleCertif} !`, "success");
                 addNews(`🎁 Bonus Label : +${prime.toLocaleString()} F CFA !`, "info");
             }
         }
@@ -2486,6 +2487,7 @@ window.onload = function() {
 </body>
 
 </html>
+
 
 
 
