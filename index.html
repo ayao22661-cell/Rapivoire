@@ -2056,17 +2056,18 @@ if(game.world.week > 48) {
     game.world.week = 1;
     game.world.year++;
     
-    // --- TA NOUVELLE MÉCANIQUE ---
-    // On réinitialise le compteur de concerts pour la nouvelle année
+    // 1. On réinitialise ton compteur annuel
     game.player.concertsThisYear = 0; 
-    
-    // --- LA CORRECTION DU BUG DES 4 SEMAINES ---
-    // On recule la date du dernier concert pour que le délai reste logique en janvier
-    if (typeof game.player.lastConcertWeek === 'number') {
+
+    // 2. LA CORRECTION MATHÉMATIQUE :
+    // On retire 48 semaines à la date du dernier concert.
+    // Exemple : Semaine 46 devient Semaine -2.
+    // Au 1er janvier : 1 - (-2) = 3 semaines d'attente (le bouton se débloquera bien en semaine 2).
+    if (game.player.lastConcertWeek) {
         game.player.lastConcertWeek -= 48;
     }
     
-    addNews(`🥂 Bonne année ${game.world.year} ! Tes quotas de concerts sont renouvelés.`, "info");
+    addNews(`🥂 Bonne année ${game.world.year} !`, "info");
 }
     
     // --- SÉCURITÉ ANTI-BUG POUR LES ANCIENNES SAUVEGARDES ---
@@ -2509,6 +2510,7 @@ window.onload = function() {
 </body>
 
 </html>
+
 
 
 
