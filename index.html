@@ -2039,9 +2039,7 @@ window.handleLifeChoice = function(index) {
 function processNextWeek() {
     // --- 1. SÉCURITÉ INTERFACE ---
     if(game.world.actionsLeft > 0) {
-        if (typeof notify === "function") {
-            notify("Utilise toutes tes actions avant de terminer la semaine !", "warning");
-        }
+        if (typeof notify === "function") notify("Utilise toutes tes actions avant de terminer la semaine !", "warning");
         return; 
     }
 
@@ -2056,11 +2054,6 @@ function processNextWeek() {
         game.world.year++;
         if(typeof addNews === "function") addNews(`🥂 Bonne année ${game.world.year} !`, "info");
     }
-
-    const NOMS_MOIS = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"];
-    const moisIndex = Math.floor((game.world.week - 1) / 4) % 12;
-    const anneeActuelle = 2026 + Math.floor((game.world.week - 1) / 48);
-    const moisNom = NOMS_MOIS[moisIndex];
     
     // --- 3. SÉCURITÉ ANTI-BUG ---
     game.player.energyMax = game.player.energyMax || 100;
@@ -2072,7 +2065,7 @@ function processNextWeek() {
     game.world.actionsLeft = game.world.actionsMax;
     game.player.energy = game.player.energyMax; 
 
-    // --- 4. CALCUL DES STREAMS PASSIFS (MIS À JOUR : FANS, NIVEAU & CLASSIQUES) ---
+    // --- 4. CALCUL DES STREAMS PASSIFS (MODE SUPERSTAR & SNEP) ---
     let totalStreamsThisWeek = 0;
     let incomeThisWeek = 0;
     
@@ -2084,47 +2077,46 @@ function processNextWeek() {
 
     game.player.inventory.released.forEach(song => {
         song.weeksOld = (song.weeksOld || 0) + 1;
+        if (!song.platformStreams) song.platformStreams = { youtube: 0, boomplay: 0, spotify: 0, apple: 0 };
 
-        if (!song.platformStreams) {
-            song.platformStreams = { youtube: 0, boomplay: 0, spotify: 0, apple: 0 };
-        }
-
-        // 4.1 LOGIQUE DU CLASSIQUE (Nouveau)
-        // Un son devient "Classique" s'il a 12 semaines d'âge ET une qualité >= 85
+        // 4.1 LOGIQUE DU CLASSIQUE
         if (!song.isClassic && song.weeksOld >= 12 && song.quality >= 85) {
             song.isClassic = true;
-            if (typeof addNews === "function") {
-                addNews(`🏆 HISTORIQUE : "${song.name || "Un de tes sons"}" est devenu un Classique !`, "success");
-            }
+            if (typeof addNews === "function") addNews(`🏆 HISTORIQUE : "${song.name || "Un son"}" est devenu un Classique !`, "success");
         }
 
-        // 4.2 GESTION DE LA HYPE (Décroissance ou Éternité)
+        // 4.2 GESTION DE LA HYPE
         let hypeMultiplier;
         if (song.isClassic) {
-            // Un classique est immortel, sa hype reste bloquée à 80% minimum
             hypeMultiplier = 0.8; 
         } else {
-            // Un son normal perd de la hype (plus lent pour un album)
             let decayRate = song.isAlbum ? 0.02 : 0.05;
             hypeMultiplier = Math.max(0.1, 1 - (song.weeksOld * decayRate));
         }
         
-        // 4.3 VARIABLES DE CALCUL (Impact Fans, Niveau, Qualité)
+        // ----------------------------------------------------------------------
+        // 4.3 CALCUL DES VOLUMES (RÉVISION FAÇON "DIDI B")
+        // ----------------------------------------------------------------------
         const qualityFactor = (song.quality || 50) / 100; 
-        const fanImpact = (game.player.fans || 0) * 0.5; // 50% des fans écoutent
-        const levelBonus = 1 + ((game.player.level || 1) * 0.10); // +10% par niveau
-        const buzzImpact = (game.player.buzz * 200); // Le buzz frappe fort
+        
+        // 1. Les fans écoutent le son en boucle (x2.5 au lieu de 0.5)
+        const fanImpact = (game.player.fans || 0) * 2.5; 
+        
+        // 2. Le Niveau est un Game Changer : +40% de puissance globale par niveau
+        // (Un niveau 4 aura un multiplicateur de x2.6, un niveau 10 aura x5 !)
+        const levelBonus = 1 + ((game.player.level || 1) * 0.40); 
+        
+        // 3. Le Buzz frappe très fort : Viralité explosive (x2000 au lieu de 200)
+        const buzzImpact = (game.player.buzz * 2000); 
 
-        // 4.4 VOLUME DE BASE
+        // VOLUME DE BASE
         let baseVolume = Math.floor((buzzImpact + fanImpact) * levelBonus * charismeMult * qualityFactor * hypeMultiplier);
         if(isNaN(baseVolume)) baseVolume = 0;
 
-        // 4.5 BONUS ALBUM
-        if (song.isAlbum) {
-            baseVolume = baseVolume * 10; 
-        }
+        // BONUS ALBUM
+        if (song.isAlbum) baseVolume *= 10; 
 
-        // 4.6 RÉPARTITION PLATEFORMES
+        // 4.4 RÉPARTITION PLATEFORMES
         if (typeof PLATFORMS !== 'undefined') {
             Object.keys(PLATFORMS).forEach(pKey => {
                 const p = PLATFORMS[pKey];
@@ -2137,19 +2129,53 @@ function processNextWeek() {
             });
         }
 
+        // MAJ DU TOTAL DES STREAMS DU SON
         song.streams = Object.values(song.platformStreams).reduce((a, b) => a + b, 0);
+
+        // ----------------------------------------------------------------------
+        // 4.5 CERTIFICATIONS SNEP (Vrais Chiffres)
+        // ----------------------------------------------------------------------
+        const paliers = song.isAlbum ? {
+            or: 75000000, platine: 150000000, diamant: 750000000
+        } : {
+            or: 15000000, platine: 30000000, diamant: 50000000
+        };
+
+        if (!song.certifications) song.certifications = []; 
+        let nouvelleCertif = null;
+        let prime = 0;
+
+        if (song.streams >= paliers.diamant && !song.certifications.includes('Diamant')) {
+            nouvelleCertif = 'Diamant 💎'; song.certifications.push('Diamant');
+            prime = song.isAlbum ? 50000000 : 10000000;
+        } 
+        else if (song.streams >= paliers.platine && !song.certifications.includes('Platine') && !song.certifications.includes('Diamant')) {
+            nouvelleCertif = 'Platine 💿'; song.certifications.push('Platine');
+            prime = song.isAlbum ? 20000000 : 5000000;
+        } 
+        else if (song.streams >= paliers.or && !song.certifications.includes('Or') && !song.certifications.includes('Platine') && !song.certifications.includes('Diamant')) {
+            nouvelleCertif = 'Or 📀'; song.certifications.push('Or');
+            prime = song.isAlbum ? 5000000 : 1000000;
+        }
+
+        if (nouvelleCertif) {
+            game.player.cash += prime;
+            game.player.buzz += (song.isAlbum ? 50 : 20); // Gagne du buzz avec le succès
+            if (typeof addNews === "function") {
+                addNews(`🚨 OFFICIEL SNEP : "${song.name || "Ton projet"}" certifié Disque d'${nouvelleCertif} !`, "success");
+                addNews(`🎁 Bonus Label : +${prime.toLocaleString()} F CFA !`, "info");
+            }
+        }
     });
 
     // --- 5. REVENUS & LABELS ---
     if(totalStreamsThisWeek > 0) {
         incomeThisWeek = Math.floor(incomeThisWeek);
-        
         if (game.player.label) {
             let labelCut = Math.floor(incomeThisWeek * game.player.label.cut);
             incomeThisWeek -= labelCut;
-            if(typeof addNews === "function") addNews(`💿 Part Label : -${labelCut.toLocaleString()} F.`, "info");
+            if(typeof addNews === "function") addNews(`💿 Part ${game.player.label.name || "Label"} : -${labelCut.toLocaleString()} F.`, "info");
         }
-
         game.player.cash += incomeThisWeek;
         game.player.streams = (game.player.streams || 0) + totalStreamsThisWeek;
         game.stats.totalEarnings = (game.stats.totalEarnings || 0) + incomeThisWeek;
@@ -2172,27 +2198,20 @@ function processNextWeek() {
     // --- 7. DÉGRADATION DES OBJETS ---
     if (game.player.inventory.items && game.player.inventory.items.length > 0) {
         if (!game.player.itemConditions) game.player.itemConditions = {};
-        
         game.player.inventory.items.forEach(itemId => {
             if (game.player.itemConditions[itemId] === undefined) game.player.itemConditions[itemId] = 100;
-            
             if (game.player.itemConditions[itemId] > 0) {
                 const degradation = Math.floor(Math.random() * 4) + 1;
                 game.player.itemConditions[itemId] = Math.max(0, game.player.itemConditions[itemId] - degradation);
-                
                 if (game.player.itemConditions[itemId] === 0) {
-                    const itemData = typeof SHOP_ITEMS !== 'undefined' ? SHOP_ITEMS.find(i => i.id === itemId) : null;
-                    const itemName = itemData ? itemData.name : "un accessoire";
-                    if (typeof notify === "function") notify(`⚠️ Ton/Ta ${itemName} est cassé(e) !`, 'error');
+                    if (typeof notify === "function") notify(`⚠️ Un de tes accessoires est cassé !`, 'error');
                 }
             }
         });
     }
 
     // --- 8. FIN DE TOUR & MISE À JOUR ---
-    if(game.player.buzz > 5 && game.world.week % 2 === 0) {
-        game.player.buzz -= 1;
-    }
+    if(game.player.buzz > 5 && game.world.week % 2 === 0) game.player.buzz -= 1;
 
     if (typeof checkContracts === "function") checkContracts();
     if (typeof updateUI === "function") updateUI(); 
@@ -2467,6 +2486,7 @@ window.onload = function() {
 </body>
 
 </html>
+
 
 
 
