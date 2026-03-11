@@ -794,33 +794,35 @@ const SHOP_ITEMS = [
 
 const CONCERT_VENUES = [
     // --- Salles Locales (Côte d'Ivoire) ---
-    // Le maquis ne demande pas trop de marketing, juste quelques affiches
+    // Intact : Le maquis ne demande pas trop de marketing
     { id: 'c_maquis', name: "Maquis du Quartier", cost: 50000, reqFans: 500, reqSongs: 1, capacity: 100, ticketPrice: 1000, rewardXP: 50 },
     
-    // Pour l'Allocodrome, il faut payer les "gros bras" et louer la sono
+    // Intact : Pour l'Allocodrome, il faut payer les "gros bras"
     { id: 'c_allo', name: "Allocodrome", cost: 350000, reqFans: 2500, reqSongs: 3, capacity: 500, ticketPrice: 2000, rewardXP: 150 },
     
-    // Remplir le Palais demande des spots TV et des 4x3 dans tout Abidjan
-    { id: 'c_palais', name: "Palais de la Culture", cost: 8500000, reqFans: 15000, reqSongs: 8, capacity: 4000, ticketPrice: 5000, rewardXP: 500 },
+    // Palais de la Culture (Recette max : 20 000 000 F)
+    // Coût ajusté pour ~30% de bénéfice max
+    { id: 'c_palais', name: "Palais de la Culture", cost: 15000000, reqFans: 15000, reqSongs: 8, capacity: 4000, ticketPrice: 5000, rewardXP: 500 },
     
-    // Remplir Ebimpé est un projet d'État : budget promo colossal
-    { id: 'c_stade', name: "Stade Ebimpé", cost: 120000000, reqFans: 100000, reqSongs: 15, capacity: 60000, ticketPrice: 5000, rewardXP: 2000 },
+    // Stade Ebimpé (Recette max : 300 000 000 F)
+    // Coût ajusté pour ~30% de bénéfice max
+    { id: 'c_stade', name: "Stade Ebimpé", cost: 230000000, reqFans: 100000, reqSongs: 15, capacity: 60000, ticketPrice: 5000, rewardXP: 2000 },
     
     // --- Salles Internationales (France) ---
-    // Expatriation : Billets d'avion, hôtels, et promo parisienne
-    { id: 'c_cigale', name: "La Cigale (Paris)", cost: 6000000, reqFans: 10000, reqSongs: 5, capacity: 1000, ticketPrice: 15000, rewardXP: 300 },
+    // La Cigale (Recette max : 15 000 000 F)
+    { id: 'c_cigale', name: "La Cigale (Paris)", cost: 11500000, reqFans: 10000, reqSongs: 5, capacity: 1000, ticketPrice: 15000, rewardXP: 300 },
     
-    // L'Olympia demande une campagne dans le métro parisien
-    { id: 'c_olympia', name: "L'Olympia", cost: 15000000, reqFans: 30000, reqSongs: 10, capacity: 2000, ticketPrice: 25000, rewardXP: 800 },
+    // L'Olympia (Recette max : 50 000 000 F)
+    { id: 'c_olympia', name: "L'Olympia", cost: 38500000, reqFans: 30000, reqSongs: 10, capacity: 2000, ticketPrice: 25000, rewardXP: 800 },
     
-    // Le Zénith : Partenariat avec des radios (Skyrock, Mouv') et gros influenceurs
-    { id: 'c_zenith', name: "Le Zénith de Paris", cost: 35000000, reqFans: 80000, reqSongs: 12, capacity: 6800, ticketPrice: 35000, rewardXP: 1500 },
+    // Le Zénith de Paris (Recette max : 238 000 000 F)
+    { id: 'c_zenith', name: "Le Zénith de Paris", cost: 183000000, reqFans: 80000, reqSongs: 12, capacity: 6800, ticketPrice: 35000, rewardXP: 1500 },
     
-    // Bercy : Affichage national, street marketing, équipes énormes
-    { id: 'c_bercy', name: "Accor Arena (Bercy)", cost: 95000000, reqFans: 200000, reqSongs: 20, capacity: 20000, ticketPrice: 45000, rewardXP: 3000 },
+    // Accor Arena Bercy (Recette max : 900 000 000 F)
+    { id: 'c_bercy', name: "Accor Arena (Bercy)", cost: 690000000, reqFans: 200000, reqSongs: 20, capacity: 20000, ticketPrice: 45000, rewardXP: 3000 },
     
-    // Stade de France : L'ultime consécration, marketing mondial
-    { id: 'c_stade_france', name: "Stade de France", cost: 300000000, reqFans: 1000000, reqSongs: 30, capacity: 80000, ticketPrice: 50000, rewardXP: 10000 }
+    // Stade de France (Recette max : 4 000 000 000 F)
+    { id: 'c_stade_france', name: "Stade de France", cost: 3100000000, reqFans: 1000000, reqSongs: 30, capacity: 80000, ticketPrice: 50000, rewardXP: 10000 }
 ];
 
 const PERKS_TREE = {
@@ -2508,6 +2510,7 @@ window.onload = function() {
 </body>
 
 </html>
+
 
 
 
