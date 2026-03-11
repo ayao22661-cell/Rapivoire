@@ -2110,21 +2110,58 @@ game.player.inventory.released.forEach(song => {
     // ==========================================
     // LOGIQUE DE QUALITÉ : Le multiplicateur décisif
     // ==========================================
-    const qualityFactor = song.quality / 100; // Transforme 80% en 0.8
+    // 1. Facteur de Qualité (Exponentiel)
+    // Un son à 100% garde 100% de son potentiel. Un son à 50% tombe à 25% d'efficacité.
+    const qualityFactor = Math.pow(song.quality / 100, 2); 
     
-    // Hype (décroissance avec le temps)
-    let hypeMultiplier = Math.max(0.1, 1 - (song.weeksOld * 0.05)); 
-    
-    // CALCUL DU VOLUME : On intègre le qualityFactor
-    // Si la qualité est basse, baseVolume sera très faible.
-    let baseVolume = Math.floor((game.player.buzz * charismeMult * 100) * qualityFactor * hypeMultiplier);
-    
-    if(isNaN(baseVolume)) baseVolume = 0;
+    // 2. LOGIQUE DE COURBE DYNAMIQUE (CROISSANCE VIRALE PUIS STABILISATION)
+    let hypeMultiplier;
+    const week = song.weeksOld;
 
-    // MULTIPLICATEUR ALBUM
+    if (week <= 4) {
+        // PHASE DE CROISSANCE : La vitesse de montée dépend de la qualité.
+        // Un son à 100% gagne +25% par semaine. Un son à 40% ne gagne que +10%.
+        let growthRate = (song.quality / 100) * 0.25; 
+        hypeMultiplier = 1 + (week * growthRate); 
+    } else {
+        // PHASE DE DESCENTE : Chute de 30% par semaine (multiplié par 0.70)
+        // La descente est deux fois plus rapide qu'avant pour libérer de la place aux nouveaux hits.
+        let decay = Math.pow(0.70, week - 4);
+        
+        // CALCUL DU PIC ATTEINT : On simule la valeur max au bout de 4 semaines
+        const maxHypeReached = 1 + (4 * ((song.quality / 100) * 0.25));
+        
+        // POINT DE STABILISATION : Le son devient un "Classique".
+        // Ne descend JAMAIS en dessous de 30% de sa puissance maximale.
+        hypeMultiplier = Math.max(0.30, maxHypeReached * decay);
+    }
+
+    // 3. CALCUL DES SOURCES DE STREAMS (50% DES FANS + BUZZ VIRAL)
+    // Au moins 50% de la base de fans écoute le son chaque semaine.
+    const fanBaseStreams = (game.player.fans || 0) * 0.50; 
+    
+    // Viralité : Chaque point de buzz (hype temporaire) génère 2000 streams.
+    const viralBuzzStreams = (game.player.buzz || 0) * 2000;
+
+    // Bonus de Prestige : Un niveau 3 ou 4 multiplie naturellement l'impact.
+    const levelBonus = 1 + (game.player.level * 0.4);
+
+    // 4. CALCUL DU VOLUME FINAL
+    let baseVolume = Math.floor(
+        (fanBaseStreams + viralBuzzStreams) * qualityFactor * levelBonus * charismeMult * hypeMultiplier
+    );
+    
+    if(isNaN(baseVolume) || baseVolume < 0) baseVolume = 0;
+
+    // 5. CAS PARTICULIER : ALBUM (Objectif 1 Million+ streams)
     if (song.isAlbum) {
+        // Un album cumule les streams de tous les morceaux (x10).
         baseVolume = baseVolume * 10; 
-        hypeMultiplier = Math.max(0.2, 1 - (song.weeksOld * 0.02)); 
+        
+        // Un album est plus résistant dans le temps (stabilisation à 40% au lieu de 30%).
+        if (week > 4) {
+            hypeMultiplier = Math.max(0.40, hypeMultiplier);
+        }
     }
 
     // Répartition par plateforme
@@ -2510,6 +2547,7 @@ window.onload = function() {
 </body>
 
 </html>
+
 
 
 
