@@ -2038,6 +2038,35 @@ window.handleLifeChoice = function(index) {
 
 function processNextWeek() {
     
+    // --- 1. SÉCURITÉ INTERFACE ---
+    if(game.world.actionsLeft > 0) {
+        if (typeof notify === "function") notify("Utilise toutes tes actions avant de terminer la semaine !", "warning");
+        return; 
+    }
+
+    const overlay = document.getElementById('event-overlay');
+    if(overlay) overlay.style.display = 'none';
+    if(typeof closeAllMenus === 'function') closeAllMenus();
+
+    // --- 2. GESTION DU TEMPS ---
+    game.world.week++;
+    if(game.world.week > 48) {
+        game.world.week = 1;
+        game.world.year++;
+        if(typeof addNews === "function") addNews(`🥂 Bonne année ${game.world.year} !`, "info");
+
+        // --- 🛠️ CORRECTION DU BUG DES CONCERTS (NOUVELLE ANNÉE) ---
+        // On recule les variables de cooldown de 48 semaines pour que le calcul (Semaine Actuelle - Dernier Concert) reste juste !
+        
+        // Pour les concerts
+        if (game.player.lastConcert !== undefined) game.player.lastConcert -= 48;
+        if (game.world.lastConcert !== undefined) game.world.lastConcert -= 48;
+        if (game.lastConcert !== undefined) game.lastConcert -= 48;
+
+        // Pour les albums et singles (si tu as aussi un délai dessus)
+        if (game.player.lastAlbum !== undefined) game.player.lastAlbum -= 48;
+        if (game.player.lastSingle !== undefined) game.player.lastSingle -= 48;
+            }
     
     // --- 3. SÉCURITÉ ANTI-BUG ---
     game.player.energyMax = game.player.energyMax || 100;
@@ -2499,6 +2528,7 @@ window.onload = function() {
 </body>
 
 </html>
+
 
 
 
