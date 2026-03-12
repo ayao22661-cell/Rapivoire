@@ -1687,9 +1687,13 @@ function bookConcert(id, cost) {
     const venue = CONCERT_VENUES.find(v => v.id === id);
     if(!venue) return;
 
-    // 1. Vérification du Cooldown (4 semaines d'attente entre deux concerts)
-    if (game.world.week - (game.player.lastConcertWeek || -4) < 4) {
-        notify("Tu viens de faire un concert ! Laisse tes fans respirer (Attends 4 semaines).");
+    // 1. Initialisation et Vérification du Quota Annuel (Max 4 par an)
+    if (typeof game.player.concertsThisYear === 'undefined') {
+        game.player.concertsThisYear = 0; // Sécurité si la variable n'existe pas encore
+    }
+
+    if (game.player.concertsThisYear >= 4) {
+        notify("Tu as atteint la limite de 4 concerts pour cette année ! Reviens l'année prochaine.");
         return; 
     }
 
@@ -1747,8 +1751,15 @@ function bookConcert(id, cost) {
     game.player.buzz = Math.max(0, Math.min(100, game.player.buzz + buzzGain)); // Bloque le buzz entre 0 et 100
     addXP(xpGain);
     game.stats.concertsDone++;
-    game.player.lastConcertWeek = game.world.week; // Sauvegarde la date du concert pour le cooldow
-    game.player.concertCooldown = 4;
+    
+    // ---> NOUVEAU : On incrémente le compteur annuel <---
+    game.player.concertsThisYear++;
+    
+    /* ---> SUPPRIMÉ : L'ancien système de cooldown <---
+       game.player.lastConcertWeek = game.world.week; 
+       game.player.concertCooldown = 4;
+    */
+
     closeAllMenus();
     updateUI();
     
@@ -1761,7 +1772,7 @@ function bookConcert(id, cost) {
             { icon: modalIcon, val: `${buzzGain > 0 ? '+' : ''}${buzzGain} Buzz` }
         ]
     );
-}
+        }
 
 // ==========================================
 // MÉCANIQUES : ARBRE DE COMPÉTENCES (PERKS)
@@ -2052,20 +2063,24 @@ function processNextWeek() {
     if(overlay) overlay.style.display = 'none';
     if(typeof closeAllMenus === 'function') closeAllMenus();
 
-    // --- 🚨 NOUVEAU : GESTION DU COOLDOWN DES CONCERTS ---
-    // On fait baisser le compte à rebours de 1 à chaque semaine passée
-    if (game.player.concertCooldown > 0) {
-        game.player.concertCooldown--;
-    }
+    /* --- 🚨 SUPPRIMÉ : GESTION DU COOLDOWN DES CONCERTS --- 
+       On ne fait plus baisser de compte à rebours, cette partie 
+       a été effacée pour éviter le bug des semaines bloquées.
+    */
 
     // --- 2. GESTION DU TEMPS ---
     game.world.week++;
     
-    // Passage à la nouvelle année (le calcul de concert n'a plus besoin d'être ici !)
+    // Passage à la nouvelle année
     if(game.world.week > 48) {
         game.world.week = 1;
         game.world.year++;
+        
         if(typeof addNews === "function") addNews(`🥂 Bonne année ${game.world.year} !`, "info");
+        
+        // --- 🚨 NOUVEAU : RÉINITIALISATION DU QUOTA DE CONCERTS ---
+        // Dès qu'on passe à la nouvelle année, le joueur a de nouveau droit à 4 concerts.
+        game.player.concertsThisYear = 0; 
     }
     // --- 3. SÉCURITÉ ANTI-BUG ---
     game.player.energyMax = game.player.energyMax || 100;
@@ -2512,6 +2527,7 @@ window.onload = function() {
 </body>
 
 </html>
+
 
 
 
