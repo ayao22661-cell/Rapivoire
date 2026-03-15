@@ -2249,8 +2249,40 @@ function processNextWeek() {
         });
     }
 
-    // --- 8. FIN DE TOUR & MISE À JOUR ---
+// --- 8. FIN DE TOUR & MISE À JOUR ---
     if(game.player.buzz > 5 && game.world.week % 2 === 0) game.player.buzz -= 1;
+
+    // ==========================================
+    // 🚨 DÉCLENCHEMENT DES ÉVÉNEMENTS 
+    // ==========================================
+    if (Math.random() < 0.90) { // 90% de chance d'avoir un événement
+        const randomIndex = Math.floor(Math.random() * RANDOM_EVENTS.length);
+        const ev = RANDOM_EVENTS[randomIndex];
+
+        // 1. ON APPLIQUE LES EFFETS AU JOUEUR (Très important !)
+        if (ev.effect.cash) game.player.cash += ev.effect.cash;
+        if (ev.effect.fans) game.player.fans += ev.effect.fans;
+        if (ev.effect.buzz) game.player.buzz += ev.effect.buzz;
+        if (ev.effect.energy) game.player.energy += ev.effect.energy;
+        if (ev.effect.xp) game.player.xp = (game.player.xp || 0) + ev.effect.xp;
+
+        // 2. ON PRÉPARE LES EFFETS POUR L'AFFICHAGE DE TA MODALE
+        let formattedEffects = [];
+        if (ev.effect.cash) formattedEffects.push({ icon: '💵', val: ev.effect.cash });
+        if (ev.effect.fans) formattedEffects.push({ icon: '👥', val: ev.effect.fans });
+        if (ev.effect.buzz) formattedEffects.push({ icon: '🔥', val: ev.effect.buzz });
+        if (ev.effect.energy) formattedEffects.push({ icon: '⚡', val: ev.effect.energy });
+        if (ev.effect.xp) formattedEffects.push({ icon: '⭐', val: ev.effect.xp });
+
+        // 3. ON CHOISIT L'ICÔNE PRINCIPALE
+        let eventIcon = ev.type === 'positive' ? '🎉' : '⚠️';
+
+        // 4. ON LANCE TA FONCTION D'AFFICHAGE
+        if (typeof showEventModal === "function") {
+            showEventModal(ev.title, ev.desc, formattedEffects, eventIcon);
+        }
+    }
+    // ==========================================
 
     if (typeof checkContracts === "function") checkContracts();
     if (typeof updateUI === "function") updateUI(); 
