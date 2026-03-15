@@ -1635,7 +1635,7 @@ function buyItem(id, price) {
     // On utilise le "price" passé en paramètre ou on le récupère via SHOP_ITEMS
     const itemPrice = price || item.price || 0; 
     const missingCondition = 100 - currentCondition;
-    const repairCost = Math.floor(itemPrice * 0.20 * (missingCondition / 100));
+    const repairCost = Math.floor(itemPrice * 0.35 * (missingCondition / 100));
     
     if (game.player.cash < repairCost) {
         notify(`Fonds insuffisants. Il faut ${repairCost.toLocaleString()} F pour réparer.`);
