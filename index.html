@@ -1028,10 +1028,28 @@ function updateUI() {
 
     // Titles based on Buzz & Fans
     let title = "INCONNU DU QUARTIER";
+    
+    // --- LES DÉBUTS (La galère) ---
+    if(game.player.fans > 100) title = "FREESTYLER DU GHETTO";
     if(game.player.fans > 500) title = "ARTISTE LOCAL";
+    if(game.player.fans > 1500) title = "PÉPITE DU TIEKS";
+    
+    // --- L'ASCENSION (On commence à te voir) ---
     if(game.player.fans > 5000) title = "RECONNU EN VILLE";
+    if(game.player.fans > 10000) title = "PHÉNOMÈNE WEB";
     if(game.player.fans > 25000) title = "STAR D'ABIDJAN";
+    
+    // --- LA COUR DES GRANDS (Le succès) ---
+    if(game.player.fans > 50000) title = "VALIDÉ PAR LA RUE";
     if(game.player.fans > 100000) title = "BOSS DU RAP IVOIRE";
+    
+    // --- LE END-GAME (Les légendes) ---
+    if(game.player.fans > 250000) title = "CÉLÉBRITÉ NATIONALE";
+    if(game.player.fans > 500000) title = "FIERTÉ DE LA NATION";
+    if(game.player.fans > 1000000) title = "ICÔNE AFRICAINE";
+    if(game.player.fans > 5000000) title = "SUPERSTAR INTERNATIONALE";
+    if(game.player.fans > 10000000) title = "LÉGENDE VIVANTE";
+
     document.getElementById('player-title').textContent = title;
 
     // Main Dashboard
@@ -2234,16 +2252,23 @@ function processNextWeek() {
         if(typeof addNews === "function") addNews(`🤝 Sponsors : +${sponsorMoney.toLocaleString()} F.`, "success");
     }
 
-    // --- 7. DÉGRADATION DES OBJETS ---
+// --- 7. DÉGRADATION DES OBJETS ---
     if (game.player.inventory.items && game.player.inventory.items.length > 0) {
         if (!game.player.itemConditions) game.player.itemConditions = {};
         game.player.inventory.items.forEach(itemId => {
             if (game.player.itemConditions[itemId] === undefined) game.player.itemConditions[itemId] = 100;
+            
             if (game.player.itemConditions[itemId] > 0) {
-                const degradation = Math.floor(Math.random() * 4) + 1;
+                // 🚨 NOUVELLE DÉGRADATION : Exactement 10% par semaine
+                const degradation = 10; 
+                
                 game.player.itemConditions[itemId] = Math.max(0, game.player.itemConditions[itemId] - degradation);
+                
+                // Si l'objet vient tout juste de se casser
                 if (game.player.itemConditions[itemId] === 0) {
-                    if (typeof notify === "function") notify(`⚠️ Un de tes accessoires est cassé !`, 'error');
+                    if (typeof notify === "function") {
+                        notify(`⚠️ TON MATÉRIEL EST CASSÉ ! Répare-le vite !`, 'error');
+                    }
                 }
             }
         });
