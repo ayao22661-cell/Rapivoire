@@ -649,56 +649,247 @@ const SPONSORS = [
 ];
 
 const ACTIONS_POOL = [
-   
-   {
-        id: "rest",
-        title: "🛋️ Chiller au quartier",
-        desc: "Se poser pour récupérer. Rend 25 d'énergie mais fait chuter ton Buzz.",
-        reqLevel: 1,
-        energy: -25, // On réduit la récupération (au lieu de -40)
-        cash: 0,
-        buzz: -15,   // PERTE DE BUZZ : Tu n'es plus dans l'actualité
-        fans: 0,
-        xp: 10,
+    // =====================================
+    // NIVEAU 1 : LA GALÈRE (Progression Rapide)
+    // =====================================
+    { 
+        id: "rest", title: "🛋️ Chiller au quartier", reqLevel: 1,
+        desc: "Se poser pour récupérer. Rend 25 d'énergie mais fait chuter ton Buzz.", 
+        energy: -25, cash: 0, buzz: -10, fans: 0, xp: 5, 
         color: "bg-[#15161D] border border-[#FF5252]/30 text-white" 
     },
-{ id: 'clash_cible', title: "🥊 Clash Ciblé", energy: 0, cash: 0, buzz: 0, fans: 0, xp: 0, desc: "Choisis une star à éteindre (30 Énergie).", color: 'bg-red-600 text-white border-none', reqLevel: 1 },    // PROMO NIVEAU 2
-    ,{ id: 'promo_boomplay', title: "Playlist 'Rap Ivoire'", energy: 20, cash: -5000, buzz: 10, fans: 100, xp: 15, desc: "Payer pour entrer dans les tops Boomplay.", color: 'bg-blue-grad', reqLevel: 2 },
-    
-    // PROMO NIVEAU 3
-    { id: 'promo_youtube', title: "Ads YouTube (Sponsor)", energy: 15, cash: -25000, buzz: 40, fans: 300, xp: 30, desc: "Ton clip s'affiche avant les vidéos de tes rivaux.", color: 'bg-red-500 text-white', reqLevel: 3 },
-    
-    // PROMO NIVEAU 4
-    { id: 'promo_spotify', title: "Curateur International", energy: 30, cash: -100000, buzz: 20, fans: 800, xp: 60, desc: "Viser les playlists 'Global Viral' sur Spotify.", color: 'bg-green-grad', reqLevel: 4 },
-    { id: 'freestyle', title: "Freestyle au Quartier", energy: 15, cash: 0, buzz: 2, fans: 10, xp: 5, desc: "Poser un 16 mesures avec les petits du bloc.", color: 'bg-orange-grad', reqLevel: 1 },
-    { id: 'gombo', title: "Petit Gombo (Livreur)", energy: 30, cash: 2000, buzz: -1, fans: 0, xp: 2, desc: "Faire des courses pour gagner de l'argent de poche.", color: 'bg-green-grad', reqLevel: 1 },
-    ,{ id: 'n1_gbaka', title: "Freestyle Gbaka", energy: 15, cash: 500, buzz: 2, fans: 5, xp: 5, desc: "Chanter pour les passagers entre Adjamé et Yopougon.", color: 'bg-green-grad', reqLevel: 1 },
-    { id: 'n1_clash_rue', title: "Clash de Quartier", energy: 25, cash: 0, buzz: 12, fans: -2, xp: 12, desc: "Défier le meilleur rappeur de ta commune.", color: 'bg-danger text-white border-none', reqLevel: 1 },
-    { id: 'n1_tiktok', title: "Challenge TikTok", energy: 10, cash: 0, buzz: 8, fans: 15, xp: 5, desc: "Essayer de créer la nouvelle tendance virale.", color: 'bg-pink-grad', reqLevel: 1 },
-    { id: 'fb_live', title: "Live TikTok/Facebook", energy: 20, cash: 0, buzz: 5, fans: 25, xp: 8, desc: "Clasher quelqu'un ou chanter en direct.", color: 'bg-blue-grad', reqLevel: 2 },
-    // ACTIONS NIVEAU 2
-    { id: 'n2_live', title: "Gros Live Facebook", energy: 15, cash: 0, buzz: 15, fans: 35, xp: 15, desc: "Régler tes comptes en direct avec tes abonnés.", color: 'bg-blue-grad', reqLevel: 2 },
-    { id: 'n2_clash_arr', title: "Faux Clash Arrangé", energy: 20, cash: 0, buzz: 35, fans: -15, xp: 15, desc: "Créer un buzz monté de toutes pièces avec un pote.", color: 'bg-danger text-white border-none', reqLevel: 2 },
-    { id: 'n2_show_bar', title: "Showcase Bar VIP", energy: 45, cash: 15000, buzz: 10, fans: 50, xp: 30, desc: "Mettre le feu dans un petit bar d'Angré.", color: 'bg-teal-grad', reqLevel: 2 },
-    { id: 'radio', title: "Interview Radio Locale", energy: 40, cash: -500, buzz: 10, fans: 100, xp: 15, desc: "Payer l'animateur pour passer ton son.", color: 'bg-purple-grad', reqLevel: 3 },
-    { id: 'n3_tv', title: "Débat TV (PPLK)", energy: 30, cash: 5000, buzz: 50, fans: -20, xp: 40, desc: "Aller t'expliquer en direct sur un plateau télé.", color: 'bg-blue-grad', reqLevel: 3 },
-    { id: 'n3_diss', title: "Sortir un DISS TRACK", energy: 40, cash: -5000, buzz: 65, fans: 50, xp: 45, desc: "Détruire la carrière d'un rival en musique.", color: 'bg-danger text-white border-none', reqLevel: 3 },
-    { id: 'n3_clip', title: "Clip de Luxe à Assinie", energy: 50, cash: -40000, buzz: 30, fans: 200, xp: 70, desc: "Louer villa et voitures pour frimer.", color: 'bg-teal-grad', reqLevel: 3 },
-    { id: 'clash', title: "Clasher un influenceur", energy: 25, cash: 0, buzz: 15, fans: -50, xp: 10, desc: "Gros buzz, mais tu perds des vrais fans.", color: 'bg-pink-grad', reqLevel: 4 },
-    // ACTIONS NIVEAU 4
-    { id: 'n4_feat_fr', title: "Feat avec la France", energy: 50, cash: -150000, buzz: 70, fans: 500, xp: 100, desc: "Payer une star française pour s'exporter.", color: 'bg-blue-grad', reqLevel: 4 },
-    { id: 'n4_boycott', title: "Boycott de Show", energy: 10, cash: 0, buzz: 90, fans: -100, xp: 30, desc: "Faire un scandale en refusant de monter sur scène.", color: 'bg-pink-grad', reqLevel: 4 },
-    { id: 'showcase', title: "Showcase en Boîte", energy: 50, cash: 15000, buzz: 8, fans: 200, xp: 25, desc: "Chanter sur playback à 3h du matin.", color: 'bg-teal-grad', reqLevel: 5 },
-    // ACTIONS NIVEAU 5
-    { id: 'n5_label', title: "Créer ton Label", energy: 70, cash: -500000, buzz: 80, fans: 600, xp: 300, desc: "Devenir producteur et signer des talents.", color: 'bg-purple-grad', reqLevel: 5 },
-    { id: 'n5_clash_etat', title: "Clash Politique", energy: 50, cash: 0, buzz: 350, fans: -1000, xp: 150, desc: "Critiquer le système (Buzz énorme mais risqué).", color: 'bg-danger text-white border-none', reqLevel: 5 }
+    { 
+        id: 'clash_cible', title: "🥊 Clash Ciblé", reqLevel: 1,
+        desc: "Choisis une star à éteindre (30 Énergie).", 
+        energy: 30, cash: 0, buzz: 0, fans: 0, xp: 0, 
+        color: 'bg-red-600 text-white border-none'
+    },
+    { 
+        id: 'freestyle', title: "Freestyle au Quartier", reqLevel: 1,
+        desc: "Poser un 16 mesures avec les petits du bloc.", 
+        energy: 15, cash: 0, buzz: 2, fans: 15, xp: 15, 
+        color: 'bg-orange-grad' 
+    },
+    { 
+        id: 'n1_gbaka', title: "Freestyle Gbaka", reqLevel: 1,
+        desc: "Chanter pour les passagers entre Adjamé et Yopougon.", 
+        energy: 20, cash: 1500, buzz: 2, fans: 5, xp: 10, 
+        color: 'bg-green-grad' 
+    },
+    { 
+        id: 'gombo', title: "Petit Gombo (Livreur)", reqLevel: 1,
+        desc: "Faire des courses pour payer le studio.", 
+        energy: 25, cash: 3500, buzz: -1, fans: 0, xp: 5, 
+        color: 'bg-green-grad' 
+    },
+    { 
+        id: 'n1_tiktok', title: "Challenge TikTok", reqLevel: 1,
+        desc: "Essayer de créer la nouvelle tendance virale.", 
+        energy: 15, cash: 0, buzz: 8, fans: 25, xp: 10, 
+        color: 'bg-pink-grad' 
+    },
+    { 
+        id: 'n1_clash_rue', title: "Clash de Quartier", reqLevel: 1,
+        desc: "Défier le meilleur rappeur de ta commune.", 
+        energy: 25, cash: 0, buzz: 15, fans: -2, xp: 20, 
+        color: 'bg-danger text-white border-none' 
+    },
+
+    // =====================================
+    // NIVEAU 2 : ON COMMENCE À TE VOIR
+    // =====================================
+    { 
+        id: 'fb_live', title: "Live TikTok/Facebook", reqLevel: 2,
+        desc: "Interagir avec tes premiers abonnés.", 
+        energy: 30, cash: 0, buzz: 3, fans: 15, xp: 8, 
+        color: 'bg-blue-grad' 
+    },
+    { 
+        id: 'n2_live', title: "Gros Direct Facebook", reqLevel: 2,
+        desc: "Régler tes comptes en direct. Beaucoup d'énergie !", 
+        energy: 45, cash: 0, buzz: 15, fans: 20, xp: 15, 
+        color: 'bg-blue-grad' 
+    },
+    { 
+        id: 'promo_boomplay', title: "Playlist 'Rap Ivoire'", reqLevel: 2,
+        desc: "Payer les curateurs Boomplay.", 
+        energy: 20, cash: -15000, buzz: 5, fans: 60, xp: 15, 
+        color: 'bg-blue-grad' 
+    },
+    { 
+        id: 'n2_clash_arr', title: "Faux Clash Arrangé", reqLevel: 2,
+        desc: "Créer un buzz monté de toutes pièces avec un pote.", 
+        energy: 40, cash: 0, buzz: 25, fans: -25, xp: 15, 
+        color: 'bg-danger text-white border-none' 
+    },
+    { 
+        id: 'n2_show_bar', title: "Showcase Bar VIP", reqLevel: 2,
+        desc: "Mettre le feu dans un maquis d'Angré.", 
+        energy: 60, cash: 15000, buzz: 5, fans: 30, xp: 30, 
+        color: 'bg-teal-grad' 
+    },
+
+    // =====================================
+    // NIVEAU 3 : LA COUR DES GRANDS
+    // =====================================
+    { 
+        id: 'radio', title: "Promo Radio (Atalaku)", reqLevel: 3,
+        desc: "Glisser un billet à l'animateur pour tourner en boucle.", 
+        energy: 30, cash: -25000, buzz: 10, fans: 80, xp: 15, 
+        color: 'bg-purple-grad' 
+    },
+    { 
+        id: 'promo_youtube', title: "Sponsor YouTube", reqLevel: 3,
+        desc: "Ton clip s'affiche avant ceux des rivaux.", 
+        energy: 20, cash: -40000, buzz: 15, fans: 150, xp: 30, 
+        color: 'bg-red-500 text-white' 
+    },
+    { 
+        id: 'n3_tv', title: "Débat TV (PPLK)", reqLevel: 3,
+        desc: "Aller t'expliquer en direct sur un plateau télé.", 
+        energy: 45, cash: 0, buzz: 35, fans: -30, xp: 40, 
+        color: 'bg-blue-grad' 
+    },
+    { 
+        id: 'n3_diss', title: "Sortir un DISS TRACK", reqLevel: 3,
+        desc: "Détruire la carrière d'un rival en musique.", 
+        energy: 50, cash: -15000, buzz: 40, fans: 30, xp: 45, 
+        color: 'bg-danger text-white border-none' 
+    },
+    { 
+        id: 'n3_clip', title: "Clip de Luxe à Assinie", reqLevel: 3,
+        desc: "Louer villa et voitures pour frimer.", 
+        energy: 70, cash: -150000, buzz: 25, fans: 300, xp: 70, 
+        color: 'bg-teal-grad' 
+    },
+
+    // =====================================
+    // NIVEAU 4 : LES BOSS DU GAME
+    // =====================================
+    { 
+        id: 'promo_spotify', title: "Curateur Spotify", reqLevel: 4,
+        desc: "Viser les playlists mondiales.", 
+        energy: 30, cash: -150000, buzz: 15, fans: 500, xp: 60, 
+        color: 'bg-green-grad' 
+    },
+    { 
+        id: 'clash', title: "Clasher un influenceur", reqLevel: 4,
+        desc: "Gros buzz, mais tu perds tes vrais fans.", 
+        energy: 35, cash: 0, buzz: 30, fans: -150, xp: 10, 
+        color: 'bg-pink-grad' 
+    },
+    { 
+        id: 'n4_feat_fr', title: "Feat avec la France", reqLevel: 4,
+        desc: "Payer une star française pour s'exporter.", 
+        energy: 80, cash: -500000, buzz: 60, fans: 1000, xp: 100, 
+        color: 'bg-blue-grad' 
+    },
+    { 
+        id: 'n4_boycott', title: "Boycott de Show", reqLevel: 4,
+        desc: "Faire un scandale en refusant de monter sur scène.", 
+        energy: 20, cash: 0, buzz: 80, fans: -350, xp: 30, 
+        color: 'bg-pink-grad' 
+    },
+
+    // =====================================
+    // NIVEAU 5 : LA LÉGENDE
+    // =====================================
+    { 
+        id: 'showcase', title: "Showcase en Boîte", reqLevel: 5,
+        desc: "Chanter sur playback à 3h du matin.", 
+        energy: 75, cash: 75000, buzz: 5, fans: 150, xp: 25, 
+        color: 'bg-teal-grad' 
+    },
+    { 
+        id: 'n5_label', title: "Créer ton Label", reqLevel: 5,
+        desc: "Devenir producteur et signer des talents.", 
+        energy: 90, cash: -2000000, buzz: 100, fans: 1500, xp: 300, 
+        color: 'bg-purple-grad' 
+    },
+    { 
+        id: 'n5_clash_etat', title: "Clash Politique", reqLevel: 5,
+        desc: "Critiquer le système (Buzz énorme mais risqué).", 
+        energy: 80, cash: -100000, buzz: 200, fans: -1500, xp: 150, 
+        color: 'bg-danger text-white border-none' 
+    }
 ];
 
 const BEATS_POOL = [
-    { id: 'b1', name: "Type Beat Drill UK x Babi", price: 0, qualityMin: 20, qualityMax: 50, desc: "Instru gratuite trouvée sur YouTube. Qualité moyenne." },
-    { id: 'b2', name: "Prod by Tamsir (Copie)", price: 50000, qualityMin: 40, qualityMax: 70, desc: "Instru achetée à un beatmaker du quartier. Bonne vibe." },
-    { id: 'b3', name: "Instru Coupé-Décalé Premium", price: 200000, qualityMin: 60, qualityMax: 90, desc: "Le top pour ambiancer les maquis." },
-    { id: 'b4', name: "Prod Exclusive (Studio Pro)", price: 750000, qualityMin: 85, qualityMax: 100, desc: "Mixé et masterisé par les meilleurs. Qualité hit." }
+    // =====================================
+    // NIVEAU 1 : LES GRATUITS / DÉBROUILLE (0 F - 10 000 F)
+    // =====================================
+    { 
+        id: 'b_free1', name: "Type Beat Drill UK x Babi", price: 0, 
+        qualityMin: 15, qualityMax: 45, 
+        desc: "Instru gratuite trouvée sur YouTube. Qualité moyenne, attention aux droits d'auteur." 
+    },
+    { 
+        id: 'b_free2', name: "Maquette FL Studio", price: 0, 
+        qualityMin: 10, qualityMax: 40, 
+        desc: "Un petit du quartier a fait ça sur son vieux PC. Ça sature un peu." 
+    },
+    { 
+        id: 'b_cheap1', name: "Trap Sombre (License Basic)", price: 10000, 
+        qualityMin: 30, qualityMax: 55, 
+        desc: "Achetée sur Internet. Parfait pour kicker et montrer que tu as du flow." 
+    },
+
+    // =====================================
+    // NIVEAU 2 : UNDERGROUND & TENDANCE (25 000 F - 60 000 F)
+    // =====================================
+    { 
+        id: 'b_mid1', name: "Prod by Tamsir (Copie)", price: 25000, 
+        qualityMin: 35, qualityMax: 65, 
+        desc: "Un beatmaker local a imité le style du moment. Bonne vibe." 
+    },
+    { 
+        id: 'b_mid2', name: "Zouglou Trap Mélancolique", price: 40000, 
+        qualityMin: 45, qualityMax: 70, 
+        desc: "Mélange de guitare Zouglou et de grosses basses Trap. Les Ivoiriens adorent." 
+    },
+    { 
+        id: 'b_mid3', name: "Instru 'Paiya' / Goumin", price: 60000, 
+        qualityMin: 50, qualityMax: 75, 
+        desc: "Le rythme qui fait danser tout Abidjan en ce moment. Idéal pour faire le buzz." 
+    },
+
+    // =====================================
+    // NIVEAU 3 : PROFESSIONNEL & CLUBS (100 000 F - 200 000 F)
+    // =====================================
+    { 
+        id: 'b_pro1', name: "Instru Coupé-Décalé Premium", price: 100000, 
+        qualityMin: 60, qualityMax: 85, 
+        desc: "Très bien mixé. Le top pour ambiancer les maquis et les bars VIP." 
+    },
+    { 
+        id: 'b_pro2', name: "Afro-Rap Hit Summer", price: 150000, 
+        qualityMin: 65, qualityMax: 90, 
+        desc: "Une prod taillée pour les chichas et les vacances à Assinie." 
+    },
+    { 
+        id: 'b_pro3', name: "Drill Ivoire Officielle", price: 200000, 
+        qualityMin: 70, qualityMax: 92, 
+        desc: "Lourde, agressive et professionnelle. Pour s'imposer comme le boss de la rue." 
+    },
+
+    // =====================================
+    // NIVEAU 4 : LE LUXE (350 000 F - 800 000 F)
+    // =====================================
+    { 
+        id: 'b_lux1', name: "Prod Exclusive (Studio Pro)", price: 350000, 
+        qualityMin: 80, qualityMax: 95, 
+        desc: "Mixé et masterisé par les meilleurs ingés son de Babi. Qualité hit assuré." 
+    },
+    { 
+        id: 'b_lux2', name: "Masterpiece by 'Le Magicien'", price: 500000, 
+        qualityMin: 85, qualityMax: 100, 
+        desc: "Composée par un producteur de légende. Du pur génie musical." 
+    },
+    { 
+        id: 'b_lux3', name: "Afrobeats Naija (Collab inter)", price: 800000, 
+        qualityMin: 95, qualityMax: 100, 
+        desc: "L'instrumentale ultime venue du Nigeria. Réservée aux boss de l'industrie !" 
+    }
 ];
 
 const SHOP_ITEMS = [
