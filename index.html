@@ -907,55 +907,92 @@ const BEATS_POOL = [
 ];
 
 const SHOP_ITEMS = [
-    // --- PALIER 1 : LA RUE & LE QUARTIER (100k - 1.5M) ---
-    { id: 'f1', name: "Casquette Custom", desc: "Édition limitée 'Babi Boy'. +1% Fans.", price: 100000, icon: "🧢", type: 'fans_multiplier', boost: 0.01 },
-    { id: 'f2', name: "Lunettes de Soleil", desc: "Modèle aviateur sombre. +1% Buzz.", price: 250000, icon: "🕶️", type: 'buzz_boost', boost: 1 },
-    { id: 'f3', name: "Maillot Retro", desc: "Un classique 🇨🇮 dédicacé. +1% XP.", price: 450000, icon: "👕", type: 'xp_multiplier', boost: 0.01 },
-    { id: 'f4', name: "Sneakers en Croco", desc: "Cuir véritable, fait main. +2% Buzz.", price: 650000, icon: "👟", type: 'buzz_boost', boost: 2 },
-    { id: 'f5', name: "Ceinture Diamantée", desc: "Boucle de prestige. +1% Fans.", price: 850000, icon: "🎫", type: 'fans_multiplier', boost: 0.01 }, // Icône ticket/boucle
-    { id: 'f6', name: "Briquet en Argent", desc: "Gravure personnalisée. +1% Revenus.", price: 1100000, icon: "🔥", type: 'revenue_multiplier', boost: 0.01 },
-    { id: 'f7', name: "Sacoche de Créateur", desc: "Cuir italien noir. +2% Buzz.", price: 1500000, icon: "💼", type: 'buzz_boost', boost: 2 },
+    // --- NIVEAU DÉBUTANT / INTERMÉDIAIRE ---
+    { 
+        id: 'item_drip', 
+        name: "Garde-robe de Luxe (Drip)", 
+        desc: "Des sapes de créateurs. Augmente ton charisme et tes fans gagnés (+10%).", 
+        price: 500000, 
+        icon: "✦", // Plus sobre que le blouson
+        type: 'fans_multiplier', 
+        boost: 0.10 
+    },
+    { 
+        id: 'item_smartphone', 
+        name: "Dernier Smartphone Pro", 
+        desc: "Qualité 4K pour tes réseaux (TikTok, Insta). Petit boost de fans (+5%).", 
+        price: 1500000, 
+        icon: "📱", 
+        type: 'fans_multiplier', 
+        boost: 0.05 
+    },
+    { 
+        id: 'item_chaine', 
+        name: "Chaîne en Diamant VVS", 
+        desc: "Le vrai symbole de la réussite. Gros boost de Buzz direct !", 
+        price: 2500000, 
+        icon: "◆", // Représentation géométrique du diamant
+        type: 'buzz_boost', 
+        boost: 50 
+    },
+    { 
+        id: 'item_homestudio', 
+        name: "Home Studio Pro", 
+        desc: "Enregistre à la maison. Qualité minimale de tes sons augmentée (+10%).", 
+        price: 4000000, 
+        icon: "🎤", 
+        type: 'quality_boost', 
+        boost: 10 
+    },
 
-    // --- PALIER 2 : LE PERCEMENT (2M - 12M) ---
-    { id: 'f8', name: "Parfum à l'Oud", desc: "Essence rare. +2% Fans.", price: 2200000, icon: "🧪", type: 'fans_multiplier', boost: 0.02 }, // Icône fiole/parfum
-    { id: 'f9', name: "Micro d'Argent", desc: "Modèle de studio vintage. +2% Qualité.", price: 3200000, icon: "🎤", type: 'quality_boost', boost: 2 },
-    { id: 'f10', name: "Grillz Diamant VVS", desc: "Sourire givré. +3% Fans.", price: 4500000, icon: "💎", type: 'fans_multiplier', boost: 0.03 },
-    { id: 'f11', name: "Veste en Python", desc: "Texture réaliste. +3% Buzz.", price: 6000000, icon: "🧥", type: 'buzz_boost', boost: 3 },
-    { id: 'f12', name: "Chaîne Cubaine 1kg", desc: "Or massif, maillons lourds. +2% XP.", price: 8500000, icon: "⛓️", type: 'xp_multiplier', boost: 0.02 },
-    { id: 'f13', name: "Bague 'King'", desc: "Chevalière sertie. +2% Revenus.", price: 12000000, icon: "💍", type: 'revenue_multiplier', boost: 0.02 },
+    // --- NIVEAU STAR ---
+    { 
+        id: 'item_beatmaker', 
+        name: "Beatmaker Exclusif", 
+        desc: "Un producteur attitré pour des prods sur mesure. Qualité des sons (+20%).", 
+        price: 15000000, 
+        icon: "🎹", 
+        type: 'quality_boost', 
+        boost: 20 
+    },
+    { 
+        id: 'item_rolex', 
+        name: "Montre de Luxe (Rolex)", 
+        desc: "L'heure c'est l'heure, mais en diamants. Énorme boost de Buzz !", 
+        price: 25000000, 
+        icon: "⌚", 
+        type: 'buzz_boost', 
+        boost: 150 
+    },
+    { 
+        id: 'item_gclass', 
+        name: "Mercedes Classe G", 
+        desc: "Tu roules comme un boss. Multiplie l'XP gagné à chaque action (+20%).", 
+        price: 85000000, 
+        icon: "🚗", 
+        type: 'xp_multiplier', 
+        boost: 0.20 
+    },
 
-    // --- PALIER 3 : LA STAR (15M - 80M) ---
-    { id: 'f14', name: "Borne d'Arcade Or", desc: "Rétro-gaming de luxe. +2 Énergie Max.", price: 18000000, icon: "🕹️", type: 'energy_max', boost: 2 },
-    { id: 'f15', name: "Cave à Champagne", desc: "Sélection millésimée. +3% Buzz.", price: 25000000, icon: "🍾", type: 'buzz_boost', boost: 3 },
-    { id: 'f16', name: "Rolex Master II", desc: "Acier Oystersteel. +3% Revenus.", price: 35000000, icon: "⌚", type: 'revenue_multiplier', boost: 0.03 },
-    { id: 'f17', name: "Jet-Ski Pro", desc: "Modèle superchargé. +3% Qualité.", price: 45000000, icon: "🌊", type: 'quality_boost', boost: 3 },
-    { id: 'f18', name: "Canapé en Velours", desc: "Confort royal, design sombre. +3 Énergie Max.", price: 60000000, icon: "🛋️", type: 'energy_max', boost: 3 },
-    { id: 'f19', name: "Quad Raptor Or", desc: "Carrosserie chromée. +4% XP.", price: 80000000, icon: "🚜", type: 'xp_multiplier', boost: 0.04 },
-
-    // --- PALIER 4 : LE STANDING (100M - 450M) ---
-    { id: 'f20', name: "Aquarium Géant", desc: "Récif corallien privé. +4% Fans.", price: 100000000, icon: "🐠", type: 'fans_multiplier', boost: 0.04 },
-    { id: 'f21', name: "Cinéma Privé", desc: "Fauteuils en cuir, acoustique pro. +5 Énergie Max.", price: 130000000, icon: "🎬", type: 'energy_max', boost: 5 },
-    { id: 'f22', name: "Studio Photo Pro", desc: "Cyclorama et éclairage flash. +4% Buzz.", price: 160000000, icon: "📸", type: 'buzz_boost', boost: 4 },
-    { id: 'f23', name: "Piano en Cristal", desc: "Instrument d'art transparent. +4% Qualité.", price: 200000000, icon: "🎹", type: 'quality_boost', boost: 4 },
-    { id: 'f24', name: "Range Rover Sport", desc: "Teintes sombres, jantes 22'. +5% Buzz.", price: 250000000, icon: "🚘", type: 'buzz_boost', boost: 5 },
-    { id: 'f25', name: "Bureau en Acajou", desc: "Lignes classiques, cuir pleine fleur. +4% Revenus.", price: 320000000, icon: "📂", type: 'revenue_multiplier', boost: 0.04 },
-    { id: 'f26', name: "Piscine Olympique", desc: "Bassin à débordement. +5% Fans.", price: 450000000, icon: "🏊", type: 'fans_multiplier', boost: 0.05 },
-
-    // --- PALIER 5 : LE BOSS D'ABIDJAN (500M - 1.5 Milliard) ---
-    { id: 'f27', name: "Aquarium Requins", desc: "Bassin circulaire, verre blindé. +6% Buzz.", price: 500000000, icon: "🦈", type: 'buzz_boost', boost: 6 },
-    { id: 'f28', name: "Lamborghini Urus", desc: "Noir mat, étriers de frein jaunes. +7% Buzz.", price: 600000000, icon: "🏎️", type: 'buzz_boost', boost: 7 },
-    { id: 'f29', name: "Villa à Assinie", desc: "Architecture moderne, accès lagune. +5% Revenus.", price: 700000000, icon: "🏖️", type: 'revenue_multiplier', boost: 0.05 },
-    { id: 'f30', name: "Appartement Plateau", desc: "Dernier étage, vue panoramique. +6% Fans.", price: 780000000, icon: "🏢", type: 'fans_multiplier', boost: 0.06 },
-    { id: 'f31', name: "Home Studio Master", desc: "Acoustique variable, console SSL. +8% Qualité.", price: 850000000, icon: "🎧", type: 'quality_boost', boost: 8 },
-    { id: 'f32', name: "Voiture de Collection", desc: "Modèle mythique restauré. +8% Buzz.", price: 920000000, icon: "🚗", type: 'buzz_boost', boost: 8 }, // Icône voiture classique
-    { id: 'f33', name: "Hélicoptère Privé", desc: "Modèle turbine silencieux. +6% XP.", price: 1000000000, icon: "🚁", type: 'xp_multiplier', boost: 0.06 },
-    { id: 'f34', name: "Lion de Compagnie", desc: "Domestiqué, enclos privé. +10% Buzz.", price: 1100000000, icon: "🦁", type: 'buzz_boost', boost: 10 },
-    { id: 'f35', name: "Boîte de Nuit", desc: "Le VIP d'Abidjan est à toi. +8% Revenus.", price: 1180000000, icon: "🍸", type: 'revenue_multiplier', boost: 0.08 },
-    { id: 'f36', name: "Yacht Lagunaire", desc: "Pont en teck, cabines de luxe. +7% Fans.", price: 1250000000, icon: "🛥️", type: 'fans_multiplier', boost: 0.07 },
-    { id: 'f37', name: "Manoir Riviera 3", desc: "Style colonial, parc paysager. +10% Fans.", price: 1320000000, icon: "🏰", type: 'fans_multiplier', boost: 0.10 },
-    { id: 'f38', name: "Jet Privé Occasion", desc: "Gulfstream IV, intérieur refait. +10% XP.", price: 1400000000, icon: "✈️", type: 'xp_multiplier', boost: 0.10 },
-    { id: 'f39', name: "Plantation de Cacao", desc: "Investissement agricole durable. +12% Revenus.", price: 1450000000, icon: "🌳", type: 'revenue_multiplier', boost: 0.12 },
-    { id: 'f40', name: "Résidence d'Ambassadeur", desc: "Haut standing, quartier diplomatique. +15% Partout.", price: 1500000000, icon: "👑", type: 'all_stats_boost', boost: 0.15 }
+    // --- NIVEAU LÉGENDE DU GAME ---
+    { 
+        id: 'item_villa', 
+        name: "Villa à la Riviera / Miami", 
+        desc: "Le sommet du Game. 50% de fans en plus à chaque action !", 
+        price: 250000000, 
+        icon: "🏛️", // Icône d'édifice/manoir classique, plus "luxe" que la petite maison
+        type: 'fans_multiplier', 
+        boost: 0.50 
+    },
+    { 
+        id: 'item_jet', 
+        name: "Jet Privé", 
+        desc: "Tu ne touches plus le sol. Le statut de légende absolue. Fans x2 (+100%) !", 
+        price: 1500000000, 
+        icon: "✈︎", // Symbole d'avion stylisé et fin, au lieu de l'émoji cartoon
+        type: 'fans_multiplier', 
+        boost: 1.00 
+    }
 ];
 
 const CONCERT_VENUES = [
