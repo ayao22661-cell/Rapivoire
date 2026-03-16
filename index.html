@@ -2379,7 +2379,8 @@ function processNextWeek() {
         song.streams = Object.values(song.platformStreams).reduce((a, b) => a + b, 0);
 
         // ----------------------------------------------------------------------
-        // 4.5 CERTIFICATIONS SNEP (Vrais Chiffres)
+        // ----------------------------------------------------------------------
+        // 4.5 CERTIFICATIONS SNEP (Équilibré et sans YouTube)
         // ----------------------------------------------------------------------
         const paliers = song.isAlbum ? {
             or: 75000000, platine: 150000000, diamant: 750000000
@@ -2390,28 +2391,31 @@ function processNextWeek() {
         if (!song.certifications) song.certifications = []; 
         let nouvelleCertif = null;
         let prime = 0;
-        let buzzGain = 0; // Nouveau : Gain de buzz séparé
-        let fansGain = 0; // Nouveau : Gagner des fans fidèles
+        let buzzGain = 0; 
+        let fansGain = 0; 
         let cName = song.name || "Ton projet";
 
-        // Vérification SNEP
-        if (song.streams >= paliers.diamant && !song.certifications.includes('Diamant')) {
+        // Le SNEP ne comptabilise pas les vues YouTube ! On les soustrait du total.
+        let streamsSNEP = song.streams - (song.platformStreams.youtube || 0);
+
+        // Vérification SNEP basée uniquement sur les streams audio (streamsSNEP)
+        if (streamsSNEP >= paliers.diamant && !song.certifications.includes('Diamant')) {
             nouvelleCertif = 'Diamant 💎'; song.certifications.push('Diamant');
-            prime = song.isAlbum ? 15000000 : 3000000; // Réduit pour le challenge
-            buzzGain = song.isAlbum ? 25 : 15;         // Récompense forte
-            fansGain = song.isAlbum ? 50000 : 15000;
+            prime = song.isAlbum ? 5000000 : 1000000; // Fortement réduit
+            buzzGain = song.isAlbum ? 10 : 5;         // Réduit pour éviter de saturer le buzz
+            fansGain = song.isAlbum ? 5000 : 1500;    // Divisé par 10
         } 
-        else if (song.streams >= paliers.platine && !song.certifications.includes('Platine') && !song.certifications.includes('Diamant')) {
+        else if (streamsSNEP >= paliers.platine && !song.certifications.includes('Platine') && !song.certifications.includes('Diamant')) {
             nouvelleCertif = 'Platine 💿'; song.certifications.push('Platine');
-            prime = song.isAlbum ? 5000000 : 1000000;
-            buzzGain = song.isAlbum ? 15 : 8;
-            fansGain = song.isAlbum ? 20000 : 5000;
+            prime = song.isAlbum ? 2000000 : 400000;
+            buzzGain = song.isAlbum ? 5 : 3;
+            fansGain = song.isAlbum ? 2000 : 500;
         } 
-        else if (song.streams >= paliers.or && !song.certifications.includes('Or') && !song.certifications.includes('Platine') && !song.certifications.includes('Diamant')) {
+        else if (streamsSNEP >= paliers.or && !song.certifications.includes('Or') && !song.certifications.includes('Platine') && !song.certifications.includes('Diamant')) {
             nouvelleCertif = 'Or 📀'; song.certifications.push('Or');
-            prime = song.isAlbum ? 1500000 : 500000; // Reste une belle prime de départ
-            buzzGain = song.isAlbum ? 8 : 4;         // Petit coup de boost de hype
-            fansGain = song.isAlbum ? 10000 : 2500;
+            prime = song.isAlbum ? 500000 : 150000; 
+            buzzGain = song.isAlbum ? 3 : 1;         
+            fansGain = song.isAlbum ? 1000 : 250;
         }
 
         if (nouvelleCertif) {
@@ -2427,7 +2431,6 @@ function processNextWeek() {
                 addNews(`🎁 Bonus Label : +${prime.toLocaleString()} F CFA, +${fansGain.toLocaleString()} Fans !`, "info");
             }
         }
-        });
 
     // --- 5. REVENUS & LABELS ---
     if(totalStreamsThisWeek > 0) {
