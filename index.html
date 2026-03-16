@@ -2423,13 +2423,12 @@ function processNextWeek() {
         });
     }
 
-    // ==========================================
+// ==========================================
     // --- 8. ÉVÉNEMENTS ALÉATOIRES (AJOUT) ---
     // ==========================================
-    // On définit ici une chance de 30% d'avoir un événement chaque semaine. Modifiez la valeur à votre convenance.
     const CHANCE_EVENEMENT = 0.30; 
     
-    if (Math.random() < CHANCE_EVENEMENT) {
+    if (Math.random() < CHANCE_EVENEMENT && typeof RANDOM_EVENTS !== 'undefined' && RANDOM_EVENTS.length > 0) {
         // Tirer au sort un événement dans le tableau
         const randomIndex = Math.floor(Math.random() * RANDOM_EVENTS.length);
         const event = RANDOM_EVENTS[randomIndex];
@@ -2439,10 +2438,9 @@ function processNextWeek() {
         if (event.effect.fans) game.player.fans += event.effect.fans;
         if (event.effect.buzz) game.player.buzz += event.effect.buzz;
         if (event.effect.energy) game.player.energy += event.effect.energy;
-        // Si vous avez un système d'XP :
         if (event.effect.xp && game.player.xp !== undefined) game.player.xp += event.effect.xp;
 
-        // Limites de sécurité (pour ne pas avoir de fans négatifs ou d'énergie au-delà du max)
+        // Limites de sécurité
         if (game.player.cash < 0) game.player.cash = 0;
         if (game.player.fans < 0) game.player.fans = 0;
         if (game.player.buzz < 0) game.player.buzz = 0;
@@ -2450,22 +2448,39 @@ function processNextWeek() {
         if (game.player.energy < 0) game.player.energy = 0;
         if (game.player.energy > game.player.energyMax) game.player.energy = game.player.energyMax;
 
-        // Afficher l'événement au joueur
+        // --- AFFICHAGE DE LA FENÊTRE (CORRECTION ICI) ---
+        if (overlay) {
+            // Afficher le fond noir
+            overlay.style.display = 'block';
+            
+            // Afficher la boîte de dialogue en retirant la classe "hidden"
+            const modal = document.getElementById('event-modal');
+            if (modal) modal.classList.remove('hidden');
+
+            // Injecter le texte
+            document.getElementById('event-title').innerText = event.title;
+            document.getElementById('event-desc').innerText = event.desc;
+            document.getElementById('event-icon').innerText = event.type === 'positive' ? '🟢' : '🚨';
+            
+            // Afficher les effets visuellement sur le modal
+            const effectsEl = document.getElementById('event-effects');
+            if (effectsEl) {
+                let effectsHtml = "";
+                if (event.effect.cash) effectsHtml += `<span class="${event.effect.cash > 0 ? 'text-green-400' : 'text-red-400'}">${event.effect.cash > 0 ? '+' : ''}${event.effect.cash} F</span> `;
+                if (event.effect.fans) effectsHtml += `<span class="${event.effect.fans > 0 ? 'text-green-400' : 'text-red-400'}">${event.effect.fans > 0 ? '+' : ''}${event.effect.fans} Fans</span> `;
+                if (event.effect.buzz) effectsHtml += `<span class="${event.effect.buzz > 0 ? 'text-green-400' : 'text-red-400'}">${event.effect.buzz > 0 ? '+' : ''}${event.effect.buzz}% Buzz</span> `;
+                if (event.effect.energy) effectsHtml += `<span class="${event.effect.energy > 0 ? 'text-blue-400' : 'text-red-400'}">${event.effect.energy > 0 ? '+' : ''}${event.effect.energy} ⚡</span> `;
+                effectsEl.innerHTML = effectsHtml;
+            }
+        } 
+        
+        // Notification dans le journal (Dernières Infos)
         if (typeof addNews === "function") {
             const eventIcon = event.type === 'positive' ? '🟢' : '🔴';
-            addNews(`${eventIcon} ÉVÉNEMENT : ${event.title} - ${event.desc}`, event.type === 'positive' ? "success" : "error");
-        }
-        
-        // Optionnel : Si vous avez un modal (overlay) d'événement prévu pour l'afficher en grand à l'écran :
-        if (overlay) {
-            overlay.style.display = 'flex';
-            // Il faudrait ici injecter le titre et la description dans le HTML de l'overlay, exemple :
-            // document.getElementById('event-title').innerText = event.title;
-            // document.getElementById('event-desc').innerText = event.desc;
-        } else if (typeof notify === "function") {
-            notify(`${event.title} : ${event.desc}`, event.type === 'positive' ? 'success' : 'error');
+            addNews(`${eventIcon} ÉVÉNEMENT : ${event.title}`, event.type === 'positive' ? "success" : "error");
         }
     }
+    // ==========================================
     // ==========================================
 
 
