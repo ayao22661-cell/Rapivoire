@@ -2283,11 +2283,6 @@ function processNextWeek() {
     if(overlay) overlay.style.display = 'none';
     if(typeof closeAllMenus === 'function') closeAllMenus();
 
-    /* --- 🚨 SUPPRIMÉ : GESTION DU COOLDOWN DES CONCERTS --- 
-       On ne fait plus baisser de compte à rebours, cette partie 
-       a été effacée pour éviter le bug des semaines bloquées.
-    */
-
     // --- 2. GESTION DU TEMPS ---
     game.world.week++;
     
@@ -2295,13 +2290,10 @@ function processNextWeek() {
     if(game.world.week > 48) {
         game.world.week = 1;
         game.world.year++;
-        
         if(typeof addNews === "function") addNews(`🥂 Bonne année ${game.world.year} !`, "info");
-        
-        // --- 🚨 NOUVEAU : RÉINITIALISATION DU QUOTA DE CONCERTS ---
-        // Dès qu'on passe à la nouvelle année, le joueur a de nouveau droit à 4 concerts.
         game.player.concertsThisYear = 0; 
     }
+
     // --- 3. SÉCURITÉ ANTI-BUG ---
     game.player.energyMax = game.player.energyMax || 100;
     game.world.actionsMax = game.world.actionsMax || 3;
@@ -2312,7 +2304,7 @@ function processNextWeek() {
     game.world.actionsLeft = game.world.actionsMax;
     game.player.energy = game.player.energyMax; 
 
-    // --- 4. CALCUL DES STREAMS PASSIFS (JUSTE MILIEU) ---
+    // --- 4. CALCUL DES STREAMS PASSIFS ---
     let totalStreamsThisWeek = 0;
     let incomeThisWeek = 0;
     
@@ -2322,6 +2314,7 @@ function processNextWeek() {
         charismeMult = PERKS_TREE.charisme.levels[charismeLevel] || 1;
     }
 
+    // --- BOUCLE DES SONS ---
     game.player.inventory.released.forEach(song => {
         song.weeksOld = (song.weeksOld || 0) + 1;
         if (!song.platformStreams) song.platformStreams = { youtube: 0, boomplay: 0, spotify: 0, apple: 0 };
@@ -2333,33 +2326,16 @@ function processNextWeek() {
         }
 
         // 4.2 GESTION DE LA HYPE
-        let hypeMultiplier;
-        if (song.isClassic) {
-            hypeMultiplier = 0.8; 
-        } else {
-            let decayRate = song.isAlbum ? 0.02 : 0.05;
-            hypeMultiplier = Math.max(0.1, 1 - (song.weeksOld * decayRate));
-        }
+        let hypeMultiplier = song.isClassic ? 0.8 : Math.max(0.1, 1 - (song.weeksOld * (song.isAlbum ? 0.02 : 0.05)));
         
-        // ----------------------------------------------------------------------
-        // 4.3 CALCUL DES VOLUMES (LE JUSTE MILIEU)
-        // ----------------------------------------------------------------------
+        // 4.3 CALCUL DES VOLUMES
         const qualityFactor = (song.quality || 50) / 100; 
-        
-        // Les fans : 1 fan génère environ 0.8 stream par semaine
         const fanImpact = (game.player.fans || 0) * 0.8; 
-        
-        // Le Niveau : +15% de puissance par niveau (Lvl 10 = x2.5)
         const levelBonus = 1 + ((game.player.level || 1) * 0.15); 
-        
-        // Le Buzz : Multiplicateur modéré
         const buzzImpact = (game.player.buzz * 500); 
 
-        // VOLUME DE BASE
         let baseVolume = Math.floor((buzzImpact + fanImpact) * levelBonus * charismeMult * qualityFactor * hypeMultiplier);
         if(isNaN(baseVolume)) baseVolume = 0;
-
-        // BONUS ALBUM (x10 streams car c'est un projet de plusieurs titres)
         if (song.isAlbum) baseVolume *= 10; 
 
         // 4.4 RÉPARTITION PLATEFORMES
@@ -2375,62 +2351,28 @@ function processNextWeek() {
             });
         }
 
-        // MAJ DU TOTAL DES STREAMS DU SON
         song.streams = Object.values(song.platformStreams).reduce((a, b) => a + b, 0);
 
-        // ----------------------------------------------------------------------
-        // ----------------------------------------------------------------------
-        // 4.5 CERTIFICATIONS SNEP (Équilibré et sans YouTube)
-        // ----------------------------------------------------------------------
-        const paliers = song.isAlbum ? {
-            or: 75000000, platine: 150000000, diamant: 750000000
-        } : {
-            or: 15000000, platine: 30000000, diamant: 50000000
-        };
-
+        // 4.5 CERTIFICATIONS SNEP
+        const paliers = song.isAlbum ? { or: 75000000, platine: 150000000, diamant: 750000000 } : { or: 15000000, platine: 30000000, diamant: 50000000 };
         if (!song.certifications) song.certifications = []; 
-        let nouvelleCertif = null;
-        let prime = 0;
-        let buzzGain = 0; 
-        let fansGain = 0; 
-        let cName = song.name || "Ton projet";
-
-        // Le SNEP ne comptabilise pas les vues YouTube ! On les soustrait du total.
         let streamsSNEP = song.streams - (song.platformStreams.youtube || 0);
 
-        // Vérification SNEP basée uniquement sur les streams audio (streamsSNEP)
-        if (streamsSNEP >= paliers.diamant && !song.certifications.includes('Diamant')) {
-            nouvelleCertif = 'Diamant 💎'; song.certifications.push('Diamant');
-            prime = song.isAlbum ? 5000000 : 1000000; // Fortement réduit
-            buzzGain = song.isAlbum ? 10 : 5;         // Réduit pour éviter de saturer le buzz
-            fansGain = song.isAlbum ? 5000 : 1500;    // Divisé par 10
-        } 
-        else if (streamsSNEP >= paliers.platine && !song.certifications.includes('Platine') && !song.certifications.includes('Diamant')) {
-            nouvelleCertif = 'Platine 💿'; song.certifications.push('Platine');
-            prime = song.isAlbum ? 2000000 : 400000;
-            buzzGain = song.isAlbum ? 5 : 3;
-            fansGain = song.isAlbum ? 2000 : 500;
-        } 
-        else if (streamsSNEP >= paliers.or && !song.certifications.includes('Or') && !song.certifications.includes('Platine') && !song.certifications.includes('Diamant')) {
-            nouvelleCertif = 'Or 📀'; song.certifications.push('Or');
-            prime = song.isAlbum ? 500000 : 150000; 
-            buzzGain = song.isAlbum ? 3 : 1;         
-            fansGain = song.isAlbum ? 1000 : 250;
-        }
-
-        if (nouvelleCertif) {
-            game.player.cash += prime;
-            // On ajoute les nouveaux fans
-            game.player.fans = (game.player.fans || 0) + fansGain;
-            
-            // 🚨 SÉCURITÉ : On bloque le buzz à 100 maximum !
-            game.player.buzz = Math.min(100, game.player.buzz + buzzGain); 
-
-            if (typeof addNews === "function") {
-                addNews(`🚨 OFFICIEL SNEP : "${cName}" certifié Disque d\'${nouvelleCertif} !`, "success");
-                addNews(`🎁 Bonus Label : +${prime.toLocaleString()} F CFA, +${fansGain.toLocaleString()} Fans !`, "info");
+        const checkCertif = (label, req, pr, bz, fn) => {
+            if (streamsSNEP >= req && !song.certifications.includes(label)) {
+                song.certifications.push(label);
+                game.player.cash += pr;
+                game.player.fans += fn;
+                game.player.buzz = Math.min(100, game.player.buzz + bz);
+                if (typeof addNews === "function") addNews(`🚨 SNEP : "${song.name}" certifié ${label} ! (+${pr.toLocaleString()} F)`, "success");
             }
-        }
+        };
+
+        checkCertif('Diamant', paliers.diamant, 5000000, 10, 5000);
+        checkCertif('Platine', paliers.platine, 2000000, 5, 2000);
+        checkCertif('Or', paliers.or, 500000, 3, 1000);
+
+    }); // <--- FIN DE LA BOUCLE FOREACH DES SONS (C'est ici qu'était l'erreur !)
 
     // --- 5. REVENUS & LABELS ---
     if(totalStreamsThisWeek > 0) {
@@ -2438,11 +2380,11 @@ function processNextWeek() {
         if (game.player.label) {
             let labelCut = Math.floor(incomeThisWeek * game.player.label.cut);
             incomeThisWeek -= labelCut;
-            if(typeof addNews === "function") addNews(`💿 Part ${game.player.label.name || "Label"} : -${labelCut.toLocaleString()} F.`, "info");
+            if(typeof addNews === "function") addNews(`💿 Part Label : -${labelCut.toLocaleString()} F.`, "info");
         }
         game.player.cash += incomeThisWeek;
         game.player.streams = (game.player.streams || 0) + totalStreamsThisWeek;
-        game.stats.totalEarnings = (game.stats.totalEarnings || 0) + incomeThisWeek;
+        game.stats.totalEarnings += incomeThisWeek;
         
         if(typeof addNews === "function") {
             addNews(`Streams : +${totalStreamsThisWeek.toLocaleString()} écoutes.`, "info");
@@ -2455,72 +2397,51 @@ function processNextWeek() {
         let sponsorMoney = 0;
         game.player.sponsors.forEach(s => sponsorMoney += s.weekly);
         game.player.cash += sponsorMoney;
-        game.stats.totalEarnings = (game.stats.totalEarnings || 0) + sponsorMoney;
+        game.stats.totalEarnings += sponsorMoney;
         if(typeof addNews === "function") addNews(`🤝 Sponsors : +${sponsorMoney.toLocaleString()} F.`, "success");
     }
 
-// --- 7. DÉGRADATION DES OBJETS ---
+    // --- 7. DÉGRADATION DES OBJETS ---
     if (game.player.inventory.items && game.player.inventory.items.length > 0) {
         if (!game.player.itemConditions) game.player.itemConditions = {};
         game.player.inventory.items.forEach(itemId => {
             if (game.player.itemConditions[itemId] === undefined) game.player.itemConditions[itemId] = 100;
-            
             if (game.player.itemConditions[itemId] > 0) {
-                // 🚨 NOUVELLE DÉGRADATION : Exactement 10% par semaine
-                const degradation = 10; 
-                
-                game.player.itemConditions[itemId] = Math.max(0, game.player.itemConditions[itemId] - degradation);
-                
-                // Si l'objet vient tout juste de se casser
+                game.player.itemConditions[itemId] = Math.max(0, game.player.itemConditions[itemId] - 10);
                 if (game.player.itemConditions[itemId] === 0) {
-                    if (typeof notify === "function") {
-                        notify(`⚠️ TON MATÉRIEL EST CASSÉ ! Répare-le vite !`, 'error');
-                    }
+                    if (typeof notify === "function") notify(`⚠️ MATÉRIEL CASSÉ !`, 'error');
                 }
             }
         });
     }
 
-// --- 8. FIN DE TOUR & MISE À JOUR ---
+    // --- 8. FIN DE TOUR & ÉVÉNEMENTS ---
     if(game.player.buzz > 5 && game.world.week % 2 === 0) game.player.buzz -= 1;
 
-    // ==========================================
-    // 🚨 DÉCLENCHEMENT DES ÉVÉNEMENTS 
-    // ==========================================
-    if (Math.random() < 0.35) { // 35% de chance d'avoir un événement
-        const randomIndex = Math.floor(Math.random() * RANDOM_EVENTS.length);
-        const ev = RANDOM_EVENTS[randomIndex];
-
-        // 1. ON APPLIQUE LES EFFETS AU JOUEUR (Très important !)
+    if (Math.random() < 0.35) {
+        const ev = RANDOM_EVENTS[Math.floor(Math.random() * RANDOM_EVENTS.length)];
+        // Appliquer les effets
         if (ev.effect.cash) game.player.cash += ev.effect.cash;
         if (ev.effect.fans) game.player.fans += ev.effect.fans;
         if (ev.effect.buzz) game.player.buzz += ev.effect.buzz;
         if (ev.effect.energy) game.player.energy += ev.effect.energy;
         if (ev.effect.xp) game.player.xp = (game.player.xp || 0) + ev.effect.xp;
 
-        // 2. ON PRÉPARE LES EFFETS POUR L'AFFICHAGE DE TA MODALE
         let formattedEffects = [];
-        if (ev.effect.cash) formattedEffects.push({ icon: '💵', val: ev.effect.cash });
-        if (ev.effect.fans) formattedEffects.push({ icon: '👥', val: ev.effect.fans });
-        if (ev.effect.buzz) formattedEffects.push({ icon: '🔥', val: ev.effect.buzz });
-        if (ev.effect.energy) formattedEffects.push({ icon: '⚡', val: ev.effect.energy });
-        if (ev.effect.xp) formattedEffects.push({ icon: '⭐', val: ev.effect.xp });
+        Object.entries(ev.effect).forEach(([key, val]) => {
+            let icons = { cash: '💵', fans: '👥', buzz: '🔥', energy: '⚡', xp: '⭐' };
+            if(icons[key]) formattedEffects.push({ icon: icons[key], val: val });
+        });
 
-        // 3. ON CHOISIT L'ICÔNE PRINCIPALE
-        let eventIcon = ev.type === 'positive' ? '🎉' : '⚠️';
-
-        // 4. ON LANCE TA FONCTION D'AFFICHAGE
         if (typeof showEventModal === "function") {
-            showEventModal(ev.title, ev.desc, formattedEffects, eventIcon);
+            showEventModal(ev.title, ev.desc, formattedEffects, ev.type === 'positive' ? '🎉' : '⚠️');
         }
     }
-    // ==========================================
 
     if (typeof checkContracts === "function") checkContracts();
     if (typeof updateUI === "function") updateUI(); 
     if (typeof saveGame === "function") saveGame(); 
 }
-
 function triggerRandomEvent() {
     const event = RANDOM_EVENTS[Math.floor(Math.random() * RANDOM_EVENTS.length)];
     
