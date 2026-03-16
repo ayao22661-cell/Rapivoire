@@ -2344,9 +2344,9 @@ function processNextWeek() {
 
         // 4.5 CERTIFICATIONS SNEP (Paliers augmentés / Bonus diminués)
         const paliers = song.isAlbum ? {
-            or: 100000000, platine: 250000000, diamant: 1000000000 // + Difficile pour albums
+            or: 100000000, platine: 250000000, diamant: 1000000000
         } : {
-            or: 20000000, platine: 45000000, diamant: 75000000    // + Difficile pour singles
+            or: 20000000, platine: 45000000, diamant: 75000000
         };
 
         if (!song.certifications) song.certifications = []; 
@@ -2355,7 +2355,7 @@ function processNextWeek() {
 
         if (song.streams >= paliers.diamant && !song.certifications.includes('Diamant')) {
             nouvelleCertif = 'Diamant 💎'; song.certifications.push('Diamant');
-            prime = song.isAlbum ? 5000000 : 1500000;  // Bonus divisé par 2 ou 3
+            prime = song.isAlbum ? 5000000 : 1500000;
             buzzGain = song.isAlbum ? 12 : 7;
             fansGain = song.isAlbum ? 15000 : 6000;
         } 
@@ -2381,7 +2381,7 @@ function processNextWeek() {
                 addNews(`🎁 Bonus : +${prime.toLocaleString()} F CFA, +${fansGain.toLocaleString()} Fans.`, "info");
             }
         }
-    }); // Fin de la boucle des sons
+    });
 
     // --- 5. REVENUS & LABELS ---
     if(totalStreamsThisWeek > 0) {
@@ -2411,24 +2411,65 @@ function processNextWeek() {
     }
 
     // --- 7. DÉGRADATION DES OBJETS ---
-if (game.player.inventory.items && game.player.inventory.items.length > 0) {
-    if (!game.player.itemConditions) game.player.itemConditions = {};
-    game.player.inventory.items.forEach(itemId => {
-        // On garde l'initialisation de sécurité
-        if (game.player.itemConditions[itemId] === undefined) game.player.itemConditions[itemId] = 100;
-        
-        // On applique la dégradation fixe de 15 points
-        const degradation = 10; 
-        
-        game.player.itemConditions[itemId] = Math.max(0, game.player.itemConditions[itemId] - degradation);
-        
-        if (game.player.itemConditions[itemId] === 0 && typeof notify === "function") {
-            notify(`⚠️ Ton matériel est hors d'usage !`, 'error');
-        }
-    });
-}
+    if (game.player.inventory.items && game.player.inventory.items.length > 0) {
+        if (!game.player.itemConditions) game.player.itemConditions = {};
+        game.player.inventory.items.forEach(itemId => {
+            if (game.player.itemConditions[itemId] === undefined) game.player.itemConditions[itemId] = 100;
+            const degradation = 10; 
+            game.player.itemConditions[itemId] = Math.max(0, game.player.itemConditions[itemId] - degradation);
+            if (game.player.itemConditions[itemId] === 0 && typeof notify === "function") {
+                notify(`⚠️ Ton matériel est hors d'usage !`, 'error');
+            }
+        });
+    }
 
-    // --- 8. FIN DE TOUR ---
+    // ==========================================
+    // --- 8. ÉVÉNEMENTS ALÉATOIRES (AJOUT) ---
+    // ==========================================
+    // On définit ici une chance de 30% d'avoir un événement chaque semaine. Modifiez la valeur à votre convenance.
+    const CHANCE_EVENEMENT = 0.30; 
+    
+    if (Math.random() < CHANCE_EVENEMENT) {
+        // Tirer au sort un événement dans le tableau
+        const randomIndex = Math.floor(Math.random() * RANDOM_EVENTS.length);
+        const event = RANDOM_EVENTS[randomIndex];
+
+        // Appliquer les effets de l'événement
+        if (event.effect.cash) game.player.cash += event.effect.cash;
+        if (event.effect.fans) game.player.fans += event.effect.fans;
+        if (event.effect.buzz) game.player.buzz += event.effect.buzz;
+        if (event.effect.energy) game.player.energy += event.effect.energy;
+        // Si vous avez un système d'XP :
+        if (event.effect.xp && game.player.xp !== undefined) game.player.xp += event.effect.xp;
+
+        // Limites de sécurité (pour ne pas avoir de fans négatifs ou d'énergie au-delà du max)
+        if (game.player.cash < 0) game.player.cash = 0;
+        if (game.player.fans < 0) game.player.fans = 0;
+        if (game.player.buzz < 0) game.player.buzz = 0;
+        if (game.player.buzz > 100) game.player.buzz = 100;
+        if (game.player.energy < 0) game.player.energy = 0;
+        if (game.player.energy > game.player.energyMax) game.player.energy = game.player.energyMax;
+
+        // Afficher l'événement au joueur
+        if (typeof addNews === "function") {
+            const eventIcon = event.type === 'positive' ? '🟢' : '🔴';
+            addNews(`${eventIcon} ÉVÉNEMENT : ${event.title} - ${event.desc}`, event.type === 'positive' ? "success" : "error");
+        }
+        
+        // Optionnel : Si vous avez un modal (overlay) d'événement prévu pour l'afficher en grand à l'écran :
+        if (overlay) {
+            overlay.style.display = 'flex';
+            // Il faudrait ici injecter le titre et la description dans le HTML de l'overlay, exemple :
+            // document.getElementById('event-title').innerText = event.title;
+            // document.getElementById('event-desc').innerText = event.desc;
+        } else if (typeof notify === "function") {
+            notify(`${event.title} : ${event.desc}`, event.type === 'positive' ? 'success' : 'error');
+        }
+    }
+    // ==========================================
+
+
+    // --- 9. FIN DE TOUR ---
     if(game.player.buzz > 5 && game.world.week % 2 === 0) game.player.buzz -= 1;
 
     if (typeof checkContracts === "function") checkContracts();
