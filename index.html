@@ -1710,9 +1710,9 @@ function renderShop() {
             // On récupère l'état, 100 par défaut si non défini
             condition = game.player.itemConditions[item.id] !== undefined ? game.player.itemConditions[item.id] : 100;
             
-            // Calcul du coût de réparation (jusqu'à 20% du prix d'achat)
+            // Calcul du coût de réparation (jusqu'à 30% du prix d'achat)
             const missingCondition = 100 - condition;
-            repairCost = Math.floor(item.price * 0.35 * (missingCondition / 100));
+            repairCost = Math.floor(item.price * 0.30 * (missingCondition / 100));
             canAffordRepair = game.player.cash >= repairCost;
         }
         // ---------------------------------------------
@@ -2482,7 +2482,33 @@ function processNextWeek() {
     }
     // ==========================================
     // ==========================================
+    // ==========================================
+    // --- 8.5 ÉVÉNEMENTS DE VIE (PARENTS / GO) ---
+    // ==========================================
+    
+    // Sécurité : On s'assure que l'objet "life" existe bien pour le joueur
+    if (!game.player.life) {
+        game.player.life = { status: 'célibataire', gfAffection: 50, parentsAffection: 50 };
+    }
 
+    // On définit une probabilité d'avoir un événement de vie (ex: 20% de chance)
+    const CHANCE_LIFE_EVENT = 0.20; 
+
+    if (Math.random() < CHANCE_LIFE_EVENT && typeof LIFE_EVENTS !== 'undefined') {
+        // 1. On filtre les événements pour ne garder QUE ceux dont la condition est remplie
+        // (ex: on ne propose pas le resto si on est célibataire)
+        const validEvents = LIFE_EVENTS.filter(event => event.condition());
+
+        // 2. S'il y a au moins un événement valide, on en tire un au sort
+        if (validEvents.length > 0) {
+            const randomLifeEvent = validEvents[Math.floor(Math.random() * validEvents.length)];
+            
+            // 3. On affiche la fenêtre de choix
+            if (typeof showLifeEventModal === "function") {
+                showLifeEventModal(randomLifeEvent);
+            }
+        }
+    }
 
     // --- 9. FIN DE TOUR ---
     if(game.player.buzz > 5 && game.world.week % 2 === 0) game.player.buzz -= 1;
