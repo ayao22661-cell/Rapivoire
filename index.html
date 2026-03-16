@@ -2427,7 +2427,7 @@ function processNextWeek() {
             game.player.buzz = Math.min(100, game.player.buzz + buzzGain); 
 
             if (typeof addNews === "function") {
-                addNews(`🚨 OFFICIEL SNEP : "${cName}" certifié Disque d'${nouvelleCertif} !`, "success");
+                addNews(`🚨 OFFICIEL SNEP : "${cName}" certifié Disque d\'${nouvelleCertif} !`, "success");
                 addNews(`🎁 Bonus Label : +${prime.toLocaleString()} F CFA, +${fansGain.toLocaleString()} Fans !`, "info");
             }
         }
@@ -2789,10 +2789,6 @@ window.onload = function() {
 </body>
 
 </html>
-
-
-
-
 
 
 
