@@ -1712,7 +1712,7 @@ function renderShop() {
             
             // Calcul du coût de réparation (jusqu'à 20% du prix d'achat)
             const missingCondition = 100 - condition;
-            repairCost = Math.floor(item.price * 0.20 * (missingCondition / 100));
+            repairCost = Math.floor(item.price * 0.35 * (missingCondition / 100));
             canAffordRepair = game.player.cash >= repairCost;
         }
         // ---------------------------------------------
