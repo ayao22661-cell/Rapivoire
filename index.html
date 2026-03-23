@@ -2328,7 +2328,7 @@ function processNextWeek() {
         const qualityFactor = (song.quality || 50) / 100; 
         const levelBonus = 1 + ((game.player.level || 1) * 0.15); 
         let baseVolume = Math.floor(((game.player.buzz * 500) + (game.player.fans * 0.5)) * levelBonus * charismeMult * qualityFactor * hypeMultiplier);
-        if (song.isAlbum) baseVolume *= 10; 
+        if (song.isAlbum) baseVolume *= 7; 
 
         // 4.4 Répartition
         if (typeof PLATFORMS !== 'undefined') {
