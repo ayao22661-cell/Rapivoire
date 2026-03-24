@@ -607,20 +607,31 @@ const PLATFORMS = {
 };
 const LABELS = [
     { 
+        id: "label_indie", 
+        name: "Yop City Records", 
+        reqLevel: 3, // Accessible assez tôt
+        reqStreams: 500000, 
+        bonusCash: 1000000, 
+        cut: 0.10, 
+        desc: "Un label de quartier qui monte. 1 Million à la signature. Ils t'aident à structurer ta fanbase sans trop te prendre (10%)." 
+    },
+    { 
         id: "label_babi", 
         name: "Treich' Vibes", 
-        reqStreams: 2500000, // 2,5 Millions de streams
-        bonusCash: 5000000, // 5 Millions F CFA
+        reqLevel: 5, // Tu es une star nationale confirmée
+        reqStreams: 2500000, 
+        bonusCash: 5000000, 
         cut: 0.15, 
-        desc: "Le meilleur label d'Abidjan. 5 Millions à la signature, mais ils prennent 15% de tes revenus de streams." 
+        desc: "Le meilleur label d'Abidjan. 5 Millions à la signature, mais ils exigent 15% de tes revenus." 
     },
     { 
         id: "label_major", 
         name: "Kass-Muzik Group", 
-        reqStreams: 30000000, // 30 Millions de streams
-        bonusCash: 50000000, // 50 Millions F CFA
+        reqLevel: 8, // Le boss final des labels
+        reqStreams: 30000000, 
+        bonusCash: 50000000, 
         cut: 0.30, 
-        desc: "La cour des grands ! Une avance de 50 Millions de Francs, mais la maison de disque prend 30% sur tout." 
+        desc: "La cour des grands ! Avance de 50 Millions, mais la maison de disque contrôle tout et prend 30%." 
     }
 ];
 
@@ -1331,20 +1342,27 @@ const RANDOM_EVENTS = [
     // ==========================================
     // --- NIVEAU 4 & 5 (Stars Montantes - Gros impacts) ---
     // ==========================================
-    { title: "Bad Buzz : Vidéo fuité", desc: "Une vidéo gênante de toi tourne sur WhatsApp.", effect: { fans: -25000, buzz: -15 }, type: 'negative', reqLevel: 4 },
-    { title: "Défi de Safar-K", desc: "La go de l'espace te défie sur un pas de danse. C'est un meme national.", effect: { buzz: 12, fans: -25000, energy: -10 }, type: 'negative', reqLevel: 4 },
-    { title: "Bagarre avec Débordo-L", desc: "Le 'Maîtré-Maîtré' t'accuse de le copier. Grosses insultes.", effect: { buzz: 15, fans: -30000, energy: -30 }, type: 'negative', reqLevel: 4 },
-    { title: "Conseils de Coach-Hamond", desc: "La coach dit que tu n'es pas un bon parti. Tes fans te lâchent.", effect: { fans: -35000, buzz: 10 }, type: 'negative', reqLevel: 4 },
-    { title: "Passage TV gratuit", desc: "Tu es l'invité surprise d'une grosse émission du midi.", effect: { fans: 40000, buzz: 10 }, type: 'positive', reqLevel: 4 },
-    { title: "Trip-Gnan te valide", desc: "Le rappeur le plus déjanté dit que tu es 'le seul vrai'.", effect: { fans: 45000, buzz: 10, xp: 80 }, type: 'positive', reqLevel: 4 },
+    // Négatifs (Niveau 4)
+{ title: "Fashion Police", desc: "Un blogueur mode dit que tes habits de clip sont du 'Prêt-à-jeter'. Les fans se moquent.", effect: { fans: -20000, buzz: 5 }, type: 'negative', reqLevel: 4 },
+{ title: "Visite de la DGI", desc: "Les impôts ont vu ton dernier clip bling-bling. Redressement fiscal immédiat !", effect: { cash: -2000000 }, type: 'negative', reqLevel: 4 },
+{ title: "Accusation de Faux Streams", desc: "Une page influente t'accuse de payer des 'fermes à clics' en Chine.", effect: { fans: -30000, buzz: -10 }, type: 'negative', reqLevel: 4 },
+{ title: "Embrouille de Lounge", desc: "Tu as refusé un selfie dans un VIP. Le gérant interdit tes sons dans son établissement.", effect: { fans: -15000, buzz: -5 }, type: 'negative', reqLevel: 4 },
 
-    { title: "Validation d'une Légende", desc: "Une icône du rap a porté ton T-shirt en vidéo.", effect: { fans: 50000, buzz: 15 }, type: 'positive', reqLevel: 5 },
-    { title: "Le 'Vieux Père' Jojo-K", desc: "Le rappeur t'adoube dans un freestyle explosif.", effect: { xp: 200, fans: 50000 }, type: 'positive', reqLevel: 5 },
-    { title: "Direct de 'L'Avocat'", desc: "Un blogueur t'a 'allumé' dans un direct de 2h.", effect: { fans: -50000, buzz: 12, energy: -20 }, type: 'negative', reqLevel: 5 },
-    { title: "Son de Maquis", desc: "Ton refrain est le cri de ralliement des fêtards de Yopougon.", effect: { cash: 500000, buzz: 12, fans: 60000 }, type: 'positive', reqLevel: 5 },
-    { title: "L'Heure de Vérité", desc: "Willy Dumbo t'invite. Tu fais un freestyle d'anthologie !", effect: { xp: 100, buzz: 12, fans: 65000 }, type: 'positive', reqLevel: 5 },
-    { title: "Challenge Viral", desc: "Des écolières ont lancé une danse sur ton refrain.", effect: { fans: 75000, buzz: 15, xp: 50 }, type: 'positive', reqLevel: 5 },
-    { title: "Cadeau du Parrain", desc: "Un 'Vieux Père' influent te donne une enveloppe pour t'encourager.", effect: { cash: 1500000 }, type: 'positive', reqLevel: 5 },
+// Positifs (Niveau 4)
+{ title: "Nouveau Slang", desc: "Tu as balancé une expression bizarre en interview et tout Abidjan répète ça !", effect: { buzz: 20, fans: 35000 }, type: 'positive', reqLevel: 4 },
+{ title: "Sponsor Boisson", desc: "Une marque de boisson énergétique veut ton image sur leurs canettes.", effect: { cash: 2500000, fans: 10000 }, type: 'positive', reqLevel: 4 },
+{ title: "Le Coup du Marteau", desc: "Ton dernier freestyle est devenu l'hymne officiel des supporters au quartier.", effect: { fans: 50000, xp: 100 }, type: 'positive', reqLevel: 4 },
+    // Négatifs (Niveau 5)
+{ title: "Le 'Dossier' de Cayenne", desc: "Une influenceuse sort des captures d'écran de tes vieux messages privés. C'est chaud !", effect: { fans: -60000, buzz: 15, energy: -30 }, type: 'negative', reqLevel: 5 },
+{ title: "Visa Refusé", desc: "Ton dossier pour la tournée européenne est rejeté. Tu perds l'avance du promoteur.", effect: { cash: -3000000, energy: -40 }, type: 'negative', reqLevel: 5 },
+{ title: "Rumeur de Mystique", desc: "On t'accuse d'avoir 'attaché' tes rivaux chez un marabout. La presse à scandale s'en mêle.", effect: { fans: -45000, buzz: 10 }, type: 'negative', reqLevel: 5 },
+{ title: "Panne de Voix", desc: "En plein concert géant, ta voix lâche. Le public demande remboursement.", effect: { cash: -5000000, fans: -20000, energy: -50 }, type: 'negative', reqLevel: 5 },
+
+// Positifs (Niveau 5)
+{ title: "Le 4x4 du Ministre", desc: "Un fan fortuné (un 'Vieux Père' politique) t'offre un SUV dernier cri après un concert privé.", effect: { cash: 15000000, buzz: 20 }, type: 'positive', reqLevel: 5 },
+{ title: "Feat avec un 'Naija'", desc: "Une méga-star de Lagos veut faire le remix de ton hit. L'Afrique t'écoute !", effect: { fans: 150000, buzz: 25, xp: 200 }, type: 'positive', reqLevel: 5 },
+{ title: "Égérie Luxe", desc: "Une grande maison de parfum t'installe sur des panneaux 4x3 dans tout Abidjan.", effect: { cash: 8000000, fans: 40000 }, type: 'positive', reqLevel: 5 },
+{ title: "Le Direct de l'Année", desc: "Tu fais un direct Facebook pour clarifier un clash. 50k personnes connectées en simultané !", effect: { buzz: 30, fans: 55000, xp: 150 }, type: 'positive', reqLevel: 5 },
 
     // ==========================================
     // --- NIVEAU 6 & 7 (Superstars - Impacts massifs) ---
@@ -1356,7 +1374,9 @@ const RANDOM_EVENTS = [
     { title: "Le Journal de la RTI", desc: "On parle de toi comme le nouvel espoir au JT de 20h.", effect: { fans: 100000, buzz: 10 }, type: 'positive', reqLevel: 6 },
     { title: "Challenge de 'La Go'", desc: "La plus belle influenceuse de Babi a twerké sur ton son.", effect: { fans: 120000, buzz: 15 }, type: 'positive', reqLevel: 6 },
     { title: "Matos Volé", desc: "On a forcé ton 4x4, ton Mac de studio est parti avec tes maquettes.", effect: { cash: -1200000, xp: -50 }, type: 'negative', reqLevel: 6 },
-    
+    { title: "Audit de la DGI", desc: "Les impôts ont vu ton dernier 4x4. Ils veulent leur part du gâteau.", effect: { cash: -5000000 }, type: 'negative', reqLevel: 6 },
+    { title: "Scandale de Mœurs", desc: "Une ex sort des dossiers compromettants sur Facebook.", effect: { fans: -100000, buzz: -20, energy: -40 }, type: 'negative', reqLevel: 6 },
+    { title: "Annulation de Concert", desc: "Le préfet annule ton show au Stade pour 'raisons de sécurité'. Perte massive.", effect: { cash: -10000000, buzz: -25 }, type: 'negative', reqLevel: 7 },
     { title: "Force des Chauffeurs", desc: "Tous les Gbakas et Woro-woro jouent ton son en boucle.", effect: { fans: 150000, buzz: 10 }, type: 'positive', reqLevel: 7 },
     { title: "Faux Manager", desc: "Ton manager est parti avec l'avance de ton Stade !", effect: { cash: -2000000, xp: -30 }, type: 'negative', reqLevel: 7 },
 
