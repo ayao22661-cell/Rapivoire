@@ -2161,12 +2161,15 @@ function executeFinalClash(target) {
 // ==========================================
 
 const LIFE_EVENTS = [
-    // --- ÉVÉNEMENTS PETITE AMIE ---
+    // ==========================================
+    // --- ÉVÉNEMENTS PETITE AMIE (GO) & AMOUR ---
+    // ==========================================
+
     {
-        id: 'gf_resto',
+        id: 'gf_resto_low',
         icon: '👩🏽',
         title: 'Soirée avec ta Go',
-        condition: () => game.player.life.status === 'en couple',
+        condition: () => game.player.life.status === 'en couple' && (game.player.level || 1) < 4,
         desc: 'Ta petite amie se plaint que tu passes trop de temps au studio. Elle veut aller manger dans un bon resto à Bietry.',
         choices: [
             { text: 'L\'emmener (💰 -30,000 F)', action: () => { 
@@ -2174,7 +2177,117 @@ const LIFE_EVENTS = [
                 game.player.cash -= 30000; game.player.life.gfAffection += 20; game.player.energy += 10; notify('Super soirée ! (+20 Affection, +10⚡)', 'success'); 
             }},
             { text: 'Dire que tu dois bosser (💔 -20 Affection)', action: () => { 
-                game.player.life.gfAffection -= 20; addXP(20); notify('Elle te fait la tête, mais tu as pu bosser (+20 XP).'); 
+                game.player.life.gfAffection -= 20; game.player.xp = (game.player.xp || 0) + 20; notify('Elle te fait la tête, mais tu as pu bosser (+20 XP).', 'info'); 
+            }}
+        ]
+    },
+    {
+        id: 'gf_dubai_mid',
+        icon: '✈️',
+        title: 'Pression des Réseaux',
+        condition: () => game.player.life.status === 'en couple' && (game.player.level || 1) >= 4 && (game.player.level || 1) <= 6 && game.player.cash > 2000000,
+        desc: 'Ta Go voit les autres influenceuses à Dubaï. Elle te met la pression pour que vous fassiez un voyage VIP.',
+        choices: [
+            { text: 'Payer le voyage VIP (💰 -1.5 Million)', action: () => { 
+                game.player.cash -= 1500000; game.player.life.gfAffection += 30; game.player.buzz += 10; notify('Photos à Dubaï ! Les fans adorent (+10 Buzz, +30 Affection)', 'success'); 
+            }},
+            { text: 'Proposer Assinie à la place (💰 -200,000 F)', action: () => { 
+                game.player.cash -= 200000; game.player.life.gfAffection += 5; notify('Elle a boudé un peu mais le week-end était cool (+5 Affection).', 'info'); 
+            }},
+            { text: 'Refuser net (💔 -30 Affection)', action: () => { 
+                game.player.life.gfAffection -= 30; notify('Grosse dispute... Elle te traite de radin.', 'error'); 
+            }}
+        ]
+    },
+    {
+        id: 'gf_phone',
+        icon: '📱',
+        title: 'Le Téléphone Cassé',
+        condition: () => game.player.life.status === 'en couple' && (game.player.level || 1) <= 4,
+        desc: 'L\'écran du téléphone de ta Go s\'est cassé. Ses copines ont le dernier iPhone et elle te fait des sous-entendus.',
+        choices: [
+            { text: 'Acheter le dernier iPhone (💰 -800,000 F)', action: () => { 
+                if(game.player.cash < 800000) { notify('Carte refusée devant le vendeur... La honte !', 'error'); game.player.life.gfAffection -= 20; return; }
+                game.player.cash -= 800000; game.player.life.gfAffection += 30; notify('Elle a pleuré de joie ! (+30 Affection)', 'success'); 
+            }},
+            { text: 'Payer la réparation à Adjamé (💰 -25,000 F)', action: () => { 
+                game.player.cash -= 25000; notify('L\'écran marche, mais elle n\'est pas impressionnée.', 'info'); 
+            }},
+            { text: 'Lui dire de travailler pour se l\'acheter (💔 -25 Affection)', action: () => { 
+                game.player.life.gfAffection -= 25; notify('Gros clash. Elle te traite de misérable.', 'error'); 
+            }}
+        ]
+    },
+    {
+        id: 'gf_mother_in_law',
+        icon: '👵🏾',
+        title: 'La Belle-Mère débarque',
+        condition: () => game.player.life.status === 'en couple' && (game.player.level || 1) >= 3,
+        desc: 'La mère de ta go vient "inspecter" ta vie d\'artiste. Elle n\'aime pas trop les rappeurs.',
+        choices: [
+            { text: 'La loger dans un bel hôtel (💰 -250,000 F)', action: () => { 
+                if(game.player.cash < 250000) { notify('Pas d\'argent, elle dort au salon. Elle te déteste.', 'error'); game.player.life.gfAffection -= 20; return; }
+                game.player.cash -= 250000; game.player.life.gfAffection += 25; notify('Elle est traitée comme une reine. Ta go est très fière de toi !', 'success'); 
+            }},
+            { text: 'L\'accueillir chez toi (⚡ -30)', action: () => { 
+                game.player.energy -= 30; notify('Tu as dû faire le ménage et cuisiner. Épuisant, mais ça passe (-30⚡).', 'warning'); 
+            }},
+            { text: 'Fuir au studio (💔 -30 Affection)', action: () => { 
+                game.player.life.gfAffection -= 30; notify('Ta belle-mère est vexée. Ta go te fait la guerre.', 'error'); 
+            }}
+        ]
+    },
+    {
+        id: 'gf_business_salon',
+        icon: '💅',
+        title: 'Le Projet Onglerie',
+        condition: () => game.player.life.status === 'en couple' && (game.player.level || 1) >= 3 && game.player.cash >= 1000000,
+        desc: 'Ta go ne veut plus dépendre de toi. Elle te demande 1.5 Million pour ouvrir un salon de coiffure et onglerie VIP.',
+        choices: [
+            { text: 'Financer son business (💰 -1.5M)', action: () => { 
+                game.player.cash -= 1500000; game.player.life.gfAffection = 100; notify('Elle te proclame meilleur chéri du monde ! (+Affection Max)', 'success'); 
+            }},
+            { text: 'Lui donner juste 300.000 F (💰 -300k)', action: () => { 
+                game.player.cash -= 300000; notify('Elle a pris l\'argent, mais elle boude.', 'info'); 
+            }},
+            { text: 'Refuser, investir dans ta musique (💔 -30 Affection)', action: () => { 
+                game.player.life.gfAffection -= 30; notify('Grosse dispute. Elle dit que tu ne la soutiens pas.', 'error'); 
+            }}
+        ]
+    },
+    {
+        id: 'gf_tchiza_drama',
+        icon: '🤫',
+        title: 'Le Chantage de la Tchiza',
+        condition: () => game.player.life.status === 'en couple' && (game.player.level || 1) >= 5 && game.player.buzz > 50,
+        desc: 'Une "petite" gérée après un showcase menace d\'envoyer des vocaux compromettants à un blogueur si tu ne paies pas.',
+        choices: [
+            { text: 'Payer pour étouffer l\'affaire (💰 -1 Million)', action: () => { 
+                if(game.player.cash < 1000000) { notify('Tu n\'as pas l\'argent... Le vocal a fuité !', 'error'); game.player.buzz -= 10; game.player.life.gfAffection -= 40; return; }
+                game.player.cash -= 1000000; notify('Ton secret est sauf, mais ton compte a saigné.', 'warning'); 
+            }},
+            { text: 'L\'ignorer, c\'est du bluff ! (📉 Risque de Bad Buzz)', action: () => { 
+                if (Math.random() > 0.5) {
+                    game.player.buzz -= 15; game.player.life.gfAffection -= 50; notify('ALERTE ! Le vocal est sur Facebook ! (-15 Buzz, -50 Affection)', 'error');
+                } else {
+                    game.player.energy += 10; notify('Elle n\'a rien posté au final. Coup de pression évité !', 'success');
+                }
+            }}
+        ]
+    },
+    {
+        id: 'gf_scandal',
+        icon: '📸',
+        title: 'Scandale sur les Réseaux',
+        condition: () => game.player.life.status === 'en couple' && (game.player.level || 1) >= 5 && game.player.buzz > 40,
+        desc: 'Une page gossip a publié une photo de toi très proche d\'une fan en boîte. Ta femme est en furie !',
+        choices: [
+            { text: 'Acheter un sac de luxe (💰 -3 Millions)', action: () => { 
+                if(game.player.cash < 3000000) { notify('Tu ne peux pas assumer... La rupture est proche !', 'error'); game.player.life.gfAffection -= 40; return; }
+                game.player.cash -= 3000000; game.player.life.gfAffection += 10; notify('Le sac a calmé la tempête... pour l\'instant.', 'info'); 
+            }},
+            { text: 'Faire un démenti public (⚡ -30, 📉 -5 Buzz)', action: () => { 
+                game.player.energy -= 30; game.player.buzz -= 5; game.player.life.gfAffection -= 10; notify('Tu as justifié ça, tu perds en street cred.', 'warning'); 
             }}
         ]
     },
@@ -2183,7 +2296,7 @@ const LIFE_EVENTS = [
         icon: '💍',
         title: 'Demande en Mariage ?',
         condition: () => game.player.life.status === 'en couple' && game.player.life.gfAffection >= 80 && game.player.cash >= 2000000 && (game.player.level || 1) >= 5,
-        desc: 'Votre relation est au top. Tes amis et sa famille te mettent la pression pour la dot et le mariage (Coût estimé : 2 Millions).',
+        desc: 'Votre relation est au top. La famille met la pression pour la dot et le mariage (Coût : 2 Millions).',
         choices: [
             { text: 'Faire la demande (💰 -2 Millions)', action: () => { 
                 game.player.cash -= 2000000; game.player.life.status = 'marié'; game.player.buzz += 30; game.player.life.gfAffection = 100;
@@ -2198,30 +2311,362 @@ const LIFE_EVENTS = [
         id: 'gf_breakup',
         icon: '💔',
         title: 'C\'est fini...',
-        condition: () => game.player.life.status === 'en couple' && game.player.life.gfAffection <= 15,
-        desc: 'Tu l\'as trop négligée. Elle a fait ses valises et t\'a quitté pour un brouteur qui s\'occupe mieux d\'elle.',
+        condition: () => (game.player.life.status === 'en couple' || game.player.life.status === 'marié') && game.player.life.gfAffection <= 15,
+        desc: 'Tu l\'as trop négligée. Elle a fait ses valises et t\'a quitté.',
         choices: [
             { text: 'Transformer la douleur en musique (⚡ -50)', action: () => { 
-                game.player.energy -= 50; game.player.life.status = 'célibataire'; game.player.buzz += 15; 
-                notify('Célibataire. Mais ton son triste a fait le buzz (+15 Buzz) !', 'success'); 
+                game.player.energy -= 50; game.player.life.status = 'célibataire'; game.player.buzz += 20; game.player.fans += 5000;
+                notify('Célibataire. Mais ton son triste a fait un énorme buzz (+20 Buzz, +5k Fans) !', 'success'); 
             }}
         ]
     },
 
-    // --- ÉVÉNEMENTS PARENTS ---
+    // ==========================================
+    // --- ÉVÉNEMENTS PARENTS, FAMILLE & VILLAGE ---
+    // ==========================================
+
     {
-        id: 'parents_money',
-        icon: '🏠',
+        id: 'parents_money_low',
+        icon: '🏫',
         title: 'Problème au quartier',
-        condition: () => true,
+        condition: () => (game.player.level || 1) < 4,
         desc: 'Ta mère t\'appelle. Ton petit frère a été renvoyé de l\'école parce que la scolarité n\'est pas payée (50,000 F).',
         choices: [
             { text: 'Payer la scolarité (💰 -50,000 F)', action: () => { 
-                if(game.player.cash < 50000) { notify('Tu n\'as pas l\'argent... Ta mère raccroche en pleurant.', 'error'); game.player.life.parentsAffection -= 20; return; }
-                game.player.cash -= 50000; game.player.life.parentsAffection += 20; game.player.buzz += 5; notify('La famille d\'abord ! Les gens du quartier te respectent (+5 Buzz).', 'success'); 
+                if(game.player.cash < 50000) { notify('Tu n\'as pas l\'argent... Ta mère pleure.', 'error'); game.player.life.parentsAffection -= 20; return; }
+                game.player.cash -= 50000; game.player.life.parentsAffection += 20; game.player.buzz += 2; notify('La famille d\'abord ! Ton frère retourne en classe.', 'success'); 
             }},
             { text: 'Ignorer l\'appel (💔 -20 Affection)', action: () => { 
-                game.player.life.parentsAffection -= 20; game.player.energy -= 10; notify('Tu as ignoré ta famille. Mauvaise conscience (-10⚡).', 'error'); 
+                game.player.life.parentsAffection -= 20; game.player.energy -= 10; notify('Mauvaise conscience (-10⚡).', 'error'); 
+            }}
+        ]
+    },
+    {
+        id: 'family_baptism',
+        icon: '👶🏾',
+        title: 'Le Baptême du Neveu',
+        condition: () => (game.player.level || 1) >= 2 && (game.player.level || 1) <= 5,
+        desc: 'Ta grande sœur fait le baptême de son fils ce week-end. Elle s\'attend à ce que le parrain (toi) assure la boisson.',
+        choices: [
+            { text: 'Acheter la boisson (💰 -100,000 F)', action: () => { 
+                if(game.player.cash < 100000) { notify('Tu as fui la cérémonie...', 'error'); game.player.life.parentsAffection -= 15; return; }
+                game.player.cash -= 100000; game.player.life.parentsAffection += 15; notify('La fête était belle, tonton a assuré !', 'success'); 
+            }},
+            { text: 'Faire un petit dépôt Mobile Money (💰 -20,000 F)', action: () => { 
+                game.player.cash -= 20000; notify('C\'est mieux que rien, mais elle espérait plus.', 'info'); 
+            }},
+            { text: 'Dire que tu es en studio (💔 -15 Affection)', action: () => { 
+                game.player.life.parentsAffection -= 15; notify('La famille te trouve distant depuis que tu chantes.', 'error'); 
+            }}
+        ]
+    },
+    {
+        id: 'parents_health_mid',
+        icon: '🏥',
+        title: 'Urgence Médicale',
+        condition: () => (game.player.level || 1) >= 4 && (game.player.level || 1) <= 6,
+        desc: 'Ton père a fait un malaise. Il doit être admis dans une bonne clinique de la place.',
+        choices: [
+            { text: 'Tout prendre en charge (💰 -500,000 F)', action: () => { 
+                if(game.player.cash < 500000) { notify('Pas assez d\'argent, il va au CHU public.', 'error'); game.player.life.parentsAffection -= 20; return; }
+                game.player.cash -= 500000; game.player.life.parentsAffection += 30; notify('Ton père va mieux. La famille te bénit (+30 Affection).', 'success'); 
+            }},
+            { text: 'Dire de gérer au CHU public (💔 -30 Affection)', action: () => { 
+                game.player.life.parentsAffection -= 30; game.player.buzz -= 5; notify('La famille est choquée par ton comportement de star radine.', 'error'); 
+            }}
+        ]
+    },
+    {
+        id: 'family_cousin',
+        icon: '🕺🏾',
+        title: 'Le Cousin Encombrant',
+        condition: () => (game.player.level || 1) >= 3,
+        desc: 'Ta tante t\'envoie son fils pour qu\'il devienne ton manager. Il ne connaît absolument rien à la musique.',
+        choices: [
+            { text: 'L\'embaucher (📉 -10k Fans)', action: () => { 
+                game.player.fans = Math.max(0, game.player.fans - 10000); game.player.life.parentsAffection += 20; notify('Il a insulté un promoteur ! (-10k Fans) Mais la tante est ravie.', 'error'); 
+            }},
+            { text: 'Le payer pour qu\'il parte (💰 -150,000 F)', action: () => { 
+                game.player.cash -= 150000; notify('Tu as acheté la paix familiale.', 'success'); 
+            }},
+            { text: 'Refuser catégoriquement (💔 -20 Affection)', action: () => { 
+                game.player.life.parentsAffection -= 20; notify('Ta tante te traite d\'ingrat au quartier.', 'warning'); 
+            }}
+        ]
+    },
+    {
+        id: 'family_visa',
+        icon: '✈️',
+        title: 'Le Rêve Européen',
+        condition: () => (game.player.level || 1) >= 3,
+        desc: 'Ton grand frère a trouvé un réseau pour aller à "Mbengue" (Paris). Il manque 800.000 F pour le dossier.',
+        choices: [
+            { text: 'Payer pour l\'aider (💰 -800,000 F)', action: () => { 
+                if(game.player.cash < 800000) { notify('Tu n\'as pas l\'argent.', 'error'); return; }
+                game.player.cash -= 800000; game.player.life.parentsAffection += 20; notify('Il est parti. Toute la famille prie pour ta réussite.', 'success'); 
+            }},
+            { text: 'Refuser, trop risqué', action: () => { 
+                notify('Tu as préféré garder ton argent. L\'ambiance est bizarre à la maison.', 'warning'); 
+            }}
+        ]
+    },
+    {
+        id: 'family_business',
+        icon: '🐔',
+        title: 'Le "Projet" de tonton',
+        condition: () => (game.player.level || 1) >= 4 && game.player.cash >= 3000000,
+        desc: 'Ton oncle te présente un "business infaillible" de ferme de poulets et te demande d\'investir 2 Millions.',
+        choices: [
+            { text: 'Investir (💰 -2 Millions)', action: () => { 
+                game.player.cash -= 2000000; 
+                if(Math.random() > 0.5) {
+                    game.player.cash += 3500000; game.player.life.parentsAffection += 10; notify('Incroyable ! Tonton a remboursé avec bénéfices ! (+1.5M)', 'success');
+                } else {
+                    game.player.life.parentsAffection += 5; notify('Les poulets sont malades... Argent perdu. Mais la famille te remercie.', 'error');
+                }
+            }},
+            { text: 'Refuser diplomatiquement', action: () => { 
+                notify('Ton compte en banque est sauf, mais tonton critique ta radinerie.', 'info'); 
+            }}
+        ]
+    },
+    {
+        id: 'family_funerals',
+        icon: '🕊️',
+        title: 'Funérailles grandioses',
+        condition: () => (game.player.level || 1) >= 4,
+        desc: 'Un grand-oncle est décédé. Au village, on attend que "l\'enfant prodige de la capitale" gère les dépenses.',
+        choices: [
+            { text: 'Faire un don de boss (💰 -2 Millions)', action: () => { 
+                if(game.player.cash < 2000000) { notify('Carte refusée devant les anciens... Honte suprême.', 'error'); game.player.life.parentsAffection -= 30; return; }
+                game.player.cash -= 2000000; game.player.life.parentsAffection += 40; game.player.buzz += 5; notify('Les griots chantent ton nom ! (+40 Affection)', 'success'); 
+            }},
+            { text: 'Participer normalement (💰 -300,000 F)', action: () => { 
+                game.player.cash -= 300000; notify('Tu as fait le minimum syndical. Ça murmure un peu.', 'info'); 
+            }},
+            { text: 'Ne rien envoyer (💔 -40 Affection)', action: () => { 
+                game.player.life.parentsAffection -= 40; game.player.fans -= 5000; notify('La famille est scandalisée. (-40 Affection, -5k Fans)', 'error'); 
+            }}
+        ]
+    },
+    {
+        id: 'parents_house_high',
+        icon: '🏡',
+        title: 'Sortir les parents du Ghetto',
+        condition: () => (game.player.level || 1) >= 7 && game.player.cash > 25000000 && game.player.life.parentsAffection > 50,
+        desc: 'Tu es millionnaire, mais tes parents vivent toujours au quartier. Les paparazzis commencent à en parler.',
+        choices: [
+            { text: 'Acheter la Villa (💰 -25 Millions)', action: () => { 
+                game.player.cash -= 25000000; game.player.life.parentsAffection = 100; game.player.fans += 50000; game.player.buzz += 15;
+                notify('Un vrai digne fils ! Les médias saluent ton geste (+50k Fans, +15 Buzz).', 'success'); 
+            }},
+            { text: 'Plus tard... (💔 -20 Affection)', action: () => { 
+                game.player.life.parentsAffection -= 20; game.player.buzz -= 10; notify('Bad buzz ! Les gens disent que tu as abandonné ta famille (-10 Buzz).', 'error'); 
+            }}
+        ]
+    },
+    {
+        id: 'family_village',
+        icon: '🛖',
+        title: 'L\'Appel du Village',
+        condition: () => (game.player.level || 1) >= 6 && game.player.cash >= 10000000,
+        desc: 'Le chef de ton village te demande de financer la construction d\'un centre de santé rural.',
+        choices: [
+            { text: 'Financer le projet (💰 -5 Millions)', action: () => { 
+                game.player.cash -= 5000000; game.player.life.parentsAffection = 100; game.player.fans += 25000; game.player.buzz += 10;
+                notify('Bénédictions ! Tu es un héros national ! (+25k Fans, +10 Buzz)', 'success'); 
+            }},
+            { text: 'Don symbolique (💰 -500,000 F)', action: () => { 
+                game.player.cash -= 500000; notify('Ils ont dit merci, sans plus.', 'info'); 
+            }},
+            { text: 'Ignorer (💔 -30 Affection)', action: () => { 
+                game.player.life.parentsAffection -= 30; notify('Les anciens t\'ont maudit. Mauvaise conscience.', 'error'); 
+            }}
+        ]
+    },
+
+    // ==========================================
+    // --- ÉVÉNEMENTS LIFESTYLE, SHOWBIZ & RUE ---
+    // ==========================================
+
+    {
+        id: 'lifestyle_jewelry',
+        icon: '⌚',
+        title: 'La Brigade du Fake',
+        condition: () => (game.player.level || 1) >= 4 && game.player.buzz >= 30,
+        desc: 'Une page TikTok experte en horlogerie t\'accuse de porter une fausse Rolex dans ton dernier clip.',
+        choices: [
+            { text: 'Acheter une VRAIE montre en urgence (💰 -5 Millions)', action: () => { 
+                if(game.player.cash < 5000000) { notify('Tu n\'as pas l\'argent... Le bad buzz est confirmé !', 'error'); game.player.buzz -= 10; game.player.fans -= 5000; return; }
+                game.player.cash -= 5000000; game.player.buzz += 15; notify('Tu as posté la facture et humilié le blogueur ! (+15 Buzz)', 'success'); 
+            }},
+            { text: 'Faire une vidéo d\'insultes (⚡ -15, 🔥 +5 Buzz)', action: () => { 
+                game.player.energy -= 15; game.player.buzz += 5; notify('Tu as fait du bruit, mais les doutes persistent.', 'warning'); 
+            }},
+            { text: 'Avouer l\'humilité (💖 +10k Fans, 📉 -5 Buzz)', action: () => { 
+                game.player.fans += 10000; game.player.buzz -= 5; notify('Tu perds du buzz bling-bling, mais le peuple valide ta franchise.', 'info'); 
+            }}
+        ]
+    },
+    {
+        id: 'lifestyle_land_scam',
+        icon: '🏗️',
+        title: 'Le Terrain à Bingerville',
+        condition: () => (game.player.level || 1) >= 5 && game.player.cash > 10000000,
+        desc: 'Un démarcheur te propose un terrain très bien situé à Bingerville pour 5 Millions. Une occasion en or !',
+        choices: [
+            { text: 'Acheter sans réfléchir (💰 -5 Millions)', action: () => { 
+                game.player.cash -= 5000000;
+                if(Math.random() > 0.5) {
+                    game.player.cash += 8000000; notify('Excellente affaire ! Tu as revendu le terrain avec 3M de bénéfice !', 'success');
+                } else {
+                    game.player.energy -= 30; notify('ARNAQUE ! Le terrain appartenait à l\'État. Tu as tout perdu (-30⚡).', 'error');
+                }
+            }},
+            { text: 'Payer un Notaire pour vérifier (💰 -500,000 F)', action: () => { 
+                game.player.cash -= 500000; notify('Le notaire a découvert que c\'était une arnaque. Tu as sauvé tes millions !', 'success'); 
+            }},
+            { text: 'Ignorer l\'offre', action: () => { 
+                notify('Trop risqué, tu passes ton tour.', 'info'); 
+            }}
+        ]
+    },
+    {
+        id: 'street_vieux_pere',
+        icon: '😎',
+        title: 'Le Vieux Père du Tieks',
+        condition: () => (game.player.level || 1) >= 3,
+        desc: 'Un ancien du quartier qui te protégeait vient au studio. Il demande "un petit jeton" pour régler un problème.',
+        choices: [
+            { text: 'Lui donner l\'argent (💰 -200,000 F)', action: () => { 
+                if(game.player.cash < 200000) { notify('Tu as bégayé devant lui... La honte au quartier.', 'error'); return; }
+                game.player.cash -= 200000; game.player.buzz += 5; notify('Le quartier valide ton respect pour les anciens (+5 Buzz).', 'success'); 
+            }},
+            { text: 'Esquiver en mentant (📉 -5 Buzz)', action: () => { 
+                game.player.buzz = Math.max(0, game.player.buzz - 5); notify('Le vieux père te traite de faux type (-5 Buzz).', 'error'); 
+            }}
+        ]
+    },
+    {
+        id: 'street_feat_bad',
+        icon: '🎤',
+        title: 'Le Feat Forcé',
+        condition: () => (game.player.level || 1) >= 3,
+        desc: 'Le "gros bras" dangereux de ton ancien quartier sort un son nul. Il exige que tu fasses un feat avec lui.',
+        choices: [
+            { text: 'Accepter par peur (📉 -10k Fans, -10 Buzz)', action: () => { 
+                game.player.fans = Math.max(0, game.player.fans - 10000); game.player.buzz -= 10; notify('Le son est catastrophique. Les gens se moquent de toi sur Twitter.', 'error'); 
+            }},
+            { text: 'Corrompre l\'ingé son (💰 -100,000 F)', action: () => { 
+                game.player.cash -= 100000; notify('L\'ingé a "accidentellement" supprimé le projet. Tu es sauvé !', 'success'); 
+            }},
+            { text: 'Refuser net (⚡ -30)', action: () => { 
+                game.player.energy -= 30; notify('Il a voulu te frapper au studio. Tu as dû fuir par derrière (-30⚡).', 'warning'); 
+            }}
+        ]
+    },
+    {
+        id: 'showbiz_bottle',
+        icon: '🍾',
+        title: 'Le Clash au Concert',
+        condition: () => (game.player.level || 1) >= 2 && game.player.buzz > 20,
+        desc: 'Pendant un showcase, un "hater" dans le public te lance une bouteille d\'eau sur scène.',
+        choices: [
+            { text: 'Sauter dans la foule et le frapper (🔥 +20 Buzz, ⚡ -50)', action: () => { 
+                game.player.buzz += 20; game.player.energy -= 50; notify('Bagarre générale ! La vidéo fait 2 millions de vues (+20 Buzz, -50⚡).', 'warning'); 
+            }},
+            { text: 'Garder ton calme et continuer (💖 +15k Fans)', action: () => { 
+                game.player.fans += 15000; notify('Très professionnel ! Le public applaudit ton sang-froid (+15k Fans).', 'success'); 
+            }},
+            { text: 'Quitter la scène (📉 -10 Buzz)', action: () => { 
+                game.player.buzz -= 10; notify('Le public te hue et demande remboursement (-10 Buzz).', 'error'); 
+            }}
+        ]
+    },
+    {
+        id: 'street_friend_jail',
+        icon: '🚔',
+        title: 'Le pote en garde à vue',
+        condition: () => (game.player.level || 1) <= 5,
+        desc: 'Ton meilleur ami s\'est fait arrêter pour une bagarre au maquis. Il a besoin qu\'on paie sa caution.',
+        choices: [
+            { text: 'Payer la caution (💰 -100,000 F)', action: () => { 
+                if(game.player.cash < 100000) { notify('Tu as laissé ton gars tomber...', 'error'); return; }
+                game.player.cash -= 100000; game.player.energy -= 10; notify('Tu l\'as sorti de là, mais ça t\'a pris la nuit (-10⚡).', 'info'); 
+            }},
+            { text: 'Le laisser assumer (⚡ +20)', action: () => { 
+                game.player.energy += 20; notify('Tu dois te concentrer sur ta musique ! (+20⚡ pour le focus)', 'success'); 
+            }}
+        ]
+    },
+    {
+        id: 'street_police',
+        icon: '🚓',
+        title: 'Contrôle Nocturne',
+        condition: () => true,
+        desc: 'Tu rentres du studio à 3h du matin. La BAC t\'arrête : "Ah, la star, il faut gèrer le thé de la nuit !"',
+        choices: [
+            { text: 'Donner un billet (💰 -10,000 F)', action: () => { 
+                if(game.player.cash < 10000) return;
+                game.player.cash -= 10000; notify('Ils t\'ont laissé passer : "Bonne route le sang !"', 'success'); 
+            }},
+            { text: 'Faire la star et refuser (⚡ -20)', action: () => { 
+                game.player.energy -= 20; notify('Ils ont fouillé ta voiture pendant 1h. Tu rentres épuisé (-20⚡).', 'warning'); 
+            }}
+        ]
+    },
+    {
+        id: 'street_marabout',
+        icon: '🔮',
+        title: 'Le "Vieux" Mystique',
+        condition: () => true,
+        desc: 'Un gars te présente un féticheur puissant. Il promet de faire exploser ton buzz contre 500.000 F.',
+        choices: [
+            { text: 'Tenter le coup (💰 -500,000 F)', action: () => { 
+                if(game.player.cash < 500000) { notify('Le génie réclame l\'argent complet !', 'error'); return; }
+                game.player.cash -= 500000;
+                if(Math.random() > 0.4) {
+                    game.player.buzz += 20; game.player.fans += 10000; notify('INCROYABLE ! Ton son devient viral sur TikTok ! (+20 Buzz, +10k Fans)', 'success');
+                } else {
+                    game.player.energy -= 20; notify('Arnaque ! Le féticheur a disparu et tu fais des cauchemars (-20⚡).', 'error');
+                }
+            }},
+            { text: 'Refuser, tu crois en ton talent', action: () => { 
+                game.player.energy += 10; notify('Tu restes concentré sur ton travail ! (+10⚡)', 'info'); 
+            }}
+        ]
+    },
+    {
+        id: 'showbiz_pastor',
+        icon: '✝️',
+        title: 'Le Pasteur de TikTok',
+        condition: () => (game.player.level || 1) >= 4 && game.player.buzz > 30,
+        desc: 'Un célèbre pasteur de TikTok fait une "prophétie" sur ta chute imminente si tu ne fais pas une offrande d\'1 Million.',
+        choices: [
+            { text: 'Payer la "semence" par peur (💰 -1 Million)', action: () => { 
+                if(game.player.cash < 1000000) { notify('Tu trembles, l\'angoisse te ronge...', 'error'); game.player.energy -= 30; return; }
+                game.player.cash -= 1000000; notify('Le pasteur a prié pour toi en live. Ton esprit est apaisé.', 'info'); 
+            }},
+            { text: 'Le clasher dans un freestyle (🔥 +15 Buzz)', action: () => { 
+                game.player.buzz += 15; notify('Le clash fait fureur sur Internet ! Tu gagnes du Buzz.', 'success'); 
+            }},
+            { text: 'L\'ignorer (⚡ -10)', action: () => { 
+                game.player.energy -= 10; notify('Ses fidèles viennent t\'insulter en commentaire (-10⚡ de charge mentale).', 'warning'); 
+            }}
+        ]
+    },
+    {
+        id: 'media_interview',
+        icon: '📺',
+        title: 'L\'interview Piège',
+        condition: () => (game.player.level || 1) >= 2,
+        desc: 'Tu es invité à la télé. L\'animateur essaie de te faire clasher un autre rappeur pour faire de l\'audience.',
+        choices: [
+            { text: 'Le clasher violemment (🔥 +15 Buzz, 📉 -10k Fans)', action: () => { 
+                game.player.buzz += 15; game.player.fans = Math.max(0, game.player.fans - 10000); notify('Extrait viral ! Tu gagnes du buzz mais tu perds des fans puristes.', 'warning'); 
+            }},
+            { text: 'Répondre avec sagesse (💖 +5k Fans, ⚡ +10)', action: () => { 
+                game.player.fans += 5000; game.player.energy += 10; notify('Superbe répartie. Le public valide ta maturité.', 'success'); 
             }}
         ]
     }
