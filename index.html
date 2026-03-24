@@ -625,40 +625,84 @@ const LABELS = [
 ];
 
 const SPONSORS = [
+    // --- DÉBUTANT (0 - 25k Fans) ---
     { 
-        id: "spon_fashion", 
-        name: "Yopougon Sape", 
-        reqFans: 10000, // 10 000 Fans
-        weekly: 35000, 
-        desc: "Une marque de vêtements locale. Tu portes leurs t-shirts en story." 
+        id: "spon_maquis", name: "Maquis 'Le Haut Niveau'", reqFans: 2000, weekly: 10000, 
+        desc: "Le gérant du maquis à Yopougon te donne le transport pour tes atalakus." 
     },
     { 
-        id: "spon_bet", 
-        name: "Babi Bet", 
-        reqFans: 50000, // 50 000 Fans
-        weekly: 100000, 
-        desc: "Site de paris en ligne. Ils ont besoin de visibilité, ça paye bien." 
+        id: "spon_garba", name: "Garbadrome Choukouya", reqFans: 5000, weekly: 20000, 
+        desc: "Le vieux père du garba te sponsorise. Tu manges gratuit contre de la pub Snapchat." 
     },
     { 
-        id: "spon_drink", 
-        name: "Djampa Energy", 
-        reqFans: 250000, // 250 000 Fans (au lieu de 500k)
-        weekly: 500000, 
-        desc: "La boisson énergisante des braves. Tu places leur canette dans tes clips." 
+        id: "spon_sape", name: "Black Market d'Adjamé", reqFans: 10000, weekly: 35000, 
+        desc: "Les syndicats d'Adjamé te fournissent en vêtements. Tu les mentionnes en story." 
     },
     { 
-        id: "spon_telecom", 
-        name: "Baobab Telecom", 
-        reqFans: 2000000, // 2 Millions de Fans (au lieu de 5M)
-        weekly: 2500000, 
-        desc: "Tu deviens l'égérie du plus grand réseau. Ton visage est sur tous les panneaux." 
+        id: "spon_atote", name: "Atoté 100% Naturel", reqFans: 25000, weekly: 60000, 
+        desc: "La boisson qui 'réveille les morts'. Tu dois boire ça en direct sur TikTok." 
+    },
+
+    // --- MONTÉE EN PUISSANCE (50k - 500k Fans) ---
+    { 
+        id: "spon_cosmetic", name: "Pommade 'Teint Clair'", reqFans: 50000, weekly: 90000, 
+        desc: "Une marque de cosmétique locale te paie pour dire que c'est le secret de ton teint." 
     },
     { 
-        id: "spon_luxe", 
-        name: "Ivoire Motors Luxe", 
-        reqFans: 10000000, // 10 Millions de Fans (au lieu de 20M)
-        weekly: 7500000, 
-        desc: "Le sommet du game. Tu conduis leurs bolides et ils te versent un salaire de ministre." 
+        id: "spon_bet", name: "1xIvoir Paris Sportifs", reqFans: 100000, weekly: 150000, 
+        desc: "Le site de paris incontournable. Partage ton code promo (PROMO225) à tes fans." 
+    },
+    { 
+        id: "spon_delivery", name: "Glovo Babi / Yango Deli", reqFans: 150000, weekly: 250000, 
+        desc: "L'application de livraison te donne un code promo pour que tes fans commandent à manger." 
+    },
+    { 
+        id: "spon_beer", name: "Bière de la Lagune (Bock)", reqFans: 250000, weekly: 400000, 
+        desc: "La bière nationale des vieux pères. Ta tête est sur les calendriers des maquis." 
+    },
+    { 
+        id: "spon_phone", name: "Tecno / Itel Mobile CI", reqFans: 500000, weekly: 750000, 
+        desc: "La marque de téléphones te signe comme ambassadeur pour leur dernier smartphone." 
+    },
+
+    // --- STAR NATIONALE (750k - 5M Fans) ---
+    { 
+        id: "spon_loto", name: "Loterie Nationale (LONACI)", reqFans: 750000, weekly: 1000000, 
+        desc: "Tu animes les tirages au sort de la loterie à la télé nationale." 
+    },
+    { 
+        id: "spon_telecom", name: "Akwaba Telecom (Orange)", reqFans: 1000000, weekly: 1500000, 
+        desc: "Méga contrat. Ton visage est sur les panneaux 4x3 au pont HKB et sur le VGE." 
+    },
+    { 
+        id: "spon_canal", name: "Bouquet TV Satellite", reqFans: 2000000, weekly: 2500000, 
+        desc: "Tu deviens acteur dans leurs pubs télévisées dans toute l'Afrique francophone." 
+    },
+    { 
+        id: "spon_ciment", name: "Ciment Éléphant Fort", reqFans: 3500000, weekly: 3500000, 
+        desc: "Un classique ! Tu fais une chanson pour la plus grande marque de ciment du pays." 
+    },
+    { 
+        id: "spon_bank", name: "Banque Éburnéenne", reqFans: 5000000, weekly: 4500000, 
+        desc: "Tu représentes leur nouvelle carte bancaire 'Jeune Boss'. L'argent coule à flots." 
+    },
+
+    // --- SUPERSTAR / BOSS DU GAME (7.5M - 25M Fans) ---
+    { 
+        id: "spon_realestate", name: "Promotion Immobilière", reqFans: 7500000, weekly: 6000000, 
+        desc: "Tu fais la pub pour de luxueuses villas à la Riviera Golf. Ils te paient une fortune." 
+    },
+    { 
+        id: "spon_luxe", name: "Concessionnaire Zone 4", reqFans: 10000000, weekly: 8000000, 
+        desc: "Le vendeur de Gamos des stars. Tu roules en Range Rover de fonction." 
+    },
+    { 
+        id: "spon_champagne", name: "Champagne 'Roi des Rois'", reqFans: 15000000, weekly: 12000000, 
+        desc: "Tu es l'image officielle d'un champagne ultra VIP dans toutes les boîtes d'Abidjan." 
+    },
+    { 
+        id: "spon_airline", name: "Air Côte d'Ivoire", reqFans: 25000000, weekly: 20000000, 
+        desc: "L'ultime sommet. La compagnie aérienne nationale fait de toi son ambassadeur VIP." 
     }
 ];
 
