@@ -1385,6 +1385,145 @@ const RANDOM_EVENTS = [
     // ==========================================
     { title: "Hommage au Roi Araf", desc: "Tu as repris un classique du Daishi. La 'Chine' te valide massivement !", effect: { fans: 200000, xp: 150, buzz: 15 }, type: 'positive', reqLevel: 8 }
 ];
+    const LYRICS_MINIGAME = {
+    // ==========================================
+    // 🥷🏾 DRILL IVOIRE (Sombre, Agressif, Sombre)
+    // ==========================================
+    'drill': {
+        prompt: "La prod est ultra sombre (Drill). La basse tape fort. Quel couplet tu lâches ?",
+        choices: [
+            { text: "On a quadrillé le tieks, les jaloux sont en sang ! 🥷🏾", quality: 'banger', effect: { buzz: 2, xp: 15 }, msg: "Grosse violence, le mood Drill est respecté !" },
+            { text: "Ils font les gbars mais on les a dja, la concu est sur civière. 🩸", quality: 'banger', effect: { buzz: 3, xp: 20 }, msg: "Punchline incroyable ! L'underground valide fort." },
+            { text: "Cagoulé dans le block, même le diable demande mon feat. 😈", quality: 'banger', effect: { buzz: 2, xp: 25 }, msg: "Sombre à souhait ! L'attitude est parfaite." },
+            { text: "Je suis le meilleur rappeur, vous êtes tous nuls.", quality: 'average', effect: { buzz: 1, xp: 5 }, msg: "C'est basique. Ça passe sur le beat, sans plus." },
+            { text: "Je viens de la rue, je cherche mon pain tous les jours.", quality: 'average', effect: { xp: 10 }, msg: "C'est classique, mais ça manque d'agressivité pour de la Drill." },
+            { text: "On est là, on regarde les gens passer.", quality: 'average', effect: { xp: 5 }, msg: "Un peu passif, la Drill demande plus d'énergie." },
+            { text: "Bébé je t'aime, viens on va manger une glace. 🍦", quality: 'flop', effect: { buzz: -2, energy: -5 }, msg: "Faire du lover sur de la Drill, c'est un flop complet." },
+            { text: "J'ai peur du noir, s'il vous plaît laissez-moi tranquille... 🥺", quality: 'flop', effect: { buzz: -3, xp: -10 }, msg: "La street te renie. Ton image de 'dur' en prend un coup !" },
+            { text: "J'aime la nature, les papillons et les petits oiseaux. 🦋", quality: 'flop', effect: { buzz: -2, energy: -10 }, msg: "Toute la cité se moque de toi après ça." }
+        ]
+    },
+
+    // ==========================================
+    // 🇨🇮 RAP NOUCHI / TIEKS (Slang, Maquis)
+    // ==========================================
+    'rap_nouchi': {
+        prompt: "Le beat sent la rue d'Abidjan. C'est très 'Nouchi'. Comment tu attaques ?",
+        choices: [
+            { text: "Faut sciencer le djê, on est quitté dans drap mon môgô ! 🇨🇮", quality: 'banger', effect: { buzz: 3, cash: 10000, xp: 15 }, msg: "Trop nouchi ! Les maquisards valident ton authenticité." },
+            { text: "Avant j'étais piqué, aujourd'hui je roule en gamos ! 🚙", quality: 'banger', effect: { buzz: 2, xp: 20 }, msg: "Le storytelling de la galère au succès : gros classique !" },
+            { text: "Dégagez la piste, le vrai kôrô est arrivé, c'est gbairai ! 😤", quality: 'banger', effect: { buzz: 2, xp: 15 }, msg: "Attitude de vrai doyen du quartier, c'est validé !" },
+            { text: "Je travaille dur au studio pour avoir mon argent.", quality: 'average', effect: { xp: 10 }, msg: "C'est vrai, mais ça manque de punchlines nouchi." },
+            { text: "Abidjan est doux, on s'enjaille jusqu'au matin.", quality: 'average', effect: { cash: 5000, xp: 5 }, msg: "Un texte simple pour les maquis, ça passe." },
+            { text: "Je marche dans la ville, il fait très chaud.", quality: 'average', effect: { xp: 5 }, msg: "On frôle l'ennui, mais le flow te sauve." },
+            { text: "Mon flow est aristocratique, tel un poème. 🎩", quality: 'flop', effect: { buzz: -2, energy: -5 }, msg: "Les gars du maquis n'ont rien compris à ton vocabulaire." },
+            { text: "Je mange du caviar avec mon thé à 16h précises. 🫖", quality: 'flop', effect: { buzz: -1, xp: -5 }, msg: "Tu es trop 'bobo'. Ça ne colle pas avec la rue." },
+            { text: "Je dois réviser mes examens de mathématiques. 📚", quality: 'flop', effect: { buzz: -3, energy: -10 }, msg: "Le quartier t'appelle 'le boutonneux' maintenant." }
+        ]
+    },
+
+    // ==========================================
+    // 🌍 AFROBEAT (Groove, Pan-Africanisme, Vibes)
+    // ==========================================
+    'afrobeat': {
+        prompt: "Tempo chaloupé, percussions africaines (Afrobeat). Faut faire danser le continent !",
+        choices: [
+            { text: "Africa is the future, on mélange bèlè et champagne ! 🌍🍾", quality: 'banger', effect: { buzz: 3, xp: 20, cash: 15000 }, msg: "La diaspora valide, hit continental en vue !" },
+            { text: "Tu connais le step, on bouge doucement sur la basse... 🕺🏾", quality: 'banger', effect: { buzz: 2, xp: 25 }, msg: "Vibe incroyable, les challenges TikTok commencent !" },
+            { text: "L'Afrique est magique, on a le rythme dans le sang. 🥁", quality: 'banger', effect: { buzz: 1, xp: 15, cash: 10000 }, msg: "Un classique Afrobeat qui fait l'unanimité." },
+            { text: "Je fais mon business, je danse dans la nuit.", quality: 'average', effect: { xp: 10 }, msg: "Ça groove, classique mais efficace." },
+            { text: "Lève ton verre, on va faire la fête.", quality: 'average', effect: { cash: 5000, xp: 5 }, msg: "Les DJs mettent ça en début de soirée pour chauffer la salle." },
+            { text: "Je suis triste, je pleure dans mon lit sous la pluie. 🌧️", quality: 'flop', effect: { buzz: -2, energy: -10 }, msg: "L'Afrobeat c'est la joie ! Tu as complètement plombé le délire." },
+            { text: "Mon banquier m'a appelé, je suis à découvert. 🏦", quality: 'flop', effect: { buzz: -3, xp: -5 }, msg: "Personne ne veut danser sur des problèmes financiers." },
+            { text: "Je n'aime pas la chaleur, ramenez-moi la clim. ❄️", quality: 'flop', effect: { buzz: -1, energy: -5 }, msg: "Tu as cassé le côté chaleureux du morceau." }
+        ]
+    },
+
+    // ==========================================
+    // 💖 AFRO LOVE / ZOUK (Amour, Douceur)
+    // ==========================================
+    'afro_love': {
+        prompt: "Prod Afro Love très douce avec une belle guitare. Qu'est-ce que tu chantes ?",
+        choices: [
+            { text: "Toi et moi c'est pour la vie, laisse les rageux parler. 💍", quality: 'banger', effect: { cash: 20000, buzz: 1 }, msg: "Parfait pour les mariages ! Un tonton te glisse un billet." },
+            { text: "Tu as pris mon cœur en otage, pour toi je peux die bébé. 😭", quality: 'banger', effect: { buzz: 3, xp: 15 }, msg: "Les cœurs brisés se reconnaissent dans cette belle phrase." },
+            { text: "Ton sourire a éteint toutes les lumières de la ville. ✨", quality: 'banger', effect: { buzz: 2, xp: 25 }, msg: "Une poésie incroyable. Les filles partagent ça partout !" },
+            { text: "Je danse sur la piste, je te vois au loin.", quality: 'average', effect: { xp: 10 }, msg: "Un son romantique classique. Ça tourne un peu." },
+            { text: "Bébé reviens, je te promets de changer mes habitudes.", quality: 'average', effect: { xp: 15 }, msg: "C'est mignon, mais la mélodie sauve tes paroles banales." },
+            { text: "Je vais découper mes ennemis à la machette ! 🔪", quality: 'flop', effect: { buzz: -3, energy: -10 }, msg: "Le texte de gangsta ne colle pas du tout à la guitare douce." },
+            { text: "Tu es belle mais ma mère cuisine mieux que toi. 🍲", quality: 'flop', effect: { buzz: 2, energy: -15 }, msg: "Gros bad buzz ! Toutes les femmes t'insultent sur Facebook (+2 Buzz négatif)." },
+            { text: "Je m'en fous de toi, j'ai 10 autres gos. 📱", quality: 'flop', effect: { buzz: 2, energy: -10 }, msg: "Bad buzz ! Les gos te boycottent pour ce manque de respect (+2 Buzz négatif)." }
+        ]
+    },
+
+    // ==========================================
+    // 🍾 AMBIANCE / COUPÉ-DÉCALÉ (Fête, Farotage)
+    // ==========================================
+    'ambiance': {
+        prompt: "Beat ultra rapide (130 BPM). Ça appelle à la danse et au farotage !",
+        choices: [
+            { text: "Travaillement sur vous ! Je farote les billets comme un vieux père ! 💸", quality: 'banger', effect: { cash: 30000, buzz: 3 }, msg: "Les boucantiers adorent et te jettent des billets." },
+            { text: "Position de la moto ! Décalez, on s'en fout des jaloux ! 🏍️", quality: 'banger', effect: { xp: 25, buzz: 2 }, msg: "Tu viens de créer un nouveau pas de danse ! C'est viral." },
+            { text: "La table est remplie, le serveur a mal au dos ce soir ! 🍾", quality: 'banger', effect: { cash: 40000, buzz: 1 }, msg: "Les patrons de boîtes de nuit valident la pub gratuite." },
+            { text: "On fait la fête au VIP, on boit le champagne avec les amis.", quality: 'average', effect: { cash: 10000, xp: 5 }, msg: "Paroles très classiques. C'est bien pour chauffer la salle." },
+            { text: "Levez les mains en l'air, c'est le week-end on est là.", quality: 'average', effect: { xp: 10 }, msg: "Un peu d'animation classique de DJ, ça passe." },
+            { text: "La vie est une longue maladie qui mène à la mort... 🪦", quality: 'flop', effect: { buzz: -2, energy: -10 }, msg: "Tu as complètement plombé l'ambiance de la boîte !" },
+            { text: "Je suis fatigué, je veux rentrer dormir sous ma couette. 🥱", quality: 'flop', effect: { buzz: -3, xp: -5 }, msg: "Gênant... Le DJ a carrément coupé ton son." },
+            { text: "Ne buvez pas d'alcool, c'est mauvais pour le foie. 🥛", quality: 'flop', effect: { buzz: -3, xp: -5 }, msg: "Les fêtards t'ont hué pour cette leçon de morale." }
+        ]
+    },
+
+    // ==========================================
+    // 🥁 ZOUGLOU URBAIN (Identité, Instruments Live)
+    // ==========================================
+    'zouglou': {
+        prompt: "Percussions woyô, guitare acoustique. Le Zouglou, c'est l'identité ivoirienne. Quel message ?",
+        choices: [
+            { text: "Dans la vie des gbê, y'a pas drap pour celui qui se bat ! 🥁", quality: 'banger', effect: { buzz: 3, xp: 25 }, msg: "Les étudiants et les vieux pères te saluent. Vrai Zouglou !" },
+            { text: "On a commencé en bas, aujourd'hui Dieu a mis sa main. 🤲🏾", quality: 'banger', effect: { buzz: 2, cash: 15000 }, msg: "Les maquis jouent ton son en boucle le dimanche après-midi." },
+            { text: "La galère est notre grand frère, mais la réussite sera notre femme ! 💍", quality: 'banger', effect: { buzz: 2, xp: 20 }, msg: "Très belle métaphore ! Les puristes du Zouglou valident." },
+            { text: "La vie à Babi est parfois difficile pour nous les jeunes.", quality: 'average', effect: { xp: 15 }, msg: "Un bon thème zouglou, mais ça manque d'anecdotes fortes." },
+            { text: "On se débrouille, on va s'en sortir un jour.", quality: 'average', effect: { xp: 10 }, msg: "Classique, le message passe bien dans les cabarets." },
+            { text: "J'ai un Glock sous la veste, je tire sur mes ennemis. 🔫", quality: 'flop', effect: { buzz: -3, energy: -15 }, msg: "Violence gratuite sur du Zouglou ? Le public est choqué." },
+            { text: "Je n'aime pas le garba, ça me donne mal au ventre. 🤢", quality: 'flop', effect: { buzz: -3, xp: -10 }, msg: "Insulter le plat national sur du Zouglou ? Haute trahison !" },
+            { text: "Autotune à fond, skrt skrt, yeah yeah ! 🤖", quality: 'flop', effect: { buzz: -2, energy: -10 }, msg: "Sacrilège ! Les puristes du woyô t'ont chassé de la scène." }
+        ]
+    },
+
+    // ==========================================
+    // 🏎️ TRAP / EGO TRIP (Flex, Argent, Vitesse)
+    // ==========================================
+    'trap_ego': {
+        prompt: "Hi-hats rapides, grosses 808. C'est de la Trap pure, moment de flexer et montrer qui est le boss.",
+        choices: [
+            { text: "Mon poignet brille tellement qu'il donne l'heure au soleil ! 💎", quality: 'banger', effect: { buzz: 3, xp: 20 }, msg: "Punchline arrogante parfaitement dosée !" },
+            { text: "Ils parlent dans mon dos, mais ils sont loin dans mon rétro. 🏎️", quality: 'banger', effect: { buzz: 2, cash: 20000 }, msg: "L'attitude de boss attire les regards et les sponsors." },
+            { text: "Je rachète ton label avec l'argent de mon petit-déjeuner. 🥐", quality: 'banger', effect: { buzz: 3, xp: 15 }, msg: "Insolence niveau maximum ! Le game tremble." },
+            { text: "Je suis riche, j'ai beaucoup de billets dans mes poches.", quality: 'average', effect: { cash: 5000, xp: 10 }, msg: "Un peu basique pour de l'ego trip, mais la prod rattrape." },
+            { text: "Mon flow est rapide, je cours plus vite que vous.", quality: 'average', effect: { xp: 5 }, msg: "Bien exécuté, sans faire de vagues." },
+            { text: "J'avoue, parfois je doute de mon talent et je pleure... 🥺", quality: 'flop', effect: { buzz: -2, energy: -10 }, msg: "Zéro street cred ! La Trap demande de la confiance en soi." },
+            { text: "S'il vous plaît, streamez mon son, je suis fauché. 🤲🏾", quality: 'flop', effect: { buzz: -3, energy: -15 }, msg: "La mendicité sur de la Trap ? Le public rigole de toi." },
+            { text: "J'ai pris un crédit pour louer la voiture du clip. 📝", quality: 'flop', effect: { buzz: 2, xp: -10 }, msg: "Gros bad buzz ! Tu as avoué ta fausse vie riche en public." }
+        ]
+    },
+
+    // ==========================================
+    // 🤲🏾 TRAP CONSCIENTE (Message, Réflexion)
+    // ==========================================
+    'conscient': {
+        prompt: "Piano mélancolique. L'heure est au message profond.",
+        choices: [
+            { text: "Maman a trop pleuré, j'ai juré de la mettre à l'abri. 🙏🏾", quality: 'banger', effect: { xp: 30, buzz: 2 }, msg: "Magnifique plume ! Le message touche les cœurs." },
+            { text: "On dormait au salon, aujourd'hui c'est le penthouse. 🏢", quality: 'banger', effect: { cash: 15000, buzz: 1 }, msg: "Un message d'espoir qui motive les jeunes du quartier." },
+            { text: "Le diplôme ne nourrit plus, la rue est devenue la vraie fac. 🎓", quality: 'banger', effect: { buzz: 3, xp: 25 }, msg: "Gros impact ! Toute la jeunesse se reconnaît dans ton texte." },
+            { text: "La vie est dure, il faut beaucoup travailler pour réussir.", quality: 'average', effect: { xp: 10 }, msg: "Le message est positif mais manque un peu de poésie." },
+            { text: "Je pense à l'avenir et je me dis que c'est compliqué.", quality: 'average', effect: { xp: 5 }, msg: "C'est un peu déprimant, mais ça passe sur le piano." },
+            { text: "Je claque 10 millions en boîte tous les soirs ! 🤑", quality: 'flop', effect: { buzz: 3, energy: -15 }, msg: "Indécence totale ! Gros scandale pour cette arrogance (+3 Buzz)." },
+            { text: "Twerk, twerk, bouge ton boule sur le piano ! 🍑", quality: 'flop', effect: { buzz: -3, xp: -10 }, msg: "Hors-sujet complet. Tu as détruit la vibe de l'instrumentale." },
+            { text: "Je n'ai rien à dire en fait, écoutez juste le piano. 🎹", quality: 'flop', effect: { buzz: -2, xp: -15 }, msg: "Le public te trouve fainéant et passe à la chanson suivante." }
+        ]
+    }
+};
     
 
 // ==========================================
@@ -1639,6 +1778,21 @@ function renderActions() {
         
         list.appendChild(div);
     });
+}
+    function resolveLyricsMinigame(choice, styleId) {
+    // 1. Ajouter l'effet direct instantané (sans toucher aux fans)
+    if (choice.effect.buzz) game.player.buzz = Math.max(0, Math.min(100, game.player.buzz + choice.effect.buzz));
+    if (choice.effect.xp) game.player.xp += choice.effect.xp;
+    if (choice.effect.cash) game.player.cash += choice.effect.cash;
+    if (choice.effect.energy) game.player.energy = Math.max(0, game.player.energy + choice.effect.energy);
+
+    // 2. Afficher ce qu'il s'est passé au studio
+    const typeNotif = choice.quality === 'banger' ? 'success' : (choice.quality === 'flop' ? 'error' : 'info');
+    notify(choice.msg, typeNotif);
+
+    // 3. Lancer la création normale du son (sans aucun multiplicateur ajouté)
+    // On appelle la fonction de ton algorithme de base qui gère le reste
+    finishCreateSong(styleId);
 }
 
 function getMultiplier(type) {
