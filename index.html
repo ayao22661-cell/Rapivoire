@@ -951,91 +951,293 @@ const BEATS_POOL = [
 ];
 
 const SHOP_ITEMS = [
-    // --- NIVEAU DÉBUTANT / INTERMÉDIAIRE ---
+    { 
+        id: 'item_ringlight', 
+        name: "Ring Light & Trépied", 
+        desc: "L'équipement de base pour tes freestyles TikTok. (+1% Fans gagnés).", 
+        price: 100000, 
+        icon: "💡", 
+        type: 'fans_multiplier', 
+        boost: 0.01 
+    },
+    { 
+        id: 'item_mic', 
+        name: "Microphone Semi-Pro", 
+        desc: "Fini les enregistrements au téléphone. Qualité de tes sons augmentée (+2%).", 
+        price: 250000, 
+        icon: "🎙️", 
+        type: 'quality_boost', 
+        boost: 2 
+    },
+    { 
+        id: 'item_software', 
+        name: "Licence Auto-Tune Pro", 
+        desc: "Le secret des hits urbains. Ta voix est parfaitement mixée (+3% Qualité).", 
+        price: 350000, 
+        icon: "🎛️", 
+        type: 'quality_boost', 
+        boost: 3 
+    },
     { 
         id: 'item_drip', 
-        name: "Garde-robe de Luxe (Drip)", 
-        desc: "Des sapes de créateurs. Augmente ton charisme et tes fans gagnés (+10%).", 
+        name: "Garde-robe de Marque (Drip)", 
+        desc: "Des sapes de créateurs. Améliore ton image (+2% Fans gagnés).", 
         price: 500000, 
-        icon: "✦", // Plus sobre que le blouson
+        icon: "👕", 
         type: 'fans_multiplier', 
-        boost: 0.10 
+        boost: 0.02 
+    },
+    { 
+        id: 'item_camera', 
+        name: "Appareil Photo Pro", 
+        desc: "Pour des covers et shootings impeccables. Multiplie l'XP gagné (+2%).", 
+        price: 800000, 
+        icon: "📸", 
+        type: 'xp_multiplier', 
+        boost: 0.02 
+    },
+    { 
+        id: 'item_sneakers', 
+        name: "Sneakers Édition Limitée", 
+        desc: "Les collectionneurs valident ton style. Petit boost d'image (+2% Fans).", 
+        price: 1200000, 
+        icon: "👟", 
+        type: 'fans_multiplier', 
+        boost: 0.02 
     },
     { 
         id: 'item_smartphone', 
         name: "Dernier Smartphone Pro", 
-        desc: "Qualité 4K pour tes réseaux (TikTok, Insta). Petit boost de fans (+5%).", 
+        desc: "Qualité 4K pour tes réseaux sociaux. Boost supplémentaire (+3% Fans).", 
         price: 1500000, 
         icon: "📱", 
         type: 'fans_multiplier', 
-        boost: 0.05 
+        boost: 0.03 
     },
     { 
         id: 'item_chaine', 
         name: "Chaîne en Diamant VVS", 
-        desc: "Le vrai symbole de la réussite. Gros boost de Buzz direct !", 
+        desc: "Le symbole de la réussite. Coup de projecteur immédiat (+10 Buzz).", 
         price: 2500000, 
-        icon: "◆", // Représentation géométrique du diamant
+        icon: "💎", 
         type: 'buzz_boost', 
-        boost: 50 
+        boost: 10 
+    },
+    { 
+        id: 'item_grillz', 
+        name: "Grillz en Or Massif", 
+        desc: "Ton sourire brille dans tous tes clips. (+12 Buzz).", 
+        price: 3000000, 
+        icon: "😬", 
+        type: 'buzz_boost', 
+        boost: 12 
     },
     { 
         id: 'item_homestudio', 
         name: "Home Studio Pro", 
-        desc: "Enregistre à la maison. Qualité minimale de tes sons augmentée (+10%).", 
+        desc: "Enregistre à la maison avec une vraie carte son. Qualité augmentée (+5%).", 
         price: 4000000, 
-        icon: "🎤", 
+        icon: "🎧", 
         type: 'quality_boost', 
-        boost: 10 
+        boost: 5 
     },
-
-    // --- NIVEAU STAR ---
+    { 
+        id: 'item_cm', 
+        name: "Community Manager", 
+        desc: "Un pro gère tes réseaux et répond aux haters. (+4% Fans gagnés).", 
+        price: 6000000, 
+        icon: "💻", 
+        type: 'fans_multiplier', 
+        boost: 0.04 
+    },
+    { 
+        id: 'item_manager', 
+        name: "Manager Expérimenté", 
+        desc: "Il optimise tes rendez-vous et tes contrats. Multiplie l'XP gagné (+5%).", 
+        price: 10000000, 
+        icon: "👔", 
+        type: 'xp_multiplier', 
+        boost: 0.05 
+    },
+    { 
+        id: 'item_bodyguard', 
+        name: "Garde du Corps (Gros Bras)", 
+        desc: "Tu te déplaces en sécurité. Tu restes concentré sur ta musique (+6% XP).", 
+        price: 12000000, 
+        icon: "🦍", 
+        type: 'xp_multiplier', 
+        boost: 0.06 
+    },
     { 
         id: 'item_beatmaker', 
         name: "Beatmaker Exclusif", 
-        desc: "Un producteur attitré pour des prods sur mesure. Qualité des sons (+20%).", 
+        desc: "Un producteur attitré pour des prods sur mesure. Qualité des sons (+8%).", 
         price: 15000000, 
         icon: "🎹", 
         type: 'quality_boost', 
-        boost: 20 
+        boost: 8 
+    },
+    { 
+        id: 'item_tesla', 
+        name: "Tesla Model Y", 
+        desc: "Design futuriste et écologique. Ton premier vrai gamos. (+4% Fans).", 
+        price: 20000000, 
+        icon: "⚡", 
+        type: 'fans_multiplier', 
+        boost: 0.04 
     },
     { 
         id: 'item_rolex', 
         name: "Montre de Luxe (Rolex)", 
-        desc: "L'heure c'est l'heure, mais en diamants. Énorme boost de Buzz !", 
+        desc: "L'heure c'est l'heure, mais en diamants. Gros boost de notoriété (+20 Buzz).", 
         price: 25000000, 
         icon: "⌚", 
         type: 'buzz_boost', 
-        boost: 150 
+        boost: 20 
+    },
+    { 
+        id: 'item_stylist', 
+        name: "Styliste Personnel", 
+        desc: "Tu es toujours à la pointe de la mode dans tes apparitions. (+5% Fans).", 
+        price: 30000000, 
+        icon: "✂️", 
+        type: 'fans_multiplier', 
+        boost: 0.05 
+    },
+    { 
+        id: 'item_ghostwriter', 
+        name: "Plume de l'Ombre (Ghostwriter)", 
+        desc: "Un parolier secret écrit tes meilleurs refrains. (+10% Qualité).", 
+        price: 35000000, 
+        icon: "✍️", 
+        type: 'quality_boost', 
+        boost: 10 
+    },
+    { 
+        id: 'item_range', 
+        name: "Range Rover Sport", 
+        desc: "Le véhicule de prédilection des stars à Babi. Gain d'expérience optimisé (+8% XP).", 
+        price: 45000000, 
+        icon: "🚙", 
+        type: 'xp_multiplier', 
+        boost: 0.08 
+    },
+    { 
+        id: 'item_studio_pro', 
+        name: "Studio d'Enregistrement Privé", 
+        desc: "Ton propre studio haut de gamme avec ingé son. Qualité (+12%).", 
+        price: 50000000, 
+        icon: "🎛️", 
+        type: 'quality_boost', 
+        boost: 12 
     },
     { 
         id: 'item_gclass', 
         name: "Mercedes Classe G", 
-        desc: "Tu roules comme un boss. Multiplie l'XP gagné à chaque action (+20%).", 
+        desc: "Tu roules comme un vrai parrain. Attire le respect (+8% Fans).", 
         price: 85000000, 
-        icon: "🚗", 
-        type: 'xp_multiplier', 
-        boost: 0.20 
+        icon: "⬛", 
+        type: 'fans_multiplier', 
+        boost: 0.08 
     },
-
-    // --- NIVEAU LÉGENDE DU GAME ---
+    { 
+        id: 'item_ferrari', 
+        name: "Ferrari F8 Tributo", 
+        desc: "Sportive rouge ultra agressive. Tu vas trop vite pour les jaloux (+10% XP).", 
+        price: 100000000, 
+        icon: "🏎️", 
+        type: 'xp_multiplier', 
+        boost: 0.10 
+    },
+    { 
+        id: 'item_assinie', 
+        name: "Résidence à Assinie", 
+        desc: "Ta maison secondaire au bord de l'eau pour les week-ends VIP (+8% Fans).", 
+        price: 120000000, 
+        icon: "🌴", 
+        type: 'fans_multiplier', 
+        boost: 0.08 
+    },
+    { 
+        id: 'item_urus', 
+        name: "Lamborghini Urus", 
+        desc: "Le SUV le plus rapide et le plus tape-à-l'œil du marché. (+12% XP).", 
+        price: 150000000, 
+        icon: "🐂", 
+        type: 'xp_multiplier', 
+        boost: 0.12 
+    },
+    { 
+        id: 'item_richardmille', 
+        name: "Montre Richard Mille", 
+        desc: "La montre des milliardaires. Un flex intersidéral ! (+30 Buzz).", 
+        price: 200000000, 
+        icon: "⏱️", 
+        type: 'buzz_boost', 
+        boost: 30 
+    },
     { 
         id: 'item_villa', 
-        name: "Villa à la Riviera / Miami", 
-        desc: "Le sommet du Game. 50% de fans en plus à chaque action !", 
+        name: "Villa à la Riviera Golf", 
+        desc: "Le sommet de la réussite immobilière. Ta vie fait rêver les autres (+10% Fans).", 
         price: 250000000, 
-        icon: "🏛️", // Icône d'édifice/manoir classique, plus "luxe" que la petite maison
+        icon: "🏛️", 
         type: 'fans_multiplier', 
-        boost: 0.50 
+        boost: 0.10 
+    },
+    { 
+        id: 'item_yacht', 
+        name: "Yacht sur la Lagune", 
+        desc: "Tu organises des soirées privées inoubliables sur l'eau (+12% Fans).", 
+        price: 350000000, 
+        icon: "🛥️", 
+        type: 'fans_multiplier', 
+        boost: 0.12 
+    },
+    { 
+        id: 'item_club', 
+        name: "Propriétaire de Boîte de Nuit", 
+        desc: "Ton propre club VIP ! Tu gères le milieu de la nuit (+15% XP).", 
+        price: 500000000, 
+        icon: "🪩", 
+        type: 'xp_multiplier', 
+        boost: 0.15 
+    },
+    { 
+        id: 'item_penthouse', 
+        name: "Penthouse au Plateau", 
+        desc: "Un appartement de verre avec vue sur tout Abidjan (+15% Fans).", 
+        price: 750000000, 
+        icon: "🏢", 
+        type: 'fans_multiplier', 
+        boost: 0.15 
+    },
+    { 
+        id: 'item_bugatti', 
+        name: "Bugatti Chiron", 
+        desc: "L'hypercar par excellence. Il n'y en a qu'une au pays et c'est la tienne (+18% XP).", 
+        price: 1000000000, 
+        icon: "🏁", 
+        type: 'xp_multiplier', 
+        boost: 0.18 
     },
     { 
         id: 'item_jet', 
         name: "Jet Privé", 
-        desc: "Tu ne touches plus le sol. Le statut de légende absolue. Fans x2 (+100%) !", 
+        desc: "Tu ne touches plus le sol. Le statut de légende absolue. (+20% Fans).", 
         price: 1500000000, 
-        icon: "✈︎", // Symbole d'avion stylisé et fin, au lieu de l'émoji cartoon
+        icon: "✈︎", 
         type: 'fans_multiplier', 
-        boost: 1.00 
+        boost: 0.20 
+    },
+    { 
+        id: 'item_island', 
+        name: "Île Privée", 
+        desc: "Tu as littéralement acheté une partie de la planète. Tu es le boss final (+25% Fans).", 
+        price: 3000000000, 
+        icon: "🏝️", 
+        type: 'fans_multiplier', 
+        boost: 0.25 
     }
 ];
 
