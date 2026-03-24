@@ -318,6 +318,16 @@ body {
     </div>
 
     <div id="global-notif" class="notif-banner">Message de notification</div>
+    <div id="lyrics-overlay" class="fixed inset-0 bg-black/90 backdrop-blur-md z-[600] hidden flex-col items-center justify-center p-4">
+    <div class="bg-[#15161D] border border-white/10 w-full max-w-md rounded-2xl overflow-hidden shadow-2xl relative">
+        <div class="p-5 border-b border-white/5 bg-[#1C1D26] text-center">
+            <h3 class="text-white font-black text-xl italic uppercase text-info">📝 CHOIX DU COUPLET</h3>
+            <p id="lyrics-prompt" class="text-xs text-zinc-400 mt-2">Choisis la bonne phrase pour l'instru...</p>
+        </div>
+        <div id="lyrics-choices" class="p-4 flex flex-col gap-3">
+            </div>
+    </div>
+</div>
     
     <div id="clash-overlay" class="fixed inset-0 bg-black/90 backdrop-blur-md z-[300] hidden flex items-center justify-center p-4">
     <div class="bg-[#15161D] border border-white/10 w-full max-w-md rounded-2xl overflow-hidden shadow-2xl">
@@ -494,11 +504,15 @@ body {
             <div class="glass-card">
                 <label class="text-[10px] font-bold text-zinc-400 block mb-3 uppercase tracking-widest">Thème des Lyrics</label>
                 <select id="select-song-theme" class="w-full bg-black/40 border border-white/10 p-4 rounded-xl outline-none text-sm font-bold text-white appearance-none">
-                    <option value="rue">La Rue & Le Hustle (Boost Buzz)</option>
-                    <option value="love">Amour & Goumin (Boost Fans)</option>
-                    <option value="fete">Fête & Coupé-Décalé (Équilibré)</option>
-                    <option value="clash">Clash / Ego Trip (Risqué mais fort)</option>
-                </select>
+    <option value="drill">Drill Ivoire (Sombre & Agressif)</option>
+    <option value="rap_nouchi">Rap Nouchi (Rue & Maquis)</option>
+    <option value="trap_ego">Trap Ego Trip (Argent & Flex)</option>
+    <option value="afrobeat">Afrobeat (Groove Continental)</option>
+    <option value="afro_love">Afro Love (Amour & Zouk)</option>
+    <option value="ambiance">Coupé-Décalé (Fête & Farotage)</option>
+    <option value="zouglou">Zouglou Urbain (Identité & Vérité)</option>
+    <option value="conscient">Trap Consciente (Message Profond)</option>
+</select>
             </div>
 
             <button onclick="startRecording()" class="pill-button bg-info text-black h-16 text-lg w-full font-black shadow-[0_0_20px_rgba(30,144,255,0.4)] border-none">
@@ -1879,7 +1893,11 @@ function renderStudioBeats() {
 }
     
 
+// Variable pour garder en mémoire les données du son pendant que le joueur choisit ses paroles
+let pendingSongData = null;
+
 function startRecording() {
+    // 1. Tes vérifications d'origine
     if(game.player.energy < 50) { notify("Tu es trop fatigué (50⚡ requis)."); return; }
     
     const nameInput = document.getElementById('input-song-name').value.trim();
@@ -1898,6 +1916,83 @@ function startRecording() {
 
     if(game.player.cash < price) { notify("Pas assez d'argent pour cette instru !"); return; }
     
+    // 2. On sauvegarde les infos et on lance le mini-jeu au lieu de payer tout de suite
+    pendingSongData = {
+        name: name,
+        theme: theme,
+        beat: beat,
+        price: price
+    };
+
+    startLyricsMinigame(theme);
+}
+
+// ==========================================
+// LOGIQUE DU MINI-JEU DES PAROLES
+// ==========================================
+
+function getThreeRandomChoices(styleId) {
+    const styleData = LYRICS_MINIGAME[styleId];
+    if (!styleData || !styleData.choices) return [];
+    
+    const shuffled = [...styleData.choices].sort(() => 0.5 - Math.random());
+    return shuffled.slice(0, 3);
+}
+
+function startLyricsMinigame(styleId) {
+    const styleData = LYRICS_MINIGAME[styleId];
+    
+    // Si le style n'existe pas dans LYRICS_MINIGAME, on crée le son directement
+    if (!styleData) {
+        finishRecording();
+        return;
+    }
+
+    const overlay = document.getElementById('lyrics-overlay');
+    const promptEl = document.getElementById('lyrics-prompt');
+    const choicesContainer = document.getElementById('lyrics-choices');
+
+    promptEl.textContent = styleData.prompt;
+    choicesContainer.innerHTML = '';
+
+    const choices = getThreeRandomChoices(styleId);
+    
+    choices.forEach(choice => {
+        const btn = document.createElement('button');
+        btn.className = 'pill-button btn-secondary text-left w-full h-auto py-4 px-5 items-start text-xs leading-relaxed border-white/10 hover:border-info/50';
+        btn.innerHTML = `<span class="block">${choice.text}</span>`;
+        btn.onclick = () => resolveLyricsMinigame(choice);
+        choicesContainer.appendChild(btn);
+    });
+
+    overlay.classList.remove('hidden');
+}
+
+function resolveLyricsMinigame(choice) {
+    document.getElementById('lyrics-overlay').classList.add('hidden');
+
+    // Appliquer les petits bonus/malus du choix (sans toucher aux fans)
+    if (choice.effect) {
+        if (choice.effect.buzz) game.player.buzz = Math.max(0, Math.min(100, game.player.buzz + choice.effect.buzz));
+        if (choice.effect.xp) addXP(choice.effect.xp); // Utilise ta fonction addXP existante
+        if (choice.effect.cash) game.player.cash += choice.effect.cash;
+        if (choice.effect.energy) game.player.energy = Math.max(0, game.player.energy + choice.effect.energy);
+    }
+
+    const typeNotif = choice.quality === 'banger' ? 'success' : (choice.quality === 'flop' ? 'error' : 'info');
+    notify(choice.msg, typeNotif);
+
+    // On valide la création de la chanson
+    finishRecording();
+}
+
+function finishRecording() {
+    if (!pendingSongData) return;
+
+    // On récupère tes variables d'origine
+    const { name, theme, beat, price } = pendingSongData;
+
+    // EXACTEMENT TA SUITE DE CODE ORIGINALE :
     // Pay costs
     game.player.cash -= price;
     game.player.energy -= 50;
@@ -1934,8 +2029,9 @@ function startRecording() {
     addNews(`Nouveau son enregistré : "${name}" (${finalQuality}% Qualité)`, "success");
     notify(`Enregistrement terminé !`);
     
-    // Clean input
+    // Clean input et data
     document.getElementById('input-song-name').value = "";
+    pendingSongData = null;
 }
 
 // ==========================================
