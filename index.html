@@ -1309,75 +1309,71 @@ const PERKS_TREE = {
     biz: { name: "Sens des Affaires", desc: "Réduit les coûts du studio et des concerts.", levels: [1, 0.9, 0.8, 0.75, 0.6], cost: [2, 3, 4, 5] }
 };
 const RANDOM_EVENTS = [
-    { title: "Bad Buzz", desc: "Une ancienne vidéo gênante a fuité.", effect: { fans: -100, buzz: 10 }, type: 'negative' },
-    { title: "Validation !", desc: "Un grand footballeur ivoirien a partagé ton son.", effect: { fans: 500, buzz: 15, cash: 0 }, type: 'positive' },
-    { title: "Problème de Producteur", desc: "Ton producteur a supprimé ton dernier projet par erreur.", effect: { energy: -30, cash: -5000 }, type: 'negative' },
-    { title: "Cadeau du Parrain", desc: "Un 'Vieux Père' du quartier croit en toi et te donne une enveloppe.", effect: { cash: 25000 }, type: 'positive' },
-    { title: "Inspiration Nocturne", desc: "Tu as rêvé d'un refrain incroyable.", effect: { xp: 50, energy: 20 }, type: 'positive' }
-    // MALUS
-    ,{ title: "CIE : Délestage", desc: "Coupure de courant au studio, la session est annulée.", effect: { energy: -20, cash: -1000 }, type: 'negative' },
-    { title: "Bad Buzz : Vidéo fuité", desc: "Une vidéo gênante de toi tourne sur WhatsApp.", effect: { fans: -150, buzz: 40 }, type: 'negative' },
-    { title: "Faux billets", desc: "Le promoteur t'a payé avec des faux billets de 10.000.", effect: { cash: -20000 }, type: 'negative' },
-    { title: "Paludisme", desc: "Une crise de palu te cloue au lit toute la semaine.", effect: { energy: -50, cash: -2000 }, type: 'negative' },
-    { title: "Embrouille au Maquis", desc: "Une bagarre éclate et tu dois payer les dégâts.", effect: { cash: -15000, energy: -10 }, type: 'negative' },
-    { title: "Boycott Radio", desc: "Un animateur puissant refuse de passer tes sons.", effect: { buzz: -10, fans: -100 }, type: 'negative' },
-    { title: "Matos Volé", desc: "On a forcé ta voiture, ton PC de studio est parti.", effect: { cash: -50000, xp: -20 }, type: 'negative' },
-    { title: "Clash Injuste", desc: "Une star te traite de 'petit' en interview.", effect: { fans: -50, energy: -10 }, type: 'negative' },
+    // ==========================================
+    // --- ÉVÉNEMENTS NÉGATIFS (MALUS) ---
+    // ==========================================
+    { title: "CIE : Délestage", desc: "Coupure de courant au studio, la session est annulée. L'ingé son garde l'avance.", effect: { energy: -20, cash: -150000 }, type: 'negative' },
+    { title: "Bad Buzz : Vidéo fuité", desc: "Une vidéo gênante de toi tourne sur WhatsApp. Grosse perte d'image.", effect: { fans: -25000, buzz: -15 }, type: 'negative' },
+    { title: "Faux billets", desc: "Le promoteur t'a payé avec de faux billets à la fin du showcase.", effect: { cash: -300000 }, type: 'negative' },
+    { title: "Paludisme", desc: "Une méchante crise de palu te cloue au lit toute la semaine. Frais de clinique salés.", effect: { energy: -50, cash: -250000 }, type: 'negative' },
+    { title: "Embrouille au Maquis", desc: "Une bagarre éclate, tu dois payer les chaises cassées pour éviter la police.", effect: { cash: -500000, energy: -15 }, type: 'negative' },
+    { title: "Boycott Radio", desc: "Un animateur puissant refuse de passer tes sons. Tu perds en visibilité.", effect: { buzz: -10, fans: -10000 }, type: 'negative' },
+    { title: "Matos Volé", desc: "On a forcé ta voiture, ton Mac de studio est parti avec tes maquettes.", effect: { cash: -1200000, xp: -50 }, type: 'negative' },
+    { title: "Clash Injuste", desc: "Une star te traite de 'petit' en interview. Tes fans sont humiliés.", effect: { fans: -15000, energy: -10 }, type: 'negative' },
+    
     // --- MALUS RAP IVOIRE ---
-    { title: "Le Coup du Vieux Père", desc: "Un grand du game a supprimé ton feat car tu n'as pas fait 'Atalaku' pour lui.", effect: { fans: -200, buzz: -10 }, type: 'negative' },
-    { title: "Direct de 'L'Avocat' ", desc: "Un blogueur t'a 'allumé' dans un direct de 2h. Le public doute.", effect: { fans: -500, buzz: 50 }, type: 'negative' },
-    { title: "Gnamakoudji", desc: "Tu as bu un jus frelaté en tournage, intoxication alimentaire.", effect: { energy: -40, cash: -5000 }, type: 'negative' },
-    { title: "Boycott des DJs", desc: "Les DJs de la Rue Princesse disent que tu es devenu hautain.", effect: { buzz: -20, fans: -300 }, type: 'negative' },
-    { title: "Faux Manager", desc: "Ton manager est parti avec l'argent de ton dernier showcase.", effect: { cash: -100000, xp: -30 }, type: 'negative' },
-    { title: "Embrouille à Babi", desc: "Ta voiture a été caillassée après un concert qui a mal fini.", effect: { cash: -40000, energy: -20 }, type: 'negative' },
-    
+    { title: "Le Coup du Vieux Père", desc: "Un grand du game a supprimé ton feat car tu n'as pas fait 'Atalaku' pour lui.", effect: { fans: -30000, buzz: -10 }, type: 'negative' },
+    { title: "Direct de 'L'Avocat' ", desc: "Un blogueur t'a 'allumé' dans un direct de 2h. Le public doute de toi.", effect: { fans: -50000, buzz: 12, energy: -20 }, type: 'negative' }, // Le bad buzz donne un peu de visibilité (+12), mais tue les fans
+    { title: "Gnamakoudji", desc: "Tu as bu un jus frelaté sur un tournage. Grosse intoxication alimentaire.", effect: { energy: -40, cash: -100000 }, type: 'negative' },
+    { title: "Boycott des DJs", desc: "Les DJs de la Rue Princesse disent que tu as pris la grosse tête.", effect: { buzz: -12, fans: -40000 }, type: 'negative' },
+    { title: "Faux Manager", desc: "Ton manager est parti avec l'avance de ton prochain concert !", effect: { cash: -2000000, xp: -30 }, type: 'negative' },
+    { title: "Embrouille à Babi", desc: "Ta voiture a été caillassée après un show qui a mal fini.", effect: { cash: -800000, energy: -20 }, type: 'negative' },
 
-    // BONUS
-    { title: "Validation d'une Légende", desc: "Une icône du rap a porté ton T-shirt en vidéo.", effect: { fans: 400, buzz: 20 }, type: 'positive' },
-    { title: "Cadeau d'un Parrain", desc: "Un vieux père te donne une enveloppe pour t'encourager.", effect: { cash: 30000 }, type: 'positive' },
-    { title: "Challenge Viral", desc: "Des écolières ont lancé une danse sur ton refrain.", effect: { fans: 1000, buzz: 30, xp: 20 }, type: 'positive' },
-    { title: "Inspiration Divine", desc: "Tu as écrit le hit de l'année en 10 minutes.", effect: { xp: 100, energy: 30 }, type: 'positive' },
-    { title: "Passage TV gratuit", desc: "Tu es l'invité surprise d'une grosse émission.", effect: { fans: 300, buzz: 15 }, type: 'positive' },
-    { title: "Sponsor imprévu", desc: "Une marque de boisson t'offre un contrat d'image.", effect: { cash: 60000, buzz: 5 }, type: 'positive' },
-    { title: "Réconciliation", desc: "Ton pire ennemi te fait un câlin en direct. La Côte d'Ivoire jubile !", effect: { fans: 1500, xp: 50 }, type: 'positive' },
-    { title: "Atalaku en boîte", desc: "Le DJ a crié ton nom toute la nuit au VIP.", effect: { buzz: 10, fans: 100 }, type: 'positive' },
+    // ==========================================
+    // --- ÉVÉNEMENTS POSITIFS (BONUS) ---
+    // ==========================================
+    { title: "Validation d'une Légende", desc: "Une icône du rap a porté ton T-shirt en vidéo. La Côte d'Ivoire est fière !", effect: { fans: 50000, buzz: 15 }, type: 'positive' },
+    { title: "Cadeau du Parrain", desc: "Un 'Vieux Père' influent te donne une enveloppe pour t'encourager.", effect: { cash: 1500000 }, type: 'positive' },
+    { title: "Challenge Viral", desc: "Des écolières ont lancé une danse sur ton refrain. C'est sur tous les téléphones !", effect: { fans: 75000, buzz: 15, xp: 50 }, type: 'positive' },
+    { title: "Inspiration Divine", desc: "Tu as écrit le hit de l'année en 10 minutes à 3h du matin.", effect: { xp: 150, energy: 30 }, type: 'positive' },
+    { title: "Passage TV gratuit", desc: "Tu es l'invité surprise d'une grosse émission du midi.", effect: { fans: 40000, buzz: 10 }, type: 'positive' },
+    { title: "Sponsor imprévu", desc: "Une marque locale te paie pour un simple placement de produit en story.", effect: { cash: 800000, buzz: 5 }, type: 'positive' },
+    { title: "Réconciliation", desc: "Ton pire ennemi te fait un câlin en public. Le pays jubile !", effect: { fans: 100000, xp: 100, buzz: 10 }, type: 'positive' },
+    
     // --- BONUS RAP IVOIRE ---
-    { title: "Challenge de 'La Go' ", desc: "La plus belle influenceuse de Babi a dansé sur ton son. Explosion de fans !", effect: { fans: 2000, buzz: 40 }, type: 'positive' },
-    { title: "Farotage au VIP", desc: "Un boucantier t'a lancé des billets sur scène. C'est le travail !", effect: { cash: 75000, buzz: 10 }, type: 'positive' },
-    { title: "Le 'Vieux' valide", desc: "A'Salfo a dit du bien de toi dans une interview.", effect: { fans: 1000, xp: 100 }, type: 'positive' },
-    { title: "Son de Maquis", desc: "Ton refrain est devenu le cri de ralliement des fêtards.", effect: { cash: 20000, buzz: 30, fans: 500 }, type: 'positive' },
-    { title: "Force des Chauffeurs", desc: "Tous les Gbakas et Woro-woro jouent ton son en boucle.", effect: { fans: 3000, buzz: 20 }, type: 'positive' },
-    { title: "Sponsor 'Babi'", desc: "Une marque de mèche ou de boisson veut ton visage sur les panneaux.", effect: { cash: 150000, buzz: 5 }, type: 'positive' },
-    // --- LES MÉDIAS & ANIMATEURS ---
-    ,{ title: "L'Heure de Vérité", desc: "Willy-Dumbo-Serré t'invite sur son plateau. Tu dois faire une improvisation devant toute la nation.", effect: { xp: 40, buzz: 30, fans: 100 }, type: 'positive' },
-    { title: "Le Direct de l'Avocat", desc: "Le blogueur Le-Père-Dalo a découvert un secret sur ton passé. La toile réclame des comptes.", effect: { buzz: 80, fans: -500, energy: -20 }, type: 'negative' },
-    { title: "Recadrage de Barthé-M", desc: "L'animateur Barthé-M dit que tes paroles sont trop 'légères'. Les vieux parents commencent à te boycotter.", effect: { fans: -200, buzz: -10 }, type: 'negative' },
-    { title: "Le Journal de la RTI", desc: "Mariam-Coulib-Z te mentionne comme l'espoir du Rap Ivoire au JT de 20h.", effect: { fans: 2000, buzz: 15, cash: 0 }, type: 'positive' },
-    // --- RIVALITÉS COUPE-DÉCALÉ ---
-    ,{ title: "Défi de Safar-K", desc: "La go de l'espace Safar-K te défie sur un pas de danse. Tu es ridicule, la vidéo devient un meme.", effect: { buzz: 100, fans: -50, energy: -10 }, type: 'negative' },
-    { title: "Hommage au Roi Araf", desc: "Tu as repris un classique du Daishi. La Chine te valide massivement !", effect: { fans: 5000, xp: 100, buzz: 20 }, type: 'positive' },
-    { title: "Bagarre avec Débordo-L", desc: "Le 'Maîtré-Maîtré' t'accuse de copier ses mélodies. Ça finit en insultes sur Facebook.", effect: { buzz: 120, fans: -100, energy: -30 }, type: 'negative' },
-    { title: "Feat avec Serge-Beyn", desc: "Le arrangeur sexy veut un refrain rap sur son prochain décalé. Succès commercial !", effect: { cash: 150000, fans: 800 }, type: 'positive' },
-    // --- PLUS DE CLASHS RAP ---
-    ,{ title: "Provocation de Black-K-O", desc: "Le membre du groupe 'La Force One' dit que ton rap est pour les bébés.", effect: { buzz: 40, energy: -10 }, type: 'negative' },
-    { title: "Le 'Vieux Père' Jojo-K", desc: "Jojo-K (le rappeur au sang) te donne sa bénédiction dans un freestyle.", effect: { xp: 150, fans: 300 }, type: 'positive' },
-    { title: "Pique de Kams-Touré", desc: "Le rappeur-businessman Kams-Touré dit que tu n'auras jamais son compte en banque.", effect: { cash: -5000, buzz: 50 }, type: 'negative' },
-    { title: "Réponse à Widgunz-Y", desc: "Le petit riche de Babi Widgunz-Y se moque de tes sapes de friperie.", effect: { buzz: 60, fans: -20 }, type: 'negative' },
-    { title: "Validation de Pay-On-Zen", desc: "Pay-On-Zen dit que ton écriture est la plus 'propre' de la nouvelle école.", effect: { xp: 100, fans: 400 }, type: 'positive' },
-    ,{ title: "Attaque de Didi-G", desc: "Le Shogun Didi-G te lance une pique : 'Tu rappes comme un livreur de pain'. Le buzz explose !", effect: { buzz: 80, fans: -50, energy: -15 }, type: 'negative' },
-    { title: "Réponse de Hym-Roi", desc: "Hym-Roi a fait un freestyle violent contre toi. La toile est en feu.", effect: { buzz: 90, fans: -100, energy: -20 }, type: 'negative' },
-    { title: "Le Syndicat frappe", desc: "Susu-94 refuse que tu joues à son concert car tu n'as pas payé la 'cotisation'.", effect: { fans: -300, buzz: 40 }, type: 'negative' },
-    { title: "Trip-Gnan te valide", desc: "Le rappeur le plus fou de Babi, Trip-Gnan, dit que tu es 'le seul vrai'.", effect: { fans: 500, buzz: 20, xp: 30 }, type: 'positive' },
-    { title: "Clash avec Elo-Fonk", desc: "Tu as répondu à Elo-Fonk sur Instagram. Les fans de la 'Team' te harcèlent.", effect: { buzz: 70, fans: -200, energy: -30 }, type: 'negative' },
-    { title: "Conseil de Jo-Sky", desc: "Jo-Sky te donne un conseil technique en studio. Tu gagnes en niveau.", effect: { xp: 80, energy: 10 }, type: 'positive' },
-    { title: "Le Coup de l'Ancien", desc: "Une légende (Kiff-No-B) te demande en feat mais veut 90% des droits.", effect: { cash: -50000, buzz: 30 }, type: 'negative' },
+    { title: "Challenge de 'La Go' ", desc: "La plus belle influenceuse de Babi a twerké sur ton son. Explosion des compteurs !", effect: { fans: 120000, buzz: 15 }, type: 'positive' },
+    { title: "Farotage au VIP", desc: "Un grand boucantier t'a lancé des liasses de billets sur scène. C'est le travail !", effect: { cash: 2500000, buzz: 5 }, type: 'positive' },
+    { title: "Le 'Vieux' valide", desc: "A'Salfo a dit du bien de toi dans une grande interview télévisée.", effect: { fans: 80000, xp: 150 }, type: 'positive' },
+    { title: "Son de Maquis", desc: "Ton refrain est devenu le cri de ralliement des fêtards de Yopougon.", effect: { cash: 500000, buzz: 12, fans: 60000 }, type: 'positive' },
+    { title: "Force des Chauffeurs", desc: "Tous les Gbakas et Woro-woro jouent ton son en boucle dans la ville.", effect: { fans: 150000, buzz: 10 }, type: 'positive' },
+
+    // ==========================================
+    // --- LES MÉDIAS & CLASHS ---
+    // ==========================================
+    { title: "L'Heure de Vérité", desc: "Willy Dumbo t'invite sur son plateau. Tu fais un freestyle d'anthologie !", effect: { xp: 100, buzz: 12, fans: 65000 }, type: 'positive' },
+    { title: "Recadrage de Barthé-M", desc: "L'animateur dit que tes paroles pervertissent la jeunesse. Les parents te boycottent.", effect: { fans: -40000, buzz: -10 }, type: 'negative' },
+    { title: "Le Journal de la RTI", desc: "On parle de toi comme le nouvel espoir de la musique au JT de 20h.", effect: { fans: 100000, buzz: 10 }, type: 'positive' },
+    
+    { title: "Défi de Safar-K", desc: "La go de l'espace te défie sur un pas de danse. Tu es ridicule, c'est un meme national.", effect: { buzz: 12, fans: -25000, energy: -10 }, type: 'negative' },
+    { title: "Hommage au Roi Araf", desc: "Tu as repris un classique du Daishi. La 'Chine' te valide massivement !", effect: { fans: 200000, xp: 150, buzz: 15 }, type: 'positive' },
+    { title: "Bagarre avec Débordo-L", desc: "Le 'Maîtré-Maîtré' t'accuse de le copier. Ça finit en grosses insultes.", effect: { buzz: 15, fans: -30000, energy: -30 }, type: 'negative' },
+    { title: "Feat avec Serge-Beyn", desc: "L'arrangeur aux doigts de fée te place sur un hit. Succès commercial garanti !", effect: { cash: 3000000, fans: 90000 }, type: 'positive' },
+    
+    { title: "Provocation de Black-K", desc: "Le membre du groupe dit que ton rap est pour les enfants. Tu perds en crédibilité.", effect: { buzz: -10, fans: -15000 }, type: 'negative' },
+    { title: "Le 'Vieux Père' Jojo-K", desc: "Le rappeur t'adoube dans un freestyle explosif.", effect: { xp: 200, fans: 50000 }, type: 'positive' },
+    { title: "Pique de Kams-T", desc: "Le rappeur-businessman se moque de ton compte en banque en direct.", effect: { buzz: 10, fans: -10000 }, type: 'negative' },
+    { title: "Attaque de Didi-B", desc: "Le Shogun te lance une pique : 'Tu rappes comme un livreur'.", effect: { buzz: 12, fans: -40000, energy: -15 }, type: 'negative' },
+    { title: "Trip-Gnan te valide", desc: "Le rappeur le plus déjanté de Babi dit que tu es 'le seul vrai'.", effect: { fans: 45000, buzz: 10, xp: 80 }, type: 'positive' },
+    { title: "Le Coup de l'Ancien", desc: "Une légende (Kiff-No-B) te demande en feat mais garde 100% des droits du clip.", effect: { cash: -1000000, buzz: 10, fans: 20000 }, type: 'negative' },
+
+    // ==========================================
     // --- INFLUENCEURS ---
-    ,{ title: "Conseils de Coach-Hamond", desc: "La coach te dit de te trouver un 'vrai travail'. Tes fans féminines rigolent.", effect: { fans: -100, buzz: 30 }, type: 'negative' },
-    { title: "Le Gô de Lolo-Beau", desc: "L'influenceuse Lolo-Beau montre ses seins sur ton morceau en story. Buzz immédiat !", effect: { buzz: 200, fans: 500, energy: -5 }, type: 'positive' },
-    { title: "Farotage de Molare-M", desc: "Le boss du showbiz Molare-M t'invite à sa table et te donne des conseils de business.", effect: { cash: 50000, xp: 50 }, type: 'positive' }
-    
-    
+    // ==========================================
+    { title: "Conseils de Coach-Hamond", desc: "La coach dit à ses caviars que tu n'es pas un bon parti. Tes fans féminines te lâchent.", effect: { fans: -35000, buzz: 10 }, type: 'negative' },
+    { title: "Le Gô de Lolo-Beau", desc: "L'influenceuse chante tes paroles en story. Le pays entier regarde !", effect: { buzz: 15, fans: 85000, energy: -5 }, type: 'positive' },
+    { title: "Farotage de Molare", desc: "Le boss du coupé-décalé t'invite à sa table et te connecte avec des patrons.", effect: { cash: 2000000, xp: 100 }, type: 'positive' }
 ];
+    
 
 // ==========================================
 // ETAT DU JEU (STATE)
