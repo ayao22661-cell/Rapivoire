@@ -1242,34 +1242,64 @@ const SHOP_ITEMS = [
 ];
 
 const CONCERT_VENUES = [
-    // --- Salles Locales (Côte d'Ivoire) ---
+    // ==========================================
+    // --- NIVEAU LOCAL (CÔTE D'IVOIRE) ---
+    // ==========================================
+
     // Recette max : 100 000 F | Profit max : 17 000 F
-    { id: 'c_maquis', name: "Maquis du Quartier", cost: 83000, reqFans: 500, reqSongs: 1, capacity: 100, ticketPrice: 1000, rewardXP: 50 },
+    { id: 'c_maquis', name: "Maquis du Quartier", cost: 83000, reqFans: 500, reqSongs: 1, reqLevel: 1, capacity: 100, ticketPrice: 1000, rewardXP: 50 },
     
     // Recette max : 1 000 000 F | Profit max : 170 000 F
-    { id: 'c_allo', name: "Allocodrome", cost: 830000, reqFans: 2500, reqSongs: 3, capacity: 500, ticketPrice: 2000, rewardXP: 150 },
+    { id: 'c_allo', name: "Allocodrome", cost: 830000, reqFans: 2500, reqSongs: 3, reqLevel: 2, capacity: 500, ticketPrice: 2000, rewardXP: 150 },
     
     // Recette max : 20 000 000 F | Profit max : 3 400 000 F
-    { id: 'c_palais', name: "Palais de la Culture", cost: 16600000, reqFans: 15000, reqSongs: 8, capacity: 4000, ticketPrice: 5000, rewardXP: 500 },
+    { id: 'c_palais', name: "Palais de la Culture", cost: 16600000, reqFans: 15000, reqSongs: 8, reqLevel: 3, capacity: 4000, ticketPrice: 5000, rewardXP: 500 },
     
     // Recette max : 300 000 000 F | Profit max : 51 000 000 F
-    { id: 'c_stade', name: "Stade Ebimpé", cost: 249000000, reqFans: 100000, reqSongs: 15, capacity: 60000, ticketPrice: 5000, rewardXP: 2000 },
+    { id: 'c_stade', name: "Stade Ebimpé", cost: 249000000, reqFans: 100000, reqSongs: 15, reqLevel: 5, capacity: 60000, ticketPrice: 5000, rewardXP: 2000 },
     
-    // --- Salles Internationales (France) ---
+
+    // ==========================================
+    // --- NIVEAU INTERNATIONAL (FRANCE) ---
+    // ==========================================
+
     // Recette max : 15 000 000 F | Profit max : 2 550 000 F
-    { id: 'c_cigale', name: "La Cigale (Paris)", cost: 12450000, reqFans: 10000, reqSongs: 5, capacity: 1000, ticketPrice: 15000, rewardXP: 300 },
+    { id: 'c_cigale', name: "La Cigale (Paris)", cost: 12450000, reqFans: 10000, reqSongs: 5, reqLevel: 3, capacity: 1000, ticketPrice: 15000, rewardXP: 300 },
     
     // Recette max : 50 000 000 F | Profit max : 8 500 000 F
-    { id: 'c_olympia', name: "L'Olympia", cost: 41500000, reqFans: 30000, reqSongs: 10, capacity: 2000, ticketPrice: 25000, rewardXP: 800 },
+    { id: 'c_olympia', name: "L'Olympia", cost: 41500000, reqFans: 30000, reqSongs: 10, reqLevel: 3, capacity: 2000, ticketPrice: 25000, rewardXP: 800 },
     
     // Recette max : 238 000 000 F | Profit max : 40 460 000 F
-    { id: 'c_zenith', name: "Le Zénith de Paris", cost: 197540000, reqFans: 80000, reqSongs: 12, capacity: 6800, ticketPrice: 35000, rewardXP: 1500 },
+    { id: 'c_zenith', name: "Le Zénith de Paris", cost: 197540000, reqFans: 80000, reqSongs: 12, reqLevel: 3, capacity: 6800, ticketPrice: 35000, rewardXP: 1500 },
     
     // Recette max : 900 000 000 F | Profit max : 153 000 000 F
-    { id: 'c_bercy', name: "Accor Arena (Bercy)", cost: 747000000, reqFans: 200000, reqSongs: 20, capacity: 20000, ticketPrice: 45000, rewardXP: 3000 },
+    { id: 'c_bercy', name: "Accor Arena (Bercy)", cost: 747000000, reqFans: 200000, reqSongs: 20, reqLevel: 4, capacity: 20000, ticketPrice: 45000, rewardXP: 3000 },
     
     // Recette max : 4 000 000 000 F | Profit max : 680 000 000 F
-    { id: 'c_stade_france', name: "Stade de France", cost: 3320000000, reqFans: 1000000, reqSongs: 30, capacity: 80000, ticketPrice: 50000, rewardXP: 10000 }
+    { id: 'c_stade_france', name: "Stade de France", cost: 3320000000, reqFans: 1000000, reqSongs: 30, reqLevel: 4, capacity: 80000, ticketPrice: 50000, rewardXP: 10000 },
+
+
+    // ==========================================
+    // --- NIVEAU GLOBAL (ROYAUME-UNI) ---
+    // ==========================================
+
+    // Recette max : 200 000 000 F | Profit max : 34 000 000 F
+    { id: 'c_o2_academy', name: "O2 Academy Brixton (Londres)", cost: 166000000, reqFans: 150000, reqSongs: 15, reqLevel: 8, capacity: 5000, ticketPrice: 40000, rewardXP: 2500 },
+
+    // Recette max : 1 000 000 000 F | Profit max : 170 000 000 F
+    { id: 'c_o2_arena', name: "The O2 Arena (Londres)", cost: 830000000, reqFans: 500000, reqSongs: 22, reqLevel: 9, capacity: 20000, ticketPrice: 50000, rewardXP: 4000 },
+    // ==========================================
+    // --- NIVEAU LÉGENDE (ÉTATS-UNIS - LVL 8 & 9) ---
+    // ==========================================
+
+    // Recette max : 1 400 000 000 F | Profit max : 238 000 000 F
+    { id: 'c_msg', name: "Madison Square Garden (New York)", cost: 1162000000, reqFans: 5000000, reqSongs: 25, reqLevel: 10, capacity: 20000, ticketPrice: 70000, rewardXP: 6000 },
+
+    // Recette max : 5 600 000 000 F | Profit max : 952 000 000 F
+    { id: 'c_sofi', name: "SoFi Stadium (Los Angeles)", cost: 4648000000, reqFans: 10000000, reqSongs: 40, reqLevel: 11, capacity: 70000, ticketPrice: 80000, rewardXP: 20000 },
+
+    // Recette max : 12 500 000 000 F | Profit max : 2 125 000 000 F
+    { id: 'c_coachella', name: "Headliner à Coachella (Californie)", cost: 10375000000, reqFans: 25000000, reqSongs: 50, reqLevel: 12, capacity: 125000, ticketPrice: 100000, rewardXP: 50000 }
 ];
 
 const PERKS_TREE = {
