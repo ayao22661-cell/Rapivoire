@@ -2890,13 +2890,25 @@ function processNextWeek() {
         }
     }
 
-    // --- 6. SPONSORS ---
+    // --- 6. SPONSORS (NON-CUMULATIF / EXCLUSIVITÉ) ---
     if (game.player.sponsors && game.player.sponsors.length > 0) {
-        let sponsorMoney = 0;
-        game.player.sponsors.forEach(s => sponsorMoney += s.weekly);
+        
+        // On cherche le sponsor qui rapporte le plus d'argent (le plus haut niveau)
+        let meilleurSponsor = game.player.sponsors.reduce((prev, current) => {
+            return (prev.weekly > current.weekly) ? prev : current;
+        });
+
+        let sponsorMoney = meilleurSponsor.weekly;
+        
+        // On ajoute l'argent du meilleur sponsor uniquement
         game.player.cash += sponsorMoney;
         game.stats.totalEarnings += sponsorMoney;
-        if(typeof addNews === "function") addNews(`🤝 Sponsors : +${sponsorMoney.toLocaleString()} F.`, "success");
+        
+        // Notification avec le nom du sponsor actuel
+        if(typeof addNews === "function") {
+            let nomSponsor = meilleurSponsor.name || "Sponsor Actuel";
+            addNews(`🤝 Contrat Exclusif (${nomSponsor}) : +${sponsorMoney.toLocaleString()} F.`, "success");
+        }
     }
 
     // --- 7. DÉGRADATION DES OBJETS ---
