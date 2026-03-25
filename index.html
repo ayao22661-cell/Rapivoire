@@ -654,6 +654,24 @@ const LABELS = [
         desc: "La cour des grands ! Avance de 50 Millions, mais la maison de disque contrôle tout et prend 30%." 
     }
 ];
+    // ==========================================
+// 🎵 VARIABLES DE LA BANDE SON
+// ==========================================
+const PLAYLIST = [
+    'Trap_in_Korea.m4a',
+    'For_more_.m4a',
+    'soundtrack_1.m4a',
+    'Trap_in_vibes.m4a',
+    'Untitled.m4a'
+];
+
+let currentTrackIndex = 0;
+let bgMusic = new Audio(PLAYLIST[currentTrackIndex]);
+bgMusic.volume = 0.3; // Volume (30%)
+let isMusicPlaying = false;
+
+// On attache l'événement : quand le son se termine, ça lance le suivant
+bgMusic.addEventListener('ended', playNextTrack);
 
 const SPONSORS = [
     // --- DÉBUTANT (0 - 25k Fans) ---
@@ -2016,7 +2034,42 @@ function startRecording() {
 
     startLyricsMinigame(theme);
 }
+// ==========================================
+// 🎵 FONCTIONS DE LA BANDE SON
+// ==========================================
 
+function playNextTrack() {
+    currentTrackIndex++;
+    
+    // Si on arrive à la fin de la playlist, on recommence au début
+    if (currentTrackIndex >= PLAYLIST.length) {
+        currentTrackIndex = 0;
+    }
+    
+    // Charger et lancer le nouveau son
+    bgMusic.src = PLAYLIST[currentTrackIndex];
+    
+    if (isMusicPlaying) {
+        bgMusic.play().catch(e => console.warn("Erreur lecture musique:", e));
+    }
+}
+
+function toggleMusic() {
+    const btn = document.getElementById('musicToggleBtn');
+    if (!btn) return; // Sécurité si le bouton n'existe pas encore
+    
+    if (isMusicPlaying) {
+        bgMusic.pause();
+        btn.innerText = '🔇';
+        isMusicPlaying = false;
+    } else {
+        bgMusic.play().catch(error => {
+            console.warn("Le navigateur a bloqué la lecture automatique :", error);
+        });
+        btn.innerText = '🔊';
+        isMusicPlaying = true;
+    }
+}
 // ==========================================
 // LOGIQUE DU MINI-JEU DES PAROLES
 // ==========================================
@@ -3800,6 +3853,11 @@ function submitPseudo() {
 function startGameOnboarding() {
     const overlay = document.getElementById('onboarding-overlay');
     
+    // 🎵 Lancer la musique au démarrage (directement au clic pour éviter les blocages du navigateur)
+    if (typeof isMusicPlaying !== 'undefined' && !isMusicPlaying) {
+        toggleMusic();
+    }
+    
     // Animation de disparition douce
     overlay.classList.add('opacity-0');
     
@@ -3813,7 +3871,6 @@ function startGameOnboarding() {
     }, 500);
 }
 
-// Lancement
 // Lancement
 window.onload = function() {
     init();
