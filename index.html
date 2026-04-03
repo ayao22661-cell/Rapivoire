@@ -358,21 +358,33 @@ body {
     </div>
 
 
-    <header class="p-4 flex justify-between items-center border-b border-white/5 bg-[#09090e] z-50">
-    <div class="flex flex-col gap-0.5">
-        <span id="game-date" class="text-[10px] text-zinc-400 font-bold uppercase tracking-wider">Semaine 1 - Jan 2024</span>
-        <h1 id="player-title" class="text-sm text-white font-black tracking-tight m-0 uppercase">ESPOIR DU QUARTIER</h1>
+    <div id="character-selection-screen" class="fixed inset-0 bg-[#09090E] z-[2500] hidden flex-col p-4 pt-12 pb-8">
+    <div class="text-center mb-4">
+        <h2 class="text-3xl font-black text-white italic uppercase text-primary">Qui es-tu ?</h2>
+        <p class="text-xs text-zinc-400 mt-1">Choisis ton profil de départ.</p>
+    </div>
+    <div class="grid grid-cols-2 gap-3 overflow-y-auto flex-1 pb-4" id="avatar-grid">
+        </div>
+    <button onclick="confirmCharacterSelection()" id="btn-confirm-avatar" class="pill-button btn-primary w-full mt-4 opacity-50 cursor-not-allowed transition-all" disabled>
+        SÉLECTIONNER CE PROFIL
+    </button>
+</div>
+
+<header class="p-4 flex justify-between items-center border-b border-white/5 bg-[#09090e] z-50">
+    <div class="flex items-center gap-3">
+        <img id="player-avatar-img" src="" class="w-10 h-10 rounded-xl border-2 border-primary object-cover hidden shadow-[0_0_10px_rgba(0,230,118,0.3)]">
+        
+        <div class="flex flex-col gap-0.5">
+            <span id="game-date" class="text-[10px] text-zinc-400 font-bold uppercase tracking-wider">Semaine 1 - Jan 2024</span>
+            <h1 id="player-title" class="text-sm text-white font-black tracking-tight m-0 uppercase">ESPOIR DU QUARTIER</h1>
+        </div>
     </div>
 
     <div class="flex gap-2 items-center">
-        <button id="musicToggleBtn" onclick="toggleMusic()" class="flex items-center justify-center w-8 h-8 bg-surface-2 border border-white/10 rounded-lg hover:bg-white/10 transition-colors text-sm" title="Activer/Couper la musique">
-            🔇
-        </button>
-        
+        <button id="musicToggleBtn" onclick="toggleMusic()" class="flex items-center justify-center w-8 h-8 bg-surface-2 border border-white/10 rounded-lg hover:bg-white/10 transition-colors text-sm">🔇</button>
         <div class="bg-surface-2 px-2.5 py-1.5 rounded-lg font-bold text-xs text-[#00E676] flex items-center gap-1 border border-white/5">
             <span id="stat-cash">1,500</span><span>F</span>
         </div>
-        
         <div class="bg-surface-2 px-2.5 py-1.5 rounded-lg font-bold text-xs text-[#2979FF] flex items-center gap-1 border border-white/5">
             ⚡ <span id="stat-energy">100</span>
         </div>
@@ -621,7 +633,22 @@ body {
 // ==========================================
 // BASES DE DONNEES ET CONSTANTES
 // ==========================================
-const PLATFORMS = {
+const AVATARS = [
+    { id: 'nouchi', name: 'Le Nouchi', img: 'nouchi.jpg', desc: 'Débrouillard de la rue.' },
+    { id: 'seducteur', name: 'Le Séducteur', img: 'seducteur.jpg', desc: 'Rend les go folles.' },
+    { id: 'bourgeois', name: 'Le Bourgeois', img: 'bourgeois.jpg', desc: 'Papa a de l\'argent.' },
+    { id: 'prodige', name: 'Le Prodige', img: 'prodige.jpg', desc: 'Technique pure au micro.' },
+    { id: 'boss-lady', name: 'La Go de Choc', img: 'boss-lady.jpg', desc: 'Féroce et indépendante.' },
+    { id: 'vieux-pere', name: 'Le Vieux Père', img: 'vieux-pere.jpg', desc: 'Sage et respecté.' },
+    { id: 'ambianceur', name: 'L\'Ambianceur', img: 'ambianceur.jpg', desc: 'Le roi de la fête.' },
+    { id: 'intello', name: 'L\'Intello', img: 'intello.jpg', desc: 'Rap conscient.' },
+    { id: 'drillboy', name: 'Le Drillboy', img: 'drillboy.jpg', desc: 'Sombre et agressif.' },
+    { id: 'influenceur', name: 'L\'Influenceur', img: 'influenceur.jpg', desc: 'Star des réseaux.' }
+];
+
+let selectedAvatarId = null;
+    
+    const PLATFORMS = {
     youtube: { name: "YouTube", pay: 0.1, weight: 0.55, icon: "🔴" },   
     boomplay: { name: "Boomplay", pay: 0.4, weight: 0.30, icon: "🔵" }, 
     spotify: { name: "Spotify", pay: 1.2, weight: 0.10, icon: "🟢" },  
@@ -1705,13 +1732,26 @@ function init() {
                     if(welcomeScreen) welcomeScreen.classList.add('hidden');
                     
                     addNews("Bon retour dans le Game, " + game.player.name + " !", "info");
+
+                    // NOUVEAU : Si le joueur a déjà un avatar sauvegardé, on l'affiche
+                    if(game.player && game.player.avatarUrl) {
+                        const headerImg = document.getElementById('player-avatar-img');
+                        if (headerImg) {
+                            headerImg.src = game.player.avatarUrl;
+                            headerImg.classList.remove('hidden');
+                        }
+                    }
+
                 } else {
                     addNews("Bienvenue dans le Game. Le chemin sera long.", "info");
+                    
+                    // NOUVEAU : On lance l'écran de choix de personnage pour une nouvelle partie
+                    showCharacterSelection();
                 }
 
                 updateUI();
                 renderActions();
-                checkLevelUp();
+                if(typeof checkLevelUp === "function") checkLevelUp();
             }, 500);
         }, 800);
     }, 1000);
@@ -1872,6 +1912,69 @@ function setActiveNav(id) {
 // ==========================================
 // MÉCANIQUES DE JEU : ACTIONS
 // ==========================================
+    function showCharacterSelection() {
+    const screen = document.getElementById('character-selection-screen');
+    const grid = document.getElementById('avatar-grid');
+    grid.innerHTML = ''; 
+    
+    AVATARS.forEach(avatar => {
+        const div = document.createElement('div');
+        div.className = `glass-card !p-2 flex flex-col items-center cursor-pointer transition-transform active:scale-95 border-2 border-transparent`;
+        div.id = `avatar-card-${avatar.id}`;
+        
+        // J'ai retiré la ligne qui affichait le bonus
+        div.innerHTML = `
+            <img src="${avatar.img}" alt="${avatar.name}" class="w-full aspect-square rounded-xl mb-2 object-cover shadow-lg border border-white/10 bg-zinc-800">
+            <h3 class="text-white font-black text-[10px] uppercase text-center leading-tight">${avatar.name}</h3>
+            <p class="text-[8px] text-zinc-400 text-center mt-1 mb-1 h-5 line-clamp-2">${avatar.desc}</p>
+        `;
+        
+        div.onclick = () => selectAvatar(avatar.id);
+        grid.appendChild(div);
+    });
+    
+    screen.style.display = 'flex';
+    screen.classList.remove('hidden');
+}
+
+function selectAvatar(id) {
+    selectedAvatarId = id;
+    
+    AVATARS.forEach(avatar => {
+        const card = document.getElementById(`avatar-card-${avatar.id}`);
+        if(card) {
+            card.classList.remove('border-primary', 'bg-primary/10');
+            card.classList.add('border-transparent');
+        }
+    });
+    
+    const selectedCard = document.getElementById(`avatar-card-${id}`);
+    selectedCard.classList.remove('border-transparent');
+    selectedCard.classList.add('border-primary', 'bg-primary/10');
+    
+    const btn = document.getElementById('btn-confirm-avatar');
+    btn.disabled = false;
+    btn.classList.remove('opacity-50', 'cursor-not-allowed');
+}
+
+function confirmCharacterSelection() {
+    const avatar = AVATARS.find(a => a.id === selectedAvatarId);
+    if (!avatar) return;
+    
+    document.getElementById('character-selection-screen').style.display = 'none';
+    
+    // Affichage dans le Header
+    const headerImg = document.getElementById('player-avatar-img');
+    headerImg.src = avatar.img;
+    headerImg.classList.remove('hidden');
+    
+    // Sauvegarde uniquement de l'image (pas de bonus appliqués)
+    game.player.avatarUrl = avatar.img;
+    
+    updateUI();
+    saveGame();
+    addNews(`Profil ${avatar.name} sélectionné !`, "info");
+}
 
 function renderActions() {
     const list = document.getElementById('actions-list');
