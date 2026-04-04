@@ -320,7 +320,7 @@ body {
              <svg viewBox="0 0 100 100" class="animate-spin text-primary absolute inset-0">
                 <circle cx="50" cy="50" r="40" fill="none" stroke="currentColor" stroke-width="8" stroke-dasharray="160 100" />
              </svg>
-             <div class="absolute inset-0 flex items-center justify-center text-2xl">🎙️</div>
+             <div class="absolute inset-0 flex items-center justify-center"><img src="./assets/icons/micro.png" class="w-8 h-8"></div>
         </div>
         <h2 class="text-xl font-black text-white italic tracking-widest uppercase">rapivoire</h2>
         <p class="text-primary text-[10px] font-bold mt-2 tracking-[0.2em]">ÉDITION ULTIMATE</p>
@@ -389,12 +389,12 @@ body {
     </div>
 
     <div class="flex gap-2 items-center">
-        <button id="musicToggleBtn" onclick="toggleMusic()" class="flex items-center justify-center w-8 h-8 bg-surface-2 border border-white/10 rounded-lg hover:bg-white/10 transition-colors text-sm">🔇</button>
+<button id="musicToggleBtn" onclick="toggleMusic()" class="flex items-center justify-center w-8 h-8 bg-surface-2 border border-white/10 rounded-lg hover:bg-white/10 transition-colors"><img src="./assets/icons/son.png" class="w-4 h-4"></button>
         <div class="bg-surface-2 px-2.5 py-1.5 rounded-lg font-bold text-xs text-[#00E676] flex items-center gap-1 border border-white/5">
             <span id="stat-cash">1,500</span><span>F</span>
         </div>
         <div class="bg-surface-2 px-2.5 py-1.5 rounded-lg font-bold text-xs text-[#2979FF] flex items-center gap-1 border border-white/5">
-            ⚡ <span id="stat-energy">100</span>
+            <img src="./assets/icons/energie.png" class="custom-icon"> <span id="stat-energy">100</span>
         </div>
     </div>
 </header>
@@ -460,12 +460,12 @@ body {
             </button>
             
             <div class="grid grid-cols-2 gap-3">
-                <button onclick="saveGame()" class="pill-button btn-secondary text-xs py-3.5">💾 Sauvegarder</button>
-                <button onclick="resetGame()" class="pill-button btn-secondary text-[#FF5252] border-[#FF5252]/30 text-xs py-3.5">🗑️ Reset</button>
+                <button onclick="saveGame()" class="pill-button btn-secondary text-xs py-3.5"><img src="./assets/icons/save.png" class="custom-icon"> Sauvegarder</button>
+                <button onclick="resetGame()" class="pill-button btn-secondary text-[#FF5252] border-[#FF5252]/30 text-xs py-3.5"><img src="./assets/icons/trash.png" class="custom-icon"> Reset</button>
             </div>
 
             <button onclick="processNextWeek()" id="btn-next-week" class="pill-button btn-primary w-full text-base py-5 mt-4 shadow-lg shadow-primary/10">
-                TERMINER LA SEMAINE ⏭️
+                TERMINER LA SEMAINE <img src="./assets/icons/next.png" class="custom-icon">
             </button>
         </section>
     </main>
@@ -544,12 +544,12 @@ body {
             </div>
 
             <button onclick="startRecording()" class="pill-button bg-info text-black h-16 text-lg w-full font-black shadow-[0_0_20px_rgba(30,144,255,0.4)] border-none">
-                ENTRER EN CABINE 🎙️
+                ENTRER EN CABINE <img src="./assets/icons/micro.png" class="custom-icon">
             </button>
             <p class="text-center text-xs text-zinc-500">-50 Énergie requise</p>
         </div>
         <button onclick="releaseAlbum()" class="bg-white/5 border border-white/10 hover:bg-white/10 hover:border-purple-500/50 text-white py-3 px-4 rounded-xl transition-all flex flex-col items-center justify-center gap-1">
-    <span class="font-bold text-sm">💿 Sortir un Album</span>
+    ENTRER EN CABINE <img src="./assets/icons/micro.png" class="custom-icon">
     <span class="text-[10px] text-zinc-400 font-normal">2 000 000 F • ⚡ 90</span>
 </button>
     </div>
@@ -588,7 +588,7 @@ body {
         <div class="scroll-area space-y-6">
             <!-- Section Concerts -->
             <div>
-                <h3 class="text-sm font-black text-white mb-3 uppercase flex items-center gap-2"><span class="text-xl">🎟️</span> Booker un Concert</h3>
+                <h3 class="text-sm font-black text-white mb-3 uppercase flex items-center gap-2"><img src="./assets/icons/ticket.png" class="w-5 h-5"> Booker un Concert</h3>
                 <div class="grid gap-3" id="concerts-list">
                     <!-- Injecté -->
                 </div>
@@ -598,7 +598,7 @@ body {
 
             <!-- Section Shop -->
             <div>
-                <h3 class="text-sm font-black text-white mb-3 uppercase flex items-center gap-2"><span class="text-xl">💎</span> Lifestyle & Achats (Boost Passif)</h3>
+                <h3 class="text-sm font-black text-white mb-3 uppercase flex items-center gap-2"><img src="./assets/icons/diamant.png" class="w-5 h-5"> Lifestyle & Achats (Boost Passif)</h3>
                 <div class="grid grid-cols-2 gap-3" id="shop-list">
                     <!-- Injecté -->
                 </div>
