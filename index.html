@@ -356,7 +356,7 @@ body {
     </div>
     <div id="event-overlay" class="event-overlay" style="display: none;">
         <div id="event-modal" class="event-modal hidden">
-            <div class="text-5xl mb-4" id="event-icon">🚨</div>
+            <div class="flex justify-center mb-4"><img src="./assets/icons/alerte.png" id="event-icon" class="w-12 h-12"></div>
             <h2 id="event-title" class="text-xl font-black text-white mb-2 uppercase">Événement !</h2>
             <p id="event-desc" class="text-xs text-zinc-300 mb-6 leading-relaxed">Description de ce qui vient de se passer.</p>
             <div id="event-effects" class="flex justify-center gap-2 mb-6 text-[10px] font-bold">
@@ -807,7 +807,7 @@ const ACTIONS_POOL = [
         color: "bg-[#15161D] border border-[#FF5252]/30 text-white" 
     },
     { 
-        id: 'clash_cible', title: "🥊 Clash Ciblé", reqLevel: 1,
+        title: "<img src='./assets/icons/gant.png' class='custom-icon'> Clash Ciblé", reqLevel: 1,
         desc: "Choisis une star à éteindre (30 Énergie).", 
         energy: 30, cash: 0, buzz: 0, fans: 0, xp: 0, 
         color: 'bg-red-600 text-white border-none'
@@ -2961,8 +2961,7 @@ const LIFE_EVENTS = [
 
     {
         id: 'gf_resto_low',
-        icon: '👩🏽',
-        title: 'Soirée avec ta Go',
+        icon: "<img src='./assets/icons/femme.png' class='w-12 h-12 mx-auto'>", title: 'Soirée avec ta Go',
         condition: () => game.player.life.status === 'en couple' && (game.player.level || 1) < 4,
         desc: 'Ta petite amie se plaint que tu passes trop de temps au studio. Elle veut aller manger dans un bon resto à Bietry.',
         choices: [
@@ -3087,8 +3086,7 @@ const LIFE_EVENTS = [
     },
     {
         id: 'gf_marriage',
-        icon: '💍',
-        title: 'Demande en Mariage ?',
+        icon: "<img src='./assets/icons/bague.png' class='w-12 h-12 mx-auto'>", title: 'Demande en Mariage ?',
         condition: () => game.player.life.status === 'en couple' && game.player.life.gfAffection >= 80 && game.player.cash >= 2000000 && (game.player.level || 1) >= 5,
         desc: 'Votre relation est au top. La famille met la pression pour la dot et le mariage (Coût : 2 Millions).',
         choices: [
@@ -3343,8 +3341,7 @@ const LIFE_EVENTS = [
     },
     {
         id: 'street_feat_bad',
-        icon: '🎤',
-        title: 'Le Feat Forcé',
+        icon: "<img src='./assets/icons/micro.png' class='w-12 h-12 mx-auto'>", title: 'Le Feat Forcé',
         condition: () => (game.player.level || 1) >= 3,
         desc: 'Le "gros bras" dangereux de ton ancien quartier sort un son nul. Il exige que tu fasses un feat avec lui.',
         choices: [
@@ -3451,8 +3448,7 @@ const LIFE_EVENTS = [
     },
     {
         id: 'media_interview',
-        icon: '📺',
-        title: 'L\'interview Piège',
+       icon: "<img src='./assets/icons/tele.png' class='w-12 h-12 mx-auto'>", title: 'L\'interview Piège',
         condition: () => (game.player.level || 1) >= 2,
         desc: 'Tu es invité à la télé. L\'animateur essaie de te faire clasher un autre rappeur pour faire de l\'audience.',
         choices: [
