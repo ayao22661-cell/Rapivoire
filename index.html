@@ -585,6 +585,71 @@ input:focus, select:focus {
 .slide-from-bottom-delay-3 { animation: slideFromBottom 0.5s 0.3s cubic-bezier(0.34,1.56,0.64,1) both; }
 .slide-from-bottom-delay-4 { animation: slideFromBottom 0.5s 0.4s cubic-bezier(0.34,1.56,0.64,1) both; }
 
+/* =========================================
+   UPGRADE 2026 — 5 CORRECTIONS MOBILE
+   ========================================= */
+
+/* ① TRANSITIONS ENTRE ECRANS (slide natif) */
+.full-screen-menu {
+    animation: none !important;
+    transform: translateX(100%);
+    opacity: 0;
+    transition: transform 0.32s cubic-bezier(0.4, 0, 0.2, 1),
+                opacity 0.22s ease !important;
+}
+.full-screen-menu.menu-open {
+    transform: translateX(0) !important;
+    opacity: 1 !important;
+    display: flex !important;
+}
+.full-screen-menu.menu-closing {
+    transform: translateX(100%) !important;
+    opacity: 0 !important;
+}
+
+/* ④ HUD BARRES VISUELLES — énergie + stats */
+.hud-bar-wrap {
+    width: 100%;
+    background: rgba(255,255,255,0.07);
+    border-radius: 99px;
+    height: 6px;
+    overflow: hidden;
+    margin-top: 4px;
+}
+.hud-bar-inner {
+    height: 100%;
+    border-radius: 99px;
+    transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.hud-energy-bar .hud-bar-inner { background: #2979FF; }
+.hud-fans-bar .hud-bar-inner { background: #00E676; }
+.hud-buzz-bar .hud-bar-inner { background: #FF9100; }
+
+/* ⑤ RÉCOMPENSES FLOTTANTES */
+@keyframes floatReward {
+    0%   { transform: translateY(0) scale(1); opacity: 1; }
+    60%  { transform: translateY(-55px) scale(1.15); opacity: 1; }
+    100% { transform: translateY(-90px) scale(0.9); opacity: 0; }
+}
+.reward-float {
+    position: fixed;
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 900;
+    font-size: 17px;
+    pointer-events: none;
+    z-index: 9999;
+    animation: floatReward 1.3s cubic-bezier(0.2, 0.8, 0.4, 1) forwards;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.6);
+    white-space: nowrap;
+}
+
+/* Glow subtil sur stat-cash quand il monte */
+@keyframes cashGlow {
+    0%,100% { color: inherit; }
+    40% { color: #00E676; text-shadow: 0 0 12px rgba(0,230,118,0.8); }
+}
+.cash-up { animation: cashGlow 0.7s ease; }
+
     </style>
 </head>
 <body>
@@ -2227,17 +2292,35 @@ function openMenu(id) {
     const menu = document.getElementById(`menu-${id}`);
     if(menu) {
         menu.style.display = 'flex';
-        // Render specific content
+        // Render specific content first
         if(id === 'actions') renderActions();
         if(id === 'studio') renderStudioBeats();
         if(id === 'songs') renderSongsList();
         if(id === 'biz') { renderShop(); renderConcerts(); }
         if(id === 'perks') renderPerks();
+        // Trigger slide-in after paint
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                menu.classList.add('menu-open');
+            });
+        });
+        vibrate(18);
     }
 }
 
 function closeAllMenus() {
-    document.querySelectorAll('.full-screen-menu').forEach(m => m.style.display = 'none');
+    document.querySelectorAll('.full-screen-menu.menu-open').forEach(m => {
+        m.classList.add('menu-closing');
+        m.classList.remove('menu-open');
+        setTimeout(() => {
+            m.style.display = 'none';
+            m.classList.remove('menu-closing');
+        }, 320);
+    });
+    // Instantly hide menus that were never opened (no transition needed)
+    document.querySelectorAll('.full-screen-menu:not(.menu-open):not(.menu-closing)').forEach(m => {
+        m.style.display = 'none';
+    });
 }
 
 function setActiveNav(id) {
@@ -5183,6 +5266,216 @@ window.onload = function() {
      </div>
     </div>
 </div>
+<!-- =========================================
+     UPGRADE 2026 — MOTEUR JS MOBILE NATIF
+     ① Haptic  ② Animated Counters  ③ Floating Rewards  ④ HUD bars
+     Aucune API externe — 100% offline
+     ========================================= -->
+<script>
+/* ① HAPTIC — navigator.vibrate natif, silent fallback */
+function vibrate(pattern) {
+    try {
+        if (navigator.vibrate) navigator.vibrate(pattern);
+    } catch(e) {}
+}
+const HAPTIC = {
+    tap:     () => vibrate(12),
+    success: () => vibrate([18, 40, 18]),
+    error:   () => vibrate([60, 30, 60]),
+    big:     () => vibrate([20, 60, 20, 60, 40]),
+    cash:    () => vibrate([10, 20, 10]),
+};
+
+/* Brancher haptic sur les boutons .pill-button existants */
+document.addEventListener('touchstart', function(e) {
+    const btn = e.target.closest('.pill-button, .nav-item, .glass-card[onclick]');
+    if (btn && !btn.disabled && !btn.classList.contains('disabled')) {
+        HAPTIC.tap();
+    }
+}, { passive: true });
+
+/* ② ANIMATED COUNTERS — anime un nombre vers une cible */
+const _counterState = {};
+function animateCounter(elId, newVal, opts = {}) {
+    const el = document.getElementById(elId);
+    if (!el) return;
+    const raw = el.textContent.replace(/[\s,]/g, '');
+    const from = parseFloat(raw) || 0;
+    const to = newVal;
+    if (Math.abs(to - from) < 1) { el.textContent = formatNum(to, opts); return; }
+
+    if (_counterState[elId]) cancelAnimationFrame(_counterState[elId]);
+    const duration = Math.min(900, Math.max(250, Math.abs(to - from) / Math.max(1, Math.abs(to)) * 600));
+    const start = performance.now();
+
+    function tick(now) {
+        const p = Math.min(1, (now - start) / duration);
+        const ease = 1 - Math.pow(1 - p, 3); // easeOutCubic
+        const cur = from + (to - from) * ease;
+        el.textContent = formatNum(cur, opts);
+        if (p < 1) {
+            _counterState[elId] = requestAnimationFrame(tick);
+        } else {
+            el.textContent = formatNum(to, opts);
+            delete _counterState[elId];
+        }
+    }
+    _counterState[elId] = requestAnimationFrame(tick);
+}
+
+function formatNum(n, opts = {}) {
+    const v = Math.floor(n);
+    if (opts.pct) return v + '%';
+    return v.toLocaleString('fr-FR');
+}
+
+/* ③ RÉCOMPENSES FLOTTANTES — affiche "+2M 💰" qui monte */
+function showReward(text, color, refEl) {
+    const el = document.createElement('div');
+    el.className = 'reward-float';
+    el.textContent = text;
+    el.style.color = color || '#00E676';
+
+    // Position near the reference element or center-screen
+    let x = window.innerWidth / 2;
+    let y = window.innerHeight / 2;
+    if (refEl) {
+        const r = refEl.getBoundingClientRect();
+        x = r.left + r.width / 2;
+        y = r.top + r.height / 2;
+    }
+    el.style.left = (x - 40) + 'px';
+    el.style.top = (y - 20) + 'px';
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 1400);
+}
+
+/* ④ HUD BARS — inject barres énergie + fans dans le header */
+function injectHUDBars() {
+    /* Barre énergie sous le badge énergie existant */
+    const energyBadge = document.getElementById('stat-energy');
+    if (energyBadge && !document.getElementById('hud-energy-bar')) {
+        const wrap = document.createElement('div');
+        wrap.id = 'hud-energy-bar';
+        wrap.className = 'hud-bar-wrap hud-energy-bar';
+        wrap.style.cssText = 'width:48px;height:3px;margin-top:2px;';
+        wrap.innerHTML = '<div class="hud-bar-inner" id="hud-energy-fill" style="width:100%"></div>';
+        energyBadge.parentElement.appendChild(wrap);
+    }
+}
+
+/* ④ Update HUD bars chaque fois que updateUI est appelé */
+function updateHUDBars() {
+    const energyPct = Math.min(100, Math.max(0, (game.player.energy / game.player.energyMax) * 100));
+    const fill = document.getElementById('hud-energy-fill');
+    if (fill) fill.style.width = energyPct + '%';
+}
+
+/* ② Patch updateUI pour animer les chiffres au lieu de les remplacer brutalement */
+const _origUpdateUI = updateUI;
+window.updateUI = function() {
+    /* Capturer les valeurs AVANT l'appel d'origine */
+    const prevCash    = game.player.cash;
+    const prevFans    = game.player.fans;
+    const prevStreams  = game.player.streams;
+    const prevBuzz    = game.player.buzz;
+    const prevEnergy  = game.player.energy;
+
+    /* Appel original (met à jour le DOM) */
+    _origUpdateUI();
+
+    /* ② Ré-animer les chiffres avec compteurs fluides */
+    animateCounter('stat-cash',    Math.floor(game.player.cash));
+    animateCounter('stat-fans',    Math.floor(game.player.fans));
+    animateCounter('stat-streams', Math.floor(game.player.streams));
+    animateCounter('stat-energy',  Math.floor(game.player.energy), { suffix: '/' + game.player.energyMax });
+
+    /* Stat-energy a un format "X/MAX", on le refait proprement */
+    const energyEl = document.getElementById('stat-energy');
+    if (energyEl) {
+        const from = parseInt(energyEl.textContent) || 0;
+        animateCounter('stat-energy', Math.floor(game.player.energy));
+        // Append /MAX after animation via timeout
+        setTimeout(() => {
+            const cur = document.getElementById('stat-energy');
+            if (cur && !cur.textContent.includes('/')) {
+                cur.textContent = Math.floor(game.player.energy) + '/' + game.player.energyMax;
+            }
+        }, 950);
+    }
+
+    /* ② Barre buzz animée */
+    const buzzBar = document.getElementById('bar-buzz');
+    if (buzzBar) buzzBar.style.transition = 'width 0.6s cubic-bezier(0.4,0,0.2,1)';
+
+    /* ③ Récompenses flottantes si cash ou fans augmentent */
+    const cashDiff = Math.floor(game.player.cash) - Math.floor(prevCash);
+    if (cashDiff > 0) {
+        const cashEl = document.getElementById('stat-cash');
+        const label = cashDiff >= 1000000
+            ? '+' + (cashDiff / 1000000).toFixed(1) + 'M 💰'
+            : cashDiff >= 1000
+                ? '+' + Math.floor(cashDiff / 1000) + 'K 💰'
+                : '+' + cashDiff + ' 💰';
+        showReward(label, '#00E676', cashEl);
+        HAPTIC.cash();
+    }
+    const fansDiff = Math.floor(game.player.fans) - Math.floor(prevFans);
+    if (fansDiff > 0) {
+        const fansEl = document.getElementById('stat-fans');
+        const label = fansDiff >= 1000
+            ? '+' + Math.floor(fansDiff / 1000) + 'K 👥'
+            : '+' + fansDiff + ' 👥';
+        showReward(label, '#7C4DFF', fansEl);
+    }
+    const buzzDiff = Math.floor(game.player.buzz) - Math.floor(prevBuzz);
+    if (buzzDiff > 0) {
+        const buzzEl = document.getElementById('stat-buzz-text');
+        showReward('+' + buzzDiff + '% 🔥', '#FF9100', buzzEl);
+    }
+
+    /* ④ Barres HUD */
+    updateHUDBars();
+};
+
+/* ① Haptic sur la nav bottom */
+document.querySelectorAll('.nav-item').forEach(item => {
+    item.addEventListener('touchstart', () => HAPTIC.tap(), { passive: true });
+});
+
+/* ① Haptic renforcé sur actions importantes */
+const _origPerformAction = typeof performAction !== 'undefined' ? performAction : null;
+
+/* ④ Init HUD bars au chargement */
+document.addEventListener('DOMContentLoaded', () => {
+    injectHUDBars();
+});
+/* Fallback si DOM déjà prêt */
+if (document.readyState !== 'loading') {
+    setTimeout(injectHUDBars, 200);
+}
+
+/* ① Haptic sur processNextWeek */
+const _origProcessNextWeek = typeof processNextWeek !== 'undefined' ? processNextWeek : null;
+if (_origProcessNextWeek) {
+    window.processNextWeek = function() {
+        HAPTIC.big();
+        _origProcessNextWeek();
+    };
+}
+
+/* ① Haptic success sur notify */
+const _origNotify = typeof notify !== 'undefined' ? notify : null;
+if (_origNotify) {
+    window.notify = function(msg, type) {
+        if (type === 'success') HAPTIC.success();
+        else if (type === 'error') HAPTIC.error();
+        _origNotify(msg, type);
+    };
+}
+
+console.log('[BUZZKING 2026] Mobile engine loaded ✓ — haptic, counters, rewards, HUD bars');
+</script>
 </body>
 
 </html>
