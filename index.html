@@ -146,6 +146,8 @@ body {
 .text-danger { color: #FF5252 !important; }
 
 
+
+
 /* =========================================
    BARRES DE PROGRESSION & BOTTOM NAV
    ========================================= */
@@ -547,8 +549,11 @@ input:focus, select:focus {
     display: none;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    padding: 24px;
+    justify-content: flex-start;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 24px 24px calc(40px + env(safe-area-inset-bottom, 20px));
+    -webkit-overflow-scrolling: touch;
 }
 #share-card {
     width: 100%;
@@ -2671,8 +2676,27 @@ function renderSongsList() {
     const list = currentTab === 'inventory' ? game.player.inventory.songs : game.player.inventory.released;
     
     if(list.length === 0) {
-        container.innerHTML = `<div class="text-center text-zinc-500 mt-10 text-sm italic">Aucun son ici.</div>`;
+        let emptyMsg = `<div class="text-center text-zinc-500 mt-10 text-sm italic">Aucun son ici.</div>`;
+        if (currentTab === 'inventory') {
+            emptyMsg = `<div class="text-center mt-10"><div class="text-zinc-400 text-sm italic mb-2">Aucun son en stock.</div><div class="text-[11px] text-zinc-600">Va au Studio pour enregistrer, puis reviens ici pour publier.</div></div>`;
+        }
+        container.innerHTML = emptyMsg;
         return;
+    }
+
+    // Bandeau d'avertissement si des sons sont en stock mais non publiés
+    if (currentTab === 'inventory' && list.length > 0) {
+        const warningBanner = document.createElement('div');
+        warningBanner.className = 'mb-4 p-3 rounded-xl border flex items-center gap-3';
+        warningBanner.style.cssText = 'background:rgba(255,145,0,0.08);border-color:rgba(255,145,0,0.3);';
+        warningBanner.innerHTML = `
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="#FF9100" style="flex-shrink:0"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>
+            <div>
+                <div class="font-black text-[11px] uppercase tracking-wider" style="color:#FF9100;">Sons non publiés = 0 stream</div>
+                <div class="text-[10px] text-zinc-400 mt-0.5">Ces sons ne génèrent rien tant qu'ils ne sont pas sortis. Appuie sur <strong class="text-white">SORTIR LE SON</strong> pour commencer à gagner des écoutes.</div>
+            </div>
+        `;
+        container.appendChild(warningBanner);
     }
 
     list.forEach(song => {
@@ -4820,11 +4844,12 @@ function checkMilestones() {
     const fans = game.player.fans;
 
     const MILESTONES = [
-        { val: 500,     key: 'fans_500',   title: '500 PREMIERS FANS 🔥' },
-        { val: 5000,    key: 'fans_5k',    title: '5 000 FANS' },
-        { val: 25000,   key: 'fans_25k',   title: '25 000 FANS' },
-        { val: 100000,  key: 'fans_100k',  title: '100K FANS ATTEINTS' },
-        { val: 1000000, key: 'fans_1m',    title: '1 MILLION DE FANS 🔥' },
+        { val: 500,      key: 'fans_500',   title: '500 PREMIERS FANS 🔥' },
+        { val: 5000,     key: 'fans_5k',    title: '5 000 FANS' },
+        { val: 25000,    key: 'fans_25k',   title: '25 000 FANS' },
+        { val: 100000,   key: 'fans_100k',  title: '100K FANS ATTEINTS' },
+        { val: 1000000,  key: 'fans_1m',    title: '1 MILLION DE FANS 🔥' },
+        { val: 10000000, key: 'fans_10m',   title: 'LÉGENDE VIVANTE 👑' },
     ];
 
     for (const m of MILESTONES) {
@@ -4832,13 +4857,108 @@ function checkMilestones() {
             _lastFanMilestone = m.val;
             MILESTONE_TITLES[m.key] = m.title;
             triggerConfetti();
-            setTimeout(() => showShareCard(m.key), 800);
-            break; // Un seul milestone à la fois
+            if (m.key === 'fans_10m') {
+                setTimeout(() => showLegendModal(), 800);
+            } else {
+                setTimeout(() => showShareCard(m.key), 800);
+            }
+            break;
         }
     }
 }
 
-// Ajouter ripple à tous les pill-buttons existants au chargement
+
+// ==========================================
+// MODAL LÉGENDE VIVANTE — RÉCAP CARRIÈRE
+// ==========================================
+
+function showLegendModal() {
+    const p = game.player;
+    if (navigator.vibrate) navigator.vibrate([80, 40, 80, 40, 200]);
+
+    const totalStreams = (p.inventory?.released || []).reduce((a, s) => a + (s.streams || 0), 0);
+    const sonsSortis   = (p.inventory?.released || []).length;
+    const sponsorCount = (p.sponsors || []).length;
+
+    const fmt = n => n >= 1000000000 ? (n/1000000000).toFixed(1)+'Mrd'
+                   : n >= 1000000    ? (n/1000000).toFixed(1)+'M'
+                   : n >= 1000       ? (n/1000).toFixed(0)+'K'
+                   : n;
+
+    const statsHtml = `
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:16px 0;">
+            <div style="background:rgba(0,230,118,0.07);border:1px solid rgba(0,230,118,0.2);border-radius:12px;padding:10px;text-align:center;">
+                <div style="font-size:1.3rem;font-weight:900;color:#00E676;">${fmt(p.fans)}</div>
+                <div style="font-size:8px;font-weight:700;color:#555;text-transform:uppercase;letter-spacing:.1em;margin-top:2px;">Fans</div>
+            </div>
+            <div style="background:rgba(124,77,255,0.07);border:1px solid rgba(124,77,255,0.2);border-radius:12px;padding:10px;text-align:center;">
+                <div style="font-size:1.3rem;font-weight:900;color:#7C4DFF;">${fmt(totalStreams)}</div>
+                <div style="font-size:8px;font-weight:700;color:#555;text-transform:uppercase;letter-spacing:.1em;margin-top:2px;">Streams</div>
+            </div>
+            <div style="background:rgba(255,145,0,0.07);border:1px solid rgba(255,145,0,0.2);border-radius:12px;padding:10px;text-align:center;">
+                <div style="font-size:1.3rem;font-weight:900;color:#FF9100;">${game.world.week}</div>
+                <div style="font-size:8px;font-weight:700;color:#555;text-transform:uppercase;letter-spacing:.1em;margin-top:2px;">Semaines</div>
+            </div>
+            <div style="background:rgba(41,121,255,0.07);border:1px solid rgba(41,121,255,0.2);border-radius:12px;padding:10px;text-align:center;">
+                <div style="font-size:1.3rem;font-weight:900;color:#2979FF;">${sonsSortis}</div>
+                <div style="font-size:8px;font-weight:700;color:#555;text-transform:uppercase;letter-spacing:.1em;margin-top:2px;">Sons sortis</div>
+            </div>
+            <div style="background:rgba(255,215,0,0.07);border:1px solid rgba(255,215,0,0.2);border-radius:12px;padding:10px;text-align:center;">
+                <div style="font-size:1.3rem;font-weight:900;color:#FFD700;">${fmt(p.cash)}F</div>
+                <div style="font-size:8px;font-weight:700;color:#555;text-transform:uppercase;letter-spacing:.1em;margin-top:2px;">Cash</div>
+            </div>
+            <div style="background:rgba(0,230,118,0.07);border:1px solid rgba(0,230,118,0.2);border-radius:12px;padding:10px;text-align:center;">
+                <div style="font-size:1.3rem;font-weight:900;color:#00E676;">${sponsorCount}</div>
+                <div style="font-size:8px;font-weight:700;color:#555;text-transform:uppercase;letter-spacing:.1em;margin-top:2px;">Sponsors</div>
+            </div>
+        </div>
+    `;
+
+    const overlay = document.getElementById('event-overlay');
+    const modal   = document.getElementById('event-modal');
+
+    const iconEl = document.getElementById('event-icon');
+    iconEl.innerHTML = `<svg width="40" height="40" viewBox="0 0 100 80" fill="none"><defs><linearGradient id="lm1" x1="0" y1="0" x2="100" y2="80" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#00E676"/><stop offset="100%" stop-color="#7C4DFF"/></linearGradient></defs><polygon points="10,70 20,20 50,50 80,20 90,70" fill="url(#lm1)"/><circle cx="50" cy="50" r="8" fill="#FFD700"/></svg>`;
+    iconEl.className = "flex justify-center mb-2";
+
+    document.getElementById('event-title').innerHTML = `<span style="background:linear-gradient(90deg,#00E676,#7C4DFF);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">LÉGENDE VIVANTE</span>`;
+    document.getElementById('event-desc').innerHTML  = `<strong style="color:white;">${p.name || 'Artiste'}</strong> — ton nom résonnera dans Abidjan pour toujours.${statsHtml}`;
+    document.getElementById('event-effects').innerHTML = '';
+
+    // Supprime l'ancien bouton de fermeture et remplace par deux boutons
+    const existingBtn = modal.querySelector('button');
+    if (existingBtn) existingBtn.remove();
+
+    const btnRow = document.createElement('div');
+    btnRow.id = 'legend-modal-btns';
+    btnRow.style.cssText = 'display:flex;flex-direction:column;gap:10px;margin-top:16px;';
+    btnRow.innerHTML = `
+        <button onclick="legendShareFromModal()" class="pill-button btn-primary py-3 text-sm font-black flex items-center justify-center gap-2">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/></svg>
+            PARTAGER MA LÉGENDE
+        </button>
+        <button onclick="closeLegendModal()" class="pill-button btn-secondary py-3 text-sm opacity-60">CONTINUER MA CARRIÈRE</button>
+    `;
+    modal.appendChild(btnRow);
+
+    modal.style.animation = 'popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards';
+    overlay.style.display = 'block';
+    modal.classList.remove('hidden');
+}
+
+function closeLegendModal() {
+    // Nettoie les boutons custom avant de fermer pour ne pas polluer les prochains modals
+    const legendBtns = document.getElementById('legend-modal-btns');
+    if (legendBtns) legendBtns.remove();
+    closeEventModal();
+}
+
+function legendShareFromModal() {
+    closeLegendModal();
+    MILESTONE_TITLES['fans_10m'] = 'LÉGENDE VIVANTE 👑';
+    setTimeout(() => showShareCard('fans_10m'), 200);
+}
+
 function attachRippleToButtons() {
     document.querySelectorAll('.pill-button').forEach(btn => {
         if (!btn.dataset.ripple) {
@@ -4960,7 +5080,7 @@ window.onload = function() {
             
             <div class="space-y-3 mb-8 text-sm">
                 <div class="bg-white/5 p-3 rounded-xl border border-white/10">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="#2979FF" class="inline align-middle mr-2"><path d="M7 2v11h3v9l7-12h-4l4-8z"/></svg> <strong class="text-white">L'Énergie :</strong> Chaque action coûte de l'énergie. Clique sur "Terminer la Semaine" pour te reposer, récupérer 50 NRJ et encaisser tes revenus.
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="#2979FF" class="inline align-middle mr-2"><path d="M7 2v11h3v9l7-12h-4l4-8z"/></svg> <strong class="text-white">L'Énergie :</strong> Chaque action coûte de l'énergie. Une fois tes 4 actions utilisées, clique sur <strong class="text-primary">"Terminer la Semaine"</strong> pour te reposer — c'est ce bouton qui génère tes revenus et te redonne 50 NRJ. Tant qu'il reste des actions disponibles, le bouton est grisé : il faut d'abord tout dépenser.
                 </div>
                 <div class="bg-white/5 p-3 rounded-xl border border-white/10">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="#00E676" class="inline align-middle mr-2"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg> <strong class="text-white">Les Projets :</strong> Sors des sons et économise 2 Millions pour sortir un <strong>Album</strong> (les streams de l'album sont multipliés par 10 !).
