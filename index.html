@@ -2020,8 +2020,8 @@ let game = {
     world: {
         week: 1,
         year: 2024,
-        actionsLeft: 3,
-        actionsMax: 3
+        actionsLeft: 4,
+        actionsMax: 4
     },
     stats: { totalEarnings: 0, concertsDone: 0 }
 };
@@ -3237,7 +3237,11 @@ function checkLevelUp() {
         // On retire l'XP consommée pour le niveau
         game.player.xp -= xpForNextLevel;
         game.player.level++;
-        game.player.perkPoints += 2; // Donne 2 points par niveau
+        game.player.perkPoints += 2;
+
+        // Actions max augmente avec le niveau : 4 → 5 → 6 (cap 6)
+        const newActionsMax = Math.min(6, 3 + game.player.level);
+        game.world.actionsMax = newActionsMax;
         
         showEventModal(
             "LEVEL UP !", 
@@ -3341,9 +3345,8 @@ function closeClashMenu() {
 
 function executeFinalClash(target) {
     closeClashMenu();
-    closeAllMenus(); // Ferme le menu des actions
-    
-    // Déduction des ressources
+    closeAllMenus();
+
     game.player.energy -= 30;
     game.world.actionsLeft--;
 
@@ -3351,14 +3354,43 @@ function executeFinalClash(target) {
     const isSuccess = Math.random() < successChance;
 
     if (isSuccess) {
-        const b = Math.floor(target.power * 8); // Buzz divisé par 3
-        game.player.buzz += b;
-        addXP(target.power * 5); // XP divisée par 3
-        addNews(`🔥 CLASH : Tu as humilié ${target.name} ! Buzz +${b}%`, "success");
+        const buzzGain   = Math.floor(target.power * 8);
+        const fansStolen = Math.floor(target.power * 50 * (1 + game.player.level * 0.3));
+        game.player.buzz += buzzGain;
+        game.player.fans += fansStolen;
+        addXP(target.power * 5);
+        addNews(`🔥 CLASH : Tu as humilié ${target.name} ! +${buzzGain} Buzz, +${fansStolen.toLocaleString()} Fans volés`, "success");
+
+        showEventModal(
+            `${target.name} DÉTRUIT 💀`,
+            `Tu viens de ridiculiser ${target.name} (${target.desc}) devant tout le monde. Sa fanbase te rejoint.`,
+            [
+                { icon: '🔥', val: `+${buzzGain} Buzz` },
+                { icon: '👥', val: `+${fansStolen.toLocaleString()} Fans volés` }
+            ],
+            'fire'
+        );
+
+        // Share card clash_win
+        MILESTONE_TITLES['clash_win'] = `CLASH GAGNÉ vs ${target.name}`;
+        setTimeout(() => showShareCard('clash_win'), 2200);
+
     } else {
-        const loss = 15 + (target.power * 2);
-        game.player.energy = Math.max(0, game.player.energy - loss);
-        addNews(`💀 ÉCHEC : ${target.name} t'a remis à ta place. Tu perds de l'énergie.`, "danger");
+        const energyLoss = 15 + (target.power * 2);
+        const fansLost   = Math.floor(target.power * 200);
+        game.player.energy = Math.max(0, game.player.energy - energyLoss);
+        game.player.fans   = Math.max(0, game.player.fans - fansLost);
+        addNews(`💀 ÉCHEC : ${target.name} t'a remis à ta place. -${energyLoss}⚡, -${fansLost.toLocaleString()} Fans`, "danger");
+
+        showEventModal(
+            `${target.name} T'A ÉCRASÉ 😤`,
+            `${target.name} t'a démoli en public. Ses fans se moquent de toi sur les réseaux. Tu rentres au quartier la tête basse.`,
+            [
+                { icon: '⚡', val: `-${energyLoss} Énergie` },
+                { icon: '👥', val: `-${fansLost.toLocaleString()} Fans` }
+            ],
+            'alert'
+        );
     }
 
     updateUI();
@@ -3952,7 +3984,7 @@ function processNextWeek() {
 
     // --- 3. SÉCURITÉ ANTI-BUG ---
     game.player.energyMax = game.player.energyMax || 100;
-    game.world.actionsMax = game.world.actionsMax || 3;
+    game.world.actionsMax = game.world.actionsMax || Math.min(6, 3 + (game.player.level || 1));
     if (!game.stats) game.stats = { totalEarnings: 0, concertsDone: 0 };
     if (!game.player.inventory.released) game.player.inventory.released = [];
 
@@ -4188,7 +4220,8 @@ function processNextWeek() {
     }
 
     // --- 9. FIN DE TOUR ---
-    if(game.player.buzz > 5 && game.world.week % 2 === 0) game.player.buzz -= 1;
+    // Décroissance de Buzz : seulement à partir du niveau 2 (les débutants ne doivent pas être pénalisés)
+    if (game.player.level >= 2 && game.player.buzz > 5 && game.world.week % 2 === 0) game.player.buzz -= 1;
 
     if (typeof checkContracts === "function") checkContracts();
     if (typeof updateUI === "function") updateUI(); 
@@ -4214,6 +4247,35 @@ function processNextWeek() {
     }
 
     if (typeof checkMilestones === "function") checkMilestones();
+
+    // --- 11. GUIDAGE JOUEUR BLOQUÉ ---
+    // Initialisation du tracker
+    if (!game.player._stagnation) game.player._stagnation = { fans: 0, weeks: 0, lastFans: 0 };
+    const sg = game.player._stagnation;
+
+    if (game.player.fans <= sg.lastFans + 10) {
+        sg.weeks++;
+    } else {
+        sg.weeks = 0;
+    }
+    sg.lastFans = game.player.fans;
+
+    // Après 3 semaines sans progression → tip contextuel
+    if (sg.weeks >= 3) {
+        sg.weeks = 0; // reset pour ne pas spammer
+        const noSongs = game.player.inventory.released.length === 0;
+        const lowBuzz = game.player.buzz < 20;
+        const lowCash = game.player.cash < 5000;
+
+        let tip = "Essaie de varier tes actions cette semaine.";
+        if (noSongs)       tip = "⚠️ Tu n'as encore sorti aucun son. Va au Studio, crée et publie un son — c'est lui qui ramène des fans chaque semaine.";
+        else if (lowBuzz)  tip = "⚠️ Ton Buzz est trop bas. Fais un Challenge TikTok ou un Clash pour le remonter.";
+        else if (lowCash)  tip = "⚠️ T'as plus de cash. Fais un freestyle Gbaka ou un petit gombo pour renflouer.";
+
+        setTimeout(() => {
+            addNews(`💡 CONSEIL : ${tip}`, "info");
+        }, 800);
+    }
 }
 
 function triggerRandomEvent() {
