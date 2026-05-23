@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
         <meta name="google-site-verification" content="7pM5bQon2tvNX6tFOMlqAn9D4kNXmwPO3LiYCzmN8HY" />
     
-    <title>Rap Ivoire</title>
+    <title>BUZZKING</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Space+Grotesk:wght@300;500;700&display=swap" rel="stylesheet">
     <style>
@@ -462,6 +462,123 @@ input:focus, select:focus {
     object-fit: contain;
 }
 
+/* =========================================
+   BUZZKING — ANIMATIONS MOBILE NATIVES
+   ========================================= */
+
+/* LOADING SCREEN : Logo animé */
+@keyframes logoReveal {
+    0%   { transform: scale(0.5) rotate(-10deg); opacity: 0; }
+    60%  { transform: scale(1.15) rotate(2deg); opacity: 1; }
+    100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+@keyframes crownFloat {
+    0%, 100% { transform: translateY(0px); }
+    50%       { transform: translateY(-6px); }
+}
+@keyframes particleFly {
+    0%   { transform: translate(0,0) scale(1); opacity: 1; }
+    100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
+}
+.logo-reveal { animation: logoReveal 0.7s cubic-bezier(0.34,1.56,0.64,1) forwards; }
+.crown-float { animation: crownFloat 2.5s ease-in-out infinite; }
+
+/* CONFETTI milestone */
+@keyframes confettiFall {
+    0%   { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+}
+.confetti-piece {
+    position: fixed;
+    width: 8px;
+    height: 8px;
+    border-radius: 2px;
+    z-index: 9999;
+    pointer-events: none;
+    animation: confettiFall var(--dur, 1.5s) ease-in forwards;
+}
+
+/* STAT BOUNCE : quand une stat monte */
+@keyframes statBounce {
+    0%   { transform: scale(1); }
+    30%  { transform: scale(1.4); color: #00E676; }
+    60%  { transform: scale(0.9); }
+    100% { transform: scale(1); }
+}
+.stat-bounce { animation: statBounce 0.5s cubic-bezier(0.34,1.56,0.64,1); }
+
+/* GAIN FLOAT : +100 Fans qui monte et disparaît */
+@keyframes gainFloat {
+    0%   { transform: translateY(0); opacity: 1; }
+    100% { transform: translateY(-60px); opacity: 0; }
+}
+.gain-float {
+    position: fixed;
+    font-weight: 900;
+    font-size: 16px;
+    color: #00E676;
+    pointer-events: none;
+    z-index: 9999;
+    animation: gainFloat 1.2s ease-out forwards;
+}
+
+/* BUTTON TAP : ripple mobile */
+@keyframes ripple {
+    0%   { transform: scale(0); opacity: 0.6; }
+    100% { transform: scale(3); opacity: 0; }
+}
+.btn-ripple {
+    position: absolute;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    background: rgba(255,255,255,0.2);
+    pointer-events: none;
+    animation: ripple 0.5s ease-out forwards;
+}
+
+/* SHARE CARD OVERLAY */
+#share-card-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.92);
+    backdrop-filter: blur(12px);
+    z-index: 9998;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+}
+#share-card {
+    width: 100%;
+    max-width: 360px;
+    background: linear-gradient(135deg, #0d0e17 0%, #1a1040 50%, #0d0e17 100%);
+    border: 1px solid rgba(0,230,118,0.3);
+    border-radius: 24px;
+    padding: 32px 24px;
+    text-align: center;
+    box-shadow: 0 0 60px rgba(0,230,118,0.15), 0 0 120px rgba(124,77,255,0.1);
+    animation: logoReveal 0.4s cubic-bezier(0.34,1.56,0.64,1);
+}
+@keyframes pulse-glow {
+    0%, 100% { box-shadow: 0 0 20px rgba(0,230,118,0.2); }
+    50%       { box-shadow: 0 0 40px rgba(0,230,118,0.5); }
+}
+
+/* NAV ITEM active bounce amélioré */
+.nav-item:active { transform: scale(0.82); }
+
+/* ONBOARDING : entrée depuis le bas */
+@keyframes slideFromBottom {
+    from { transform: translateY(40px); opacity: 0; }
+    to   { transform: translateY(0); opacity: 1; }
+}
+.slide-from-bottom { animation: slideFromBottom 0.5s cubic-bezier(0.34,1.56,0.64,1) both; }
+.slide-from-bottom-delay-1 { animation: slideFromBottom 0.5s 0.1s cubic-bezier(0.34,1.56,0.64,1) both; }
+.slide-from-bottom-delay-2 { animation: slideFromBottom 0.5s 0.2s cubic-bezier(0.34,1.56,0.64,1) both; }
+.slide-from-bottom-delay-3 { animation: slideFromBottom 0.5s 0.3s cubic-bezier(0.34,1.56,0.64,1) both; }
+.slide-from-bottom-delay-4 { animation: slideFromBottom 0.5s 0.4s cubic-bezier(0.34,1.56,0.64,1) both; }
 
     </style>
 </head>
@@ -469,17 +586,40 @@ input:focus, select:focus {
 
 <div class="app-container">
     
-<div id="loading-screen" class="absolute inset-0 z-[2000] bg-[#0d0e17] flex flex-col items-center justify-center transition-opacity duration-500">
-        <div class="w-16 h-16 mb-6 relative">
-             <svg viewBox="0 0 100 100" class="animate-spin text-primary absolute inset-0">
-                <circle cx="50" cy="50" r="40" fill="none" stroke="currentColor" stroke-width="8" stroke-dasharray="160 100" />
-             </svg>
-             <div class="absolute inset-0 flex items-center justify-center"><svg width="32" height="32" viewBox="0 0 24 24" fill="#00E676"><path d="M12 15c1.66 0 2.99-1.34 2.99-3L15 6c0-1.66-1.34-3-3-3S9 4.34 9 6v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 15 6.7 12H5c0 3.42 2.72 6.23 6 6.72V22h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z"/></svg></div>
+<div id="loading-screen" class="absolute inset-0 z-[2000] bg-[#09090E] flex flex-col items-center justify-center transition-opacity duration-700 overflow-hidden">
+    <!-- Particules de fond -->
+    <div class="absolute inset-0 pointer-events-none" id="loading-particles"></div>
+    
+    <!-- Logo BUZZKING -->
+    <div class="logo-reveal flex flex-col items-center mb-8">
+        <!-- Couronne animée -->
+        <div class="crown-float mb-3">
+            <svg width="64" height="64" viewBox="0 0 100 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <linearGradient id="crownGrad" x1="0" y1="0" x2="100" y2="80" gradientUnits="userSpaceOnUse">
+                        <stop offset="0%" stop-color="#00E676"/>
+                        <stop offset="100%" stop-color="#7C4DFF"/>
+                    </linearGradient>
+                </defs>
+                <polygon points="10,70 20,20 50,50 80,20 90,70" fill="url(#crownGrad)" stroke="rgba(0,230,118,0.5)" stroke-width="2"/>
+                <circle cx="10" cy="70" r="6" fill="#00E676"/>
+                <circle cx="50" cy="50" r="7" fill="#FFD700"/>
+                <circle cx="90" cy="70" r="6" fill="#7C4DFF"/>
+                <circle cx="20" cy="20" r="5" fill="#00E676"/>
+                <circle cx="80" cy="20" r="5" fill="#7C4DFF"/>
+            </svg>
         </div>
-        <h2 class="text-xl font-black text-white italic tracking-widest uppercase">rapivoire</h2>
-        <p class="text-primary text-[10px] font-bold mt-2 tracking-[0.2em]">ÉDITION ULTIMATE</p>
-        <p class="text-zinc-500 text-[10px] mt-4" id="loading-text">Initialisation du studio...</p>
+        <!-- Titre -->
+        <h1 style="font-family:'Space Grotesk',sans-serif; font-weight:900; font-size:2.5rem; letter-spacing:0.15em; background:linear-gradient(135deg,#00E676,#7C4DFF); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;">BUZZKING</h1>
+        <p class="text-[10px] font-black tracking-[0.35em] text-zinc-400 uppercase mt-1">Deviens une Légende</p>
     </div>
+
+    <!-- Barre de chargement stylée -->
+    <div class="w-48 h-1 bg-white/10 rounded-full overflow-hidden mb-4">
+        <div id="loading-bar" class="h-full rounded-full" style="background:linear-gradient(90deg,#00E676,#7C4DFF); width:0%; transition:width 0.4s ease;"></div>
+    </div>
+    <p class="text-zinc-500 text-[10px] tracking-widest uppercase" id="loading-text">Initialisation du studio...</p>
+</div>
 
     <div id="global-notif" class="notif-banner">Message de notification</div>
     <div id="lyrics-overlay" class="fixed inset-0 bg-black/90 backdrop-blur-md z-[600] hidden flex-col items-center justify-center p-4">
@@ -1021,7 +1161,7 @@ icon: `<svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path
         color: 'bg-blue-grad' 
     },
     { 
-        id: 'promo_boomplay', title: "Playlist 'Rap Ivoire'", reqLevel: 2,
+        id: 'promo_boomplay', title: "Playlist 'BuzzKing Hits'", reqLevel: 2,
         desc: "Payer les curateurs Boomplay.", 
         energy: 20, cash: -15000, buzz: 5, fans: 60, xp: 15, 
         color: 'bg-blue-grad' 
@@ -1928,12 +2068,13 @@ function init() {
 }
 
 function saveGame() {
-    localStorage.setItem('rapIvoireSaveData', JSON.stringify(game));
+    localStorage.setItem('buzzKingSaveData', JSON.stringify(game));
     notify("Partie sauvegardée !");
 }
 
 function loadGame() {
-    const saved = localStorage.getItem('rapIvoireSaveData');
+    // Support ancienne clé rapivoire pour migration
+    const saved = localStorage.getItem('buzzKingSaveData') || localStorage.getItem('rapIvoireSaveData');
     if (saved) {
         try {
             let parsed = JSON.parse(saved);
@@ -1971,7 +2112,7 @@ function loadGame() {
 
 function resetGame() {
     if(confirm("Veux-tu vraiment effacer ta carrière et recommencer à zéro ?")) {
-        localStorage.removeItem('rapIvoireSaveData');
+        localStorage.removeItem('buzzKingSaveData');
         location.reload();
     }
 }
@@ -2061,6 +2202,11 @@ function updateUI() {
         btnNext.style.pointerEvents = 'auto';
         btnNext.classList.add('animate-pulse');
     }
+
+    // BUZZKING : stat bounces + milestone check
+    bounceStatEl('stat-fans');
+    bounceStatEl('stat-cash');
+    if (typeof checkMilestones === 'function') checkMilestones();
 }
 
 // ==========================================
@@ -3068,10 +3214,12 @@ function checkLevelUp() {
         const appContainer = document.querySelector('.app-container');
         if (appContainer) {
             appContainer.classList.remove('milestone-pulse');
-            void appContainer.offsetWidth; // force reflow pour relancer l'anim
+            void appContainer.offsetWidth;
             appContainer.classList.add('milestone-pulse');
             setTimeout(() => appContainer.classList.remove('milestone-pulse'), 1200);
         }
+        // BUZZKING : confetti + vibration level up
+        if (typeof triggerConfetti === 'function') triggerConfetti();
         // Couleur dorée sur le niveau si >= 5
         const lvlEl = document.getElementById('stat-level');
         if (lvlEl) {
@@ -4217,32 +4365,272 @@ function startGameOnboarding() {
         overlay.classList.add('hidden');
         
         // On annonce l'arrivée du joueur dans le fil d'actualité !
-        addNews(`🔥 La carrière de ${game.player.name} commence aujourd'hui !`, "success");
+        addNews(`🔥 La carrière de ${game.player.name} commence aujourd'hui sur BUZZKING !`, "success");
         updateUI();
     }, 500);
 }
 
+// ==========================================
+// BUZZKING — SYSTÈME D'ANIMATIONS MOBILES
+// ==========================================
+
+// --- LOADING BAR ANIMÉE ---
+function animateLoadingBar() {
+    const bar = document.getElementById('loading-bar');
+    if (!bar) return;
+    let w = 0;
+    const msgs = [
+        "Initialisation du studio...",
+        "Chargement des beats...",
+        "Connexion au game...",
+        "BUZZKING prêt 👑"
+    ];
+    let step = 0;
+    const interval = setInterval(() => {
+        w += Math.random() * 28 + 8;
+        if (w > 100) w = 100;
+        bar.style.width = w + '%';
+        const msgEl = document.getElementById('loading-text');
+        if (msgEl && step < msgs.length && w > step * 25) {
+            msgEl.textContent = msgs[step];
+            step++;
+        }
+        if (w >= 100) clearInterval(interval);
+    }, 280);
+}
+
+// --- PARTICULES LOADING ---
+function spawnLoadingParticles() {
+    const container = document.getElementById('loading-particles');
+    if (!container) return;
+    const colors = ['#00E676','#7C4DFF','#FFD700','#FF5252'];
+    for (let i = 0; i < 18; i++) {
+        const p = document.createElement('div');
+        const size = Math.random() * 4 + 2;
+        const x = Math.random() * 100;
+        const y = Math.random() * 100;
+        p.style.cssText = `
+            position:absolute;left:${x}%;top:${y}%;
+            width:${size}px;height:${size}px;
+            border-radius:50%;
+            background:${colors[Math.floor(Math.random()*colors.length)]};
+            opacity:${Math.random() * 0.4 + 0.1};
+            animation: crownFloat ${2 + Math.random()*3}s ${Math.random()*2}s ease-in-out infinite;
+        `;
+        container.appendChild(p);
+    }
+}
+
+// --- RIPPLE EFFECT sur boutons ---
+function addRipple(e) {
+    const btn = e.currentTarget;
+    const rect = btn.getBoundingClientRect();
+    const x = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left - 30;
+    const y = (e.touches ? e.touches[0].clientY : e.clientY) - rect.top - 30;
+    const ripple = document.createElement('div');
+    ripple.className = 'btn-ripple';
+    ripple.style.cssText = `left:${x}px;top:${y}px;`;
+    btn.style.position = 'relative';
+    btn.style.overflow = 'hidden';
+    btn.appendChild(ripple);
+    setTimeout(() => ripple.remove(), 600);
+    // Haptic feedback
+    if (navigator.vibrate) navigator.vibrate(30);
+}
+
+// --- GAIN FLOAT : animation "+100 Fans" ---
+function showGainFloat(text, x, y, color) {
+    const el = document.createElement('div');
+    el.className = 'gain-float';
+    el.textContent = text;
+    el.style.cssText = `left:${x || 50}%;top:${y || 60}%;transform:translateX(-50%);color:${color||'#00E676'};`;
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 1300);
+}
+
+// --- STAT BOUNCE ---
+function bounceStatEl(id) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.classList.remove('stat-bounce');
+    void el.offsetWidth;
+    el.classList.add('stat-bounce');
+    setTimeout(() => el.classList.remove('stat-bounce'), 600);
+}
+
+// --- CONFETTI LEVEL UP ---
+function triggerConfetti() {
+    if (navigator.vibrate) navigator.vibrate([50, 30, 80]);
+    const colors = ['#00E676','#7C4DFF','#FFD700','#FF5252','#2979FF','#FF9100'];
+    for (let i = 0; i < 40; i++) {
+        const c = document.createElement('div');
+        c.className = 'confetti-piece';
+        c.style.cssText = `
+            left:${Math.random()*100}vw;
+            top:-10px;
+            background:${colors[Math.floor(Math.random()*colors.length)]};
+            --dur:${1.2 + Math.random()*1.2}s;
+            transform:rotate(${Math.random()*360}deg);
+            animation-delay:${Math.random()*0.5}s;
+        `;
+        document.body.appendChild(c);
+        setTimeout(() => c.remove(), 2500);
+    }
+}
+
+// --- SHARE CARD ---
+const CAREER_TITLES = {
+    1: "Espoir du Quartier",
+    2: "Rappeur Underground",
+    3: "Artiste Montant",
+    4: "Star Confirmée",
+    5: "Légende Vivante"
+};
+const MILESTONE_TITLES = {
+    fans_100k:   "100K FANS ATTEINTS",
+    fans_1m:     "1 MILLION DE FANS 🔥",
+    album:       "PREMIER ALBUM SORTI",
+    clash_win:   "CLASH REMPORTÉ",
+    level_up:    "NOUVEAU NIVEAU",
+    game_over:   "FIN DE CARRIÈRE"
+};
+
+function showShareCard(milestoneKey) {
+    const overlay = document.getElementById('share-card-overlay');
+    const p = game.player;
+
+    document.getElementById('share-milestone-title').textContent = MILESTONE_TITLES[milestoneKey] || "MILESTONE";
+    document.getElementById('share-player-name').textContent = p.name || "BUZZKING";
+    document.getElementById('share-career-title').textContent = CAREER_TITLES[Math.min(p.level, 5)] || "Artiste";
+
+    const fansFormatted = p.fans >= 1000000 ? (p.fans/1000000).toFixed(1)+'M' : p.fans >= 1000 ? (p.fans/1000).toFixed(0)+'K' : p.fans;
+    const streamsFormatted = p.inventory && p.inventory.released ? 
+        p.inventory.released.reduce((a,s) => a + (s.streams||0), 0) : 0;
+    const streamsDisplay = streamsFormatted >= 1000000 ? (streamsFormatted/1000000).toFixed(1)+'M' : streamsFormatted >= 1000 ? (streamsFormatted/1000).toFixed(0)+'K' : streamsFormatted;
+    const cashFormatted = p.cash >= 1000000 ? (p.cash/1000000).toFixed(1)+'M' : p.cash >= 1000 ? Math.floor(p.cash/1000)+'K' : p.cash;
+
+    document.getElementById('share-stats-grid').innerHTML = `
+        <div style="background:rgba(0,230,118,0.07);border:1px solid rgba(0,230,118,0.2);border-radius:12px;padding:12px;text-align:center;">
+            <div style="font-size:1.4rem;font-weight:900;color:#00E676;">${fansFormatted}</div>
+            <div style="font-size:9px;font-weight:700;color:#666;text-transform:uppercase;letter-spacing:0.1em;margin-top:2px;">Fans</div>
+        </div>
+        <div style="background:rgba(124,77,255,0.07);border:1px solid rgba(124,77,255,0.2);border-radius:12px;padding:12px;text-align:center;">
+            <div style="font-size:1.4rem;font-weight:900;color:#7C4DFF;">${streamsDisplay}</div>
+            <div style="font-size:9px;font-weight:700;color:#666;text-transform:uppercase;letter-spacing:0.1em;margin-top:2px;">Streams</div>
+        </div>
+        <div style="background:rgba(255,215,0,0.07);border:1px solid rgba(255,215,0,0.2);border-radius:12px;padding:12px;text-align:center;">
+            <div style="font-size:1.4rem;font-weight:900;color:#FFD700;">${cashFormatted}F</div>
+            <div style="font-size:9px;font-weight:700;color:#666;text-transform:uppercase;letter-spacing:0.1em;margin-top:2px;">Cash</div>
+        </div>
+        <div style="background:rgba(41,121,255,0.07);border:1px solid rgba(41,121,255,0.2);border-radius:12px;padding:12px;text-align:center;">
+            <div style="font-size:1.4rem;font-weight:900;color:#2979FF;">Niv.${p.level}</div>
+            <div style="font-size:9px;font-weight:700;color:#666;text-transform:uppercase;letter-spacing:0.1em;margin-top:2px;">Niveau</div>
+        </div>
+    `;
+
+    overlay.style.display = 'flex';
+    if (navigator.vibrate) navigator.vibrate([40, 20, 40, 20, 80]);
+}
+
+function closeShareCard() {
+    document.getElementById('share-card-overlay').style.display = 'none';
+}
+
+// --- MILESTONE CHECK : déclenché après updateUI ---
+let _lastFanMilestone = 0;
+function checkMilestones() {
+    if (!game || !game.player) return;
+    const fans = game.player.fans;
+    if (fans >= 100000 && _lastFanMilestone < 100000) {
+        _lastFanMilestone = 100000;
+        triggerConfetti();
+        setTimeout(() => showShareCard('fans_100k'), 800);
+    }
+    if (fans >= 1000000 && _lastFanMilestone < 1000000) {
+        _lastFanMilestone = 1000000;
+        triggerConfetti();
+        setTimeout(() => showShareCard('fans_1m'), 800);
+    }
+}
+
+// Ajouter ripple à tous les pill-buttons existants au chargement
+function attachRippleToButtons() {
+    document.querySelectorAll('.pill-button').forEach(btn => {
+        if (!btn.dataset.ripple) {
+            btn.dataset.ripple = '1';
+            btn.addEventListener('touchstart', addRipple, { passive: true });
+        }
+    });
+}
+
 // Lancement
 window.onload = function() {
+    spawnLoadingParticles();
+    animateLoadingBar();
     init();
+    setTimeout(attachRippleToButtons, 1500);
 };
 </script>
+<!-- SHARE CARD OVERLAY -->
+<div id="share-card-overlay" class="flex">
+    <div id="share-card">
+        <!-- Header BUZZKING -->
+        <div class="flex items-center justify-center gap-2 mb-6">
+            <svg width="28" height="28" viewBox="0 0 100 80" fill="none">
+                <defs><linearGradient id="cg2" x1="0" y1="0" x2="100" y2="80" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#00E676"/><stop offset="100%" stop-color="#7C4DFF"/></linearGradient></defs>
+                <polygon points="10,70 20,20 50,50 80,20 90,70" fill="url(#cg2)"/>
+                <circle cx="50" cy="50" r="7" fill="#FFD700"/>
+            </svg>
+            <span style="font-weight:900;font-size:1.1rem;letter-spacing:0.15em;background:linear-gradient(135deg,#00E676,#7C4DFF);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">BUZZKING</span>
+        </div>
+
+        <!-- Titre du milestone -->
+        <div id="share-milestone-title" class="text-white font-black text-xs uppercase tracking-[0.25em] mb-2 opacity-60"></div>
+        
+        <!-- Nom du joueur -->
+        <div id="share-player-name" class="text-white font-black mb-1" style="font-size:2rem;line-height:1;letter-spacing:-0.02em;"></div>
+        
+        <!-- Titre de carrière -->
+        <div id="share-career-title" class="font-black text-xs uppercase tracking-widest mb-6" style="background:linear-gradient(90deg,#00E676,#7C4DFF);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;"></div>
+        
+        <!-- Séparateur -->
+        <div style="height:1px;background:linear-gradient(90deg,transparent,rgba(0,230,118,0.4),transparent);margin-bottom:20px;"></div>
+        
+        <!-- Stats -->
+        <div class="grid grid-cols-2 gap-3 mb-6" id="share-stats-grid"></div>
+
+        <!-- Semaine + tagline -->
+        <div class="text-zinc-600 text-[10px] font-bold uppercase tracking-widest">Joue sur BUZZKING</div>
+    </div>
+    
+    <!-- Boutons action -->
+    <div class="mt-5 flex flex-col gap-3 w-full max-w-xs">
+        <button onclick="closeShareCard()" class="pill-button btn-secondary text-sm py-3">FERMER</button>
+    </div>
+</div>
+
 <div id="onboarding-overlay" class="fixed inset-0 bg-black/95 backdrop-blur-xl z-[500] flex items-center justify-center p-4 transition-opacity duration-500">
     <div class="bg-[#1C1D26] border border-white/20 w-full max-w-md rounded-2xl shadow-2xl p-6 max-h-[90vh] overflow-y-auto">
         
         <div id="step-pseudo" class="text-center">
-            <div class="flex items-center justify-center w-16 h-16 rounded-2xl bg-[#00E676]/10 border border-[#00E676]/20 mb-4 mx-auto">
-                <svg width="36" height="36" viewBox="0 0 24 24" fill="#00E676"><path d="M12 15c1.66 0 2.99-1.34 2.99-3L15 6c0-1.66-1.34-3-3-3S9 4.34 9 6v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 15 6.7 12H5c0 3.42 2.72 6.23 6 6.72V22h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z"/></svg>
+            <!-- Logo BUZZKING dans l'onboarding -->
+            <div class="flex flex-col items-center mb-5 slide-from-bottom">
+                <svg width="48" height="40" viewBox="0 0 100 80" fill="none" class="mb-2">
+                    <defs><linearGradient id="cg3" x1="0" y1="0" x2="100" y2="80" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#00E676"/><stop offset="100%" stop-color="#7C4DFF"/></linearGradient></defs>
+                    <polygon points="10,70 20,20 50,50 80,20 90,70" fill="url(#cg3)"/>
+                    <circle cx="50" cy="50" r="7" fill="#FFD700"/>
+                </svg>
+                <h1 style="font-weight:900;font-size:1.8rem;letter-spacing:0.12em;background:linear-gradient(135deg,#00E676,#7C4DFF);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">BUZZKING</h1>
             </div>
-            <h2 class="text-white font-black text-3xl mb-2">CRÉE TA LÉGENDE</h2>
-            <p class="text-zinc-400 mb-6 text-sm">Tout grand rappeur a besoin d'un blase qui claque. Comment va-t-on t'appeler dans les rues d'Abidjan ?</p>
+            <h2 class="text-white font-black text-2xl mb-2 slide-from-bottom-delay-1">CRÉE TA LÉGENDE</h2>
+            <p class="text-zinc-400 mb-6 text-sm slide-from-bottom-delay-2">Tout grand rappeur a besoin d'un blase qui claque. Comment va-t-on t'appeler dans les rues d'Abidjan ?</p>
             
-            <input type="text" id="player-pseudo-input" placeholder="Ton nom de scène..." class="w-full bg-black/40 border border-white/10 rounded-xl p-4 text-white font-bold text-center mb-6 focus:border-primary focus:outline-none transition-all" maxlength="20">
+            <input type="text" id="player-pseudo-input" placeholder="Ton nom de scène..." class="w-full bg-black/40 border border-white/10 rounded-xl p-4 text-white font-bold text-center mb-6 focus:border-primary focus:outline-none transition-all slide-from-bottom-delay-3" maxlength="20">
             
-            <button onclick="submitPseudo()" class="pill-button btn-primary mt-6">
-    VALIDER MON BLASE
+            <button onclick="submitPseudo()" class="pill-button btn-primary mt-6 slide-from-bottom-delay-4" ontouchstart="addRipple(event)">
+                VALIDER MON BLASE
             </button>
-            </div>
+        </div>
 
         <div id="step-tutorial" class="hidden">
             <div class="flex items-center gap-3 mb-6">
