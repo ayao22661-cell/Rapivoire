@@ -758,6 +758,13 @@ input:focus, select:focus {
                 ACTIONS DE LA SEMAINE 
                 <span id="action-count" class="ml-2 bg-black/40 text-white px-2 py-0.5 rounded-full text-[10px]">3</span>
             </button>
+
+            <!-- IMPRO RAPIDE : accès direct au mini-jeu de paroles -->
+            <button onclick="launchImproRapide()" class="pill-button w-full text-sm py-3.5" style="background:#1a1a2e;border:1px solid rgba(124,77,255,0.35);color:#a78bfa;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="display:inline;vertical-align:middle;margin-right:6px"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
+                IMPRO RAPIDE
+                <span style="font-size:9px;opacity:0.6;margin-left:6px">mini-jeu gratuit</span>
+            </button>
             
             <div class="grid grid-cols-2 gap-3">
                 <button onclick="saveGame()" class="pill-button btn-secondary text-xs py-3.5"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="display:inline;vertical-align:middle;margin-right:4px"><path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/></svg> Sauvegarder</button>
@@ -2590,9 +2597,11 @@ function finishRecording() {
     const { name, theme, beat, price } = pendingSongData;
 
     // EXACTEMENT TA SUITE DE CODE ORIGINALE :
-    // Pay costs
-    game.player.cash -= price;
-    game.player.energy -= 50;
+    // Pay costs — l'impro gratuite ne coûte ni cash ni énergie
+    if (!pendingSongData.isImpro) {
+        game.player.cash -= price;
+        game.player.energy -= 50;
+    }
 
     // Calculate Quality based on Beat + Perks + Items
     const flowSkill    = (game.player.skills && !isNaN(game.player.skills.flow))    ? game.player.skills.flow    : 0;
@@ -2618,6 +2627,16 @@ function finishRecording() {
         streams: 0,
         weeksOld: 0
     };
+
+    if (pendingSongData && pendingSongData.isImpro) {
+        // Impro : petits gains, pas de son sauvegardé
+        addXP(10);
+        game.player.buzz = Math.min(100, game.player.buzz + 1);
+        notify(`Impro terminée ! Qualité : ${finalQuality}% — +10 XP, +1 Buzz`);
+        pendingSongData = null;
+        updateUI();
+        return;
+    }
 
     game.player.inventory.songs.push(newSong);
     addXP(20);
@@ -3239,6 +3258,8 @@ function checkLevelUp() {
         }
         // BUZZKING : confetti + vibration level up
         if (typeof triggerConfetti === 'function') triggerConfetti();
+        // Share card level-up
+        setTimeout(() => showShareCard('level_up'), 1200);
         // Couleur dorée sur le niveau si >= 5
         const lvlEl = document.getElementById('stat-level');
         if (lvlEl) {
@@ -3249,6 +3270,29 @@ function checkLevelUp() {
         checkLevelUp(); 
     }
 }
+// ==========================================
+// IMPRO RAPIDE : mini-jeu de paroles accessible sans studio
+// ==========================================
+const IMPRO_STYLES = ['trap', 'coupé_décalé', 'conscient', 'afrobeat', 'zouglou'];
+
+function launchImproRapide() {
+    // On choisit un style au hasard parmi les styles disponibles dans LYRICS_MINIGAME
+    const availableStyles = IMPRO_STYLES.filter(s => LYRICS_MINIGAME[s]);
+    if (availableStyles.length === 0) { notify("Aucun style disponible."); return; }
+    const randomStyle = availableStyles[Math.floor(Math.random() * availableStyles.length)];
+
+    // On stocke un pendingSongData minimal pour que resolveLyricsMinigame puisse appeler finishCreateSong
+    pendingSongData = {
+        name: `Impro #${Math.floor(Math.random()*1000)}`,
+        theme: randomStyle,
+        beat: BEATS_POOL[0], // beat gratuit
+        price: 0,
+        isImpro: true
+    };
+
+    startLyricsMinigame(randomStyle);
+}
+
 function launchTargetedClash() {
     // Vérifications
     if (game.world.actionsLeft <= 0) return notify("Plus d'actions cette semaine !");
@@ -3902,6 +3946,10 @@ function processNextWeek() {
         game.player.concertsThisYear = 0; 
     }
 
+    // Snapshot pour le bilan de fin de semaine
+    const _fansBeforeWeek = game.player.fans;
+    const _cashBeforeWeek = game.player.cash;
+
     // --- 3. SÉCURITÉ ANTI-BUG ---
     game.player.energyMax = game.player.energyMax || 100;
     game.world.actionsMax = game.world.actionsMax || 3;
@@ -4144,7 +4192,28 @@ function processNextWeek() {
 
     if (typeof checkContracts === "function") checkContracts();
     if (typeof updateUI === "function") updateUI(); 
-    if (typeof saveGame === "function") saveGame(); 
+    if (typeof saveGame === "function") saveGame();
+
+    // --- 10. BILAN DE SEMAINE ---
+    const fansGainedThisWeek = game.player.fans - _fansBeforeWeek;
+    const cashGainedThisWeek = game.player.cash - _cashBeforeWeek;
+
+    // Titre progressif basé sur les fans
+    let weekTitle = "SEMAINE TRANQUILLE";
+    if (fansGainedThisWeek > 500)   weekTitle = "BON FLOW !";
+    if (fansGainedThisWeek > 2000)  weekTitle = "TU MONTES !";
+    if (fansGainedThisWeek > 10000) weekTitle = "SEMAINE DE FEU 🔥";
+    if (fansGainedThisWeek > 50000) weekTitle = "VIRAL ! 🚀";
+
+    const weekEffects = [];
+    if (fansGainedThisWeek !== 0) weekEffects.push({ icon: '👥', val: (fansGainedThisWeek >= 0 ? '+' : '') + fansGainedThisWeek.toLocaleString() + ' Fans' });
+    if (cashGainedThisWeek > 0)   weekEffects.push({ icon: '💰', val: '+' + cashGainedThisWeek.toLocaleString() + ' F' });
+    
+    if (weekEffects.length > 0) {
+        setTimeout(() => showEventModal(weekTitle, `Semaine ${game.world.week - 1} terminée. Continue sur cette lancée.`, weekEffects, fansGainedThisWeek > 5000 ? 'fire' : 'bell'), 300);
+    }
+
+    if (typeof checkMilestones === "function") checkMilestones();
 }
 
 function triggerRandomEvent() {
@@ -4518,6 +4587,9 @@ const CAREER_TITLES = {
     5: "Légende Vivante"
 };
 const MILESTONE_TITLES = {
+    fans_500:    "500 PREMIERS FANS 🔥",
+    fans_5k:     "5 000 FANS",
+    fans_25k:    "25 000 FANS",
     fans_100k:   "100K FANS ATTEINTS",
     fans_1m:     "1 MILLION DE FANS 🔥",
     album:       "PREMIER ALBUM SORTI",
@@ -4563,6 +4635,118 @@ function showShareCard(milestoneKey) {
     if (navigator.vibrate) navigator.vibrate([40, 20, 40, 20, 80]);
 }
 
+// ==========================================
+// SHARE CARD — FONCTIONS DE PARTAGE
+// ==========================================
+
+// Texte de partage généré depuis l'état du jeu
+function buildShareText() {
+    const p = game.player;
+    const fansFormatted = p.fans >= 1000000 ? (p.fans/1000000).toFixed(1)+'M' : p.fans >= 1000 ? (p.fans/1000).toFixed(0)+'K' : p.fans;
+    const title = document.getElementById('share-career-title')?.textContent || '';
+    return `🎤 ${p.name} vient d'atteindre "${title}" sur BUZZKING !\n👥 ${fansFormatted} Fans · Niveau ${p.level}\n\nDeviens une légende du Rap Ivoire 👑\nbuzzking.vercel.app`;
+}
+
+// 1. Télécharger la carte en PNG
+async function downloadShareCard() {
+    const card = document.getElementById('share-card');
+    const btn = event.currentTarget;
+    btn.textContent = 'Génération...';
+    btn.disabled = true;
+
+    try {
+        // Charger html2canvas dynamiquement
+        if (!window.html2canvas) {
+            await loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js');
+        }
+        const canvas = await html2canvas(card, {
+            backgroundColor: '#0d0e17',
+            scale: 2,
+            useCORS: true,
+            logging: false
+        });
+        const link = document.createElement('a');
+        link.download = `buzzking-${game.player.name || 'card'}.png`;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+        btn.textContent = '✓ CARTE SAUVEGARDÉE';
+        setTimeout(() => { btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg> TÉLÉCHARGER LA CARTE'; btn.disabled = false; }, 2000);
+    } catch(e) {
+        notify('Erreur de capture. Fais une capture d\'écran manuelle.', 3000);
+        btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg> TÉLÉCHARGER LA CARTE';
+        btn.disabled = false;
+    }
+}
+
+// 2. Partage natif (menu du téléphone : WhatsApp, TikTok, Instagram...)
+async function nativeShareCard() {
+    const text = buildShareText();
+    if (!navigator.share) {
+        // Fallback : copier le texte
+        copyShareText();
+        return;
+    }
+    try {
+        // Tentative avec image si html2canvas est déjà chargé
+        if (window.html2canvas) {
+            const card = document.getElementById('share-card');
+            const canvas = await html2canvas(card, { backgroundColor: '#0d0e17', scale: 2, useCORS: true, logging: false });
+            canvas.toBlob(async (blob) => {
+                const file = new File([blob], 'buzzking.png', { type: 'image/png' });
+                const shareData = { text, files: [file] };
+                if (navigator.canShare && navigator.canShare(shareData)) {
+                    await navigator.share(shareData);
+                } else {
+                    await navigator.share({ text });
+                }
+            }, 'image/png');
+        } else {
+            await navigator.share({ text });
+        }
+    } catch(e) {
+        if (e.name !== 'AbortError') notify('Partage annulé.', 1500);
+    }
+}
+
+// 3. Partager sur X / Twitter
+function shareOnTwitter() {
+    const text = buildShareText();
+    const url = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(text);
+    window.open(url, '_blank');
+}
+
+// 4. Copier le texte (fallback desktop)
+function copyShareText() {
+    const text = buildShareText();
+    const btn = document.getElementById('btn-copy-text');
+    if (navigator.clipboard) {
+        navigator.clipboard.writeText(text).then(() => {
+            btn.textContent = '✓ COPIÉ !';
+            setTimeout(() => { btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg> COPIER LE TEXTE'; }, 2000);
+        });
+    } else {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        ta.remove();
+        btn.textContent = '✓ COPIÉ !';
+        setTimeout(() => { btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg> COPIER LE TEXTE'; }, 2000);
+    }
+}
+
+// Loader script dynamique
+function loadScript(src) {
+    return new Promise((resolve, reject) => {
+        const s = document.createElement('script');
+        s.src = src;
+        s.onload = resolve;
+        s.onerror = reject;
+        document.head.appendChild(s);
+    });
+}
+
 function closeShareCard() {
     document.getElementById('share-card-overlay').style.display = 'none';
 }
@@ -4572,15 +4756,23 @@ let _lastFanMilestone = 0;
 function checkMilestones() {
     if (!game || !game.player) return;
     const fans = game.player.fans;
-    if (fans >= 100000 && _lastFanMilestone < 100000) {
-        _lastFanMilestone = 100000;
-        triggerConfetti();
-        setTimeout(() => showShareCard('fans_100k'), 800);
-    }
-    if (fans >= 1000000 && _lastFanMilestone < 1000000) {
-        _lastFanMilestone = 1000000;
-        triggerConfetti();
-        setTimeout(() => showShareCard('fans_1m'), 800);
+
+    const MILESTONES = [
+        { val: 500,     key: 'fans_500',   title: '500 PREMIERS FANS 🔥' },
+        { val: 5000,    key: 'fans_5k',    title: '5 000 FANS' },
+        { val: 25000,   key: 'fans_25k',   title: '25 000 FANS' },
+        { val: 100000,  key: 'fans_100k',  title: '100K FANS ATTEINTS' },
+        { val: 1000000, key: 'fans_1m',    title: '1 MILLION DE FANS 🔥' },
+    ];
+
+    for (const m of MILESTONES) {
+        if (fans >= m.val && _lastFanMilestone < m.val) {
+            _lastFanMilestone = m.val;
+            MILESTONE_TITLES[m.key] = m.title;
+            triggerConfetti();
+            setTimeout(() => showShareCard(m.key), 800);
+            break; // Un seul milestone à la fois
+        }
     }
 }
 
@@ -4600,6 +4792,11 @@ window.onload = function() {
     animateLoadingBar();
     init();
     setTimeout(attachRippleToButtons, 1500);
+    // Masquer le bouton partage natif si non supporté (desktop)
+    if (!navigator.share) {
+        const btn = document.getElementById('btn-native-share');
+        if (btn) btn.style.display = 'none';
+    }
 };
 </script>
 <!-- SHARE CARD OVERLAY -->
@@ -4636,7 +4833,32 @@ window.onload = function() {
     
     <!-- Boutons action -->
     <div class="mt-5 flex flex-col gap-3 w-full max-w-xs">
-        <button onclick="closeShareCard()" class="pill-button btn-secondary text-sm py-3">FERMER</button>
+
+        <!-- Télécharger la carte -->
+        <button onclick="downloadShareCard()" class="pill-button btn-primary text-sm py-3 flex items-center justify-center gap-2">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+            TÉLÉCHARGER LA CARTE
+        </button>
+
+        <!-- Partager (menu natif mobile) -->
+        <button onclick="nativeShareCard()" id="btn-native-share" class="pill-button btn-accent text-sm py-3 flex items-center justify-center gap-2">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/></svg>
+            PARTAGER
+        </button>
+
+        <!-- Partager sur X / Twitter -->
+        <button onclick="shareOnTwitter()" class="pill-button text-sm py-3 flex items-center justify-center gap-2" style="background:#000;color:#fff;border:1px solid rgba(255,255,255,0.15);">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.747l7.73-8.835L1.254 2.25H8.08l4.261 5.634 5.903-5.634zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+            PARTAGER SUR X
+        </button>
+
+        <!-- Copier le texte (fallback desktop) -->
+        <button onclick="copyShareText()" id="btn-copy-text" class="pill-button btn-secondary text-xs py-2.5 flex items-center justify-center gap-2 opacity-70">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+            COPIER LE TEXTE
+        </button>
+
+        <button onclick="closeShareCard()" class="pill-button btn-secondary text-sm py-3 opacity-50">FERMER</button>
     </div>
 </div>
 
