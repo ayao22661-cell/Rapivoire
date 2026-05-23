@@ -3395,10 +3395,6 @@ function executeFinalClash(target) {
             'fire'
         );
 
-        // Share card clash_win
-        MILESTONE_TITLES['clash_win'] = `CLASH GAGNÉ vs ${target.name}`;
-        setTimeout(() => showShareCard('clash_win'), 2200);
-
     } else {
         const energyLoss = 15 + (target.power * 2);
         const fansLost   = Math.floor(target.power * 200);
