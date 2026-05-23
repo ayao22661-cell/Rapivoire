@@ -2411,11 +2411,13 @@ function renderStudioBeats() {
     const container = document.getElementById('beat-selection');
     container.innerHTML = "";
     
-    // Apply Business Perk Discount
-    const bizDiscount = PERKS_TREE.biz.levels[game.player.skills.biz];
+    // Sécurité : skills.biz peut être undefined sur une vieille save
+    const bizSkill = (game.player.skills && game.player.skills.biz) ? game.player.skills.biz : 0;
+    const bizDiscount = (PERKS_TREE.biz && PERKS_TREE.biz.levels[bizSkill]) ? PERKS_TREE.biz.levels[bizSkill] : 1;
 
     BEATS_POOL.forEach((beat, index) => {
-        const price = Math.floor(beat.price * bizDiscount);
+        const rawPrice = (beat.price && !isNaN(beat.price)) ? beat.price : 0;
+        const price = Math.max(0, Math.floor(rawPrice * bizDiscount));
         const div = document.createElement('div');
         div.className = `p-3 rounded-xl border cursor-pointer transition ${index === 0 ? 'bg-info/20 border-info' : 'bg-black/30 border-white/10 hover:border-white/30'}`;
         div.id = `beat-card-${index}`;
@@ -2433,6 +2435,7 @@ function renderStudioBeats() {
             document.querySelectorAll('[id^="beat-card-"]').forEach(el => {
                 el.classList.remove('bg-info/20', 'border-info');
                 el.classList.add('bg-black/30', 'border-white/10');
+                el.dataset.selected = "false"; // reset explicite sur TOUS
             });
             div.classList.remove('bg-black/30', 'border-white/10');
             div.classList.add('bg-info/20', 'border-info');
@@ -2450,33 +2453,39 @@ function renderStudioBeats() {
 let pendingSongData = null;
 
 function startRecording() {
-    // 1. Tes vérifications d'origine
     if(game.player.energy < 50) { notify("Tu es trop fatigué (50⚡ requis)."); return; }
     
     const nameInput = document.getElementById('input-song-name').value.trim();
     const name = nameInput || `Son Inédit #${game.player.inventory.songs.length + game.player.inventory.released.length + 1}`;
     const theme = document.getElementById('select-song-theme').value;
     
-    // Find selected beat
+    // Find selected beat — on prend le premier avec selected = "true" et on s'arrête
     let selectedBeatIndex = 0;
-    document.querySelectorAll('[id^="beat-card-"]').forEach((el, index) => {
-        if(el.dataset.selected === "true") selectedBeatIndex = index;
-    });
+    const allBeatCards = document.querySelectorAll('[id^="beat-card-"]');
+    for (let i = 0; i < allBeatCards.length; i++) {
+        if (allBeatCards[i].dataset.selected === "true") {
+            selectedBeatIndex = i;
+            break;
+        }
+    }
     
     const beat = BEATS_POOL[selectedBeatIndex];
-    const bizDiscount = PERKS_TREE.biz.levels[game.player.skills.biz];
-    const price = Math.floor(beat.price * bizDiscount);
 
-    if(game.player.cash < price) { notify("Pas assez d'argent pour cette instru !"); return; }
+    // Sécurité : bizDiscount peut être undefined si skills.biz n'est pas initialisé
+    const bizSkill = (game.player.skills && game.player.skills.biz) ? game.player.skills.biz : 0;
+    const bizDiscount = (PERKS_TREE.biz && PERKS_TREE.biz.levels[bizSkill]) ? PERKS_TREE.biz.levels[bizSkill] : 1;
     
-    // 2. On sauvegarde les infos et on lance le mini-jeu au lieu de payer tout de suite
-    pendingSongData = {
-        name: name,
-        theme: theme,
-        beat: beat,
-        price: price
-    };
+    // price est toujours un nombre >= 0, jamais NaN
+    const rawPrice = (beat.price && !isNaN(beat.price)) ? beat.price : 0;
+    const price = Math.max(0, Math.floor(rawPrice * bizDiscount));
 
+    // Beat gratuit : on ne bloque jamais
+    if(price > 0 && game.player.cash < price) {
+        notify(`Pas assez d'argent pour cette instru ! (${price.toLocaleString()} F requis)`);
+        return;
+    }
+    
+    pendingSongData = { name, theme, beat, price };
     startLyricsMinigame(theme);
 }
 // ==========================================
@@ -2586,8 +2595,10 @@ function finishRecording() {
     game.player.energy -= 50;
 
     // Calculate Quality based on Beat + Perks + Items
-    const flowBonus = PERKS_TREE.flow.levels[game.player.skills.flow];
-    const lyricsBonus = PERKS_TREE.lyrics.levels[game.player.skills.lyrics];
+    const flowSkill    = (game.player.skills && !isNaN(game.player.skills.flow))    ? game.player.skills.flow    : 0;
+    const lyricsSkill  = (game.player.skills && !isNaN(game.player.skills.lyrics))  ? game.player.skills.lyrics  : 0;
+    const flowBonus    = (PERKS_TREE.flow.levels[flowSkill]   || 0);
+    const lyricsBonus  = (PERKS_TREE.lyrics.levels[lyricsSkill] || 0);
     
     let baseQuality = Math.floor(Math.random() * (beat.qualityMax - beat.qualityMin + 1)) + beat.qualityMin;
     let finalQuality = baseQuality + flowBonus + lyricsBonus;
@@ -2986,10 +2997,11 @@ function renderConcerts() {
     const container = document.getElementById('concerts-list');
     container.innerHTML = "";
     
-    const bizDiscount = PERKS_TREE.biz.levels[game.player.skills.biz];
+    const bizSkill = (game.player.skills && game.player.skills.biz) ? game.player.skills.biz : 0;
+    const bizDiscount = (PERKS_TREE.biz && PERKS_TREE.biz.levels[bizSkill]) ? PERKS_TREE.biz.levels[bizSkill] : 1;
 
     CONCERT_VENUES.forEach(venue => {
-        const cost = Math.floor(venue.cost * bizDiscount);
+        const cost = Math.max(0, Math.floor((venue.cost || 0) * bizDiscount));
         const canAfford = game.player.cash >= cost;
         const hasFans = game.player.fans >= venue.reqFans;
         const hasSongs = game.player.inventory.released.length >= venue.reqSongs;
@@ -3033,6 +3045,13 @@ function renderConcerts() {
 function bookConcert(id, cost) {
     const venue = CONCERT_VENUES.find(v => v.id === id);
     if(!venue) return;
+
+    // Sécurité : cost peut être NaN sur une vieille save, on recalcule
+    if (!cost || isNaN(cost)) {
+        const bizSkill = (game.player.skills && game.player.skills.biz) ? game.player.skills.biz : 0;
+        const bizDiscount = (PERKS_TREE.biz && PERKS_TREE.biz.levels[bizSkill]) ? PERKS_TREE.biz.levels[bizSkill] : 1;
+        cost = Math.max(0, Math.floor((venue.cost || 0) * bizDiscount));
+    }
 
     // 1. Initialisation et Vérification du Quota Annuel (Max 4 par an)
     if (typeof game.player.concertsThisYear === 'undefined') {
@@ -3711,6 +3730,7 @@ const LIFE_EVENTS = [
         id: 'showbiz_bottle',
         icon: '🍾',
         title: 'Le Clash au Concert',
+        minFans: 5000,
         condition: () => (game.player.level || 1) >= 2 && game.player.buzz > 20,
         desc: 'Pendant un showcase, un "hater" dans le public te lance une bouteille d\'eau sur scène.',
         choices: [
@@ -3729,6 +3749,7 @@ const LIFE_EVENTS = [
         id: 'street_friend_jail',
         icon: '🚔',
         title: 'Le pote en garde à vue',
+        minFans: 300,
         condition: () => (game.player.level || 1) <= 5,
         desc: 'Ton meilleur ami s\'est fait arrêter pour une bagarre au maquis. Il a besoin qu\'on paie sa caution.',
         choices: [
@@ -3745,6 +3766,7 @@ const LIFE_EVENTS = [
         id: 'street_police',
         icon: '🚓',
         title: 'Contrôle Nocturne',
+        reqLevel: 1, minFans: 500,
         condition: () => true,
         desc: 'Tu rentres du studio à 3h du matin. La BAC t\'arrête : "Ah, la star, il faut gèrer le thé de la nuit !"',
         choices: [
@@ -3761,6 +3783,7 @@ const LIFE_EVENTS = [
         id: 'street_marabout',
         icon: '🔮',
         title: 'Le "Vieux" Mystique',
+        reqLevel: 2, minFans: 1500,
         condition: () => true,
         desc: 'Un gars te présente un féticheur puissant. Il promet de faire exploser ton buzz contre 500.000 F.',
         choices: [
@@ -3800,6 +3823,7 @@ const LIFE_EVENTS = [
     {
         id: 'media_interview',
        icon: `<svg width="48" height="48" viewBox="0 0 24 24" fill="#2979FF" class='mx-auto'><path d="M21 3H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h5v2h8v-2h5c1.1 0 1.99-.9 1.99-2L23 5c0-1.1-.9-2-2-2zm0 14H3V5h18v12z"/></svg>`, title: 'L\'interview Piège',
+        minFans: 2000,
         condition: () => (game.player.level || 1) >= 2,
         desc: 'Tu es invité à la télé. L\'animateur essaie de te faire clasher un autre rappeur pour faire de l\'audience.',
         choices: [
@@ -4022,86 +4046,93 @@ function processNextWeek() {
     }
 
 // ==========================================
-    // --- 8. ÉVÉNEMENTS ALÉATOIRES (AJOUT) ---
+    // --- 8. ÉVÉNEMENTS ALÉATOIRES ---
     // ==========================================
-    const CHANCE_EVENEMENT = 0.30; 
+
+    // Probabilité qui monte avec le niveau — les débutants galèrent en silence
+    const BASE_CHANCE_EVENEMENT = 0.10; // 10% au niveau 1
+    const LEVEL_BONUS_CHANCE    = 0.03; // +3% par niveau
+    const MAX_CHANCE_EVENEMENT  = 0.35; // plafond à 35%
+    const CHANCE_EVENEMENT = Math.min(MAX_CHANCE_EVENEMENT, BASE_CHANCE_EVENEMENT + (game.player.level - 1) * LEVEL_BONUS_CHANCE);
     
     if (Math.random() < CHANCE_EVENEMENT && typeof RANDOM_EVENTS !== 'undefined' && RANDOM_EVENTS.length > 0) {
-        // Tirer au sort un événement dans le tableau
-        const randomIndex = Math.floor(Math.random() * RANDOM_EVENTS.length);
-        const event = RANDOM_EVENTS[randomIndex];
+        // FILTRE STRICT : on ne tire que les events dont le reqLevel est atteint
+        const eligibleEvents = RANDOM_EVENTS.filter(e => {
+            const req = e.reqLevel || 1;
+            return game.player.level >= req;
+        });
 
-        // Appliquer les effets de l'événement
-        if (event.effect.cash) game.player.cash += event.effect.cash;
-        if (event.effect.fans) game.player.fans += event.effect.fans;
-        if (event.effect.buzz) game.player.buzz += event.effect.buzz;
-        if (event.effect.energy) game.player.energy += event.effect.energy;
-        if (event.effect.xp && game.player.xp !== undefined) game.player.xp += event.effect.xp;
+        if (eligibleEvents.length > 0) {
+            const event = eligibleEvents[Math.floor(Math.random() * eligibleEvents.length)];
 
-        // Limites de sécurité
-        if (game.player.cash < 0) game.player.cash = 0;
-        if (game.player.fans < 0) game.player.fans = 0;
-        if (game.player.buzz < 0) game.player.buzz = 0;
-        if (game.player.buzz > 100) game.player.buzz = 100;
-        if (game.player.energy < 0) game.player.energy = 0;
-        if (game.player.energy > game.player.energyMax) game.player.energy = game.player.energyMax;
+            // SCALING des effets : les impacts sont proportionnels au niveau
+            // Au niveau 1, les fans gagnés/perdus sont divisés par 3 max
+            const levelScale = Math.min(1, 0.3 + (game.player.level - 1) * 0.14);
 
-        // --- AFFICHAGE DE LA FENÊTRE (CORRECTION ICI) ---
-        if (overlay) {
-            // Afficher le fond noir
-            overlay.style.display = 'block';
-            
-            // Afficher la boîte de dialogue en retirant la classe "hidden"
-            const modal = document.getElementById('event-modal');
-            if (modal) modal.classList.remove('hidden');
+            if (event.effect.cash)   game.player.cash   += Math.floor(event.effect.cash   * (event.effect.cash < 0 ? 1 : levelScale));
+            if (event.effect.fans)   game.player.fans   = Math.max(0, game.player.fans + Math.floor(event.effect.fans * levelScale));
+            if (event.effect.buzz)   game.player.buzz   += event.effect.buzz;
+            if (event.effect.energy) game.player.energy += event.effect.energy;
+            if (event.effect.xp && game.player.xp !== undefined) game.player.xp += Math.floor((event.effect.xp || 0) * levelScale);
 
-            // Injecter le texte
-            document.getElementById('event-title').innerText = event.title;
-            document.getElementById('event-desc').innerText = event.desc;
-            document.getElementById('event-icon').innerText = event.type === 'positive' ? '🟢' : '🚨';
-            
-            // Afficher les effets visuellement sur le modal
-            const effectsEl = document.getElementById('event-effects');
-            if (effectsEl) {
-                let effectsHtml = "";
-                if (event.effect.cash) effectsHtml += `<span class="${event.effect.cash > 0 ? 'text-green-400' : 'text-red-400'}">${event.effect.cash > 0 ? '+' : ''}${event.effect.cash} F</span> `;
-                if (event.effect.fans) effectsHtml += `<span class="${event.effect.fans > 0 ? 'text-green-400' : 'text-red-400'}">${event.effect.fans > 0 ? '+' : ''}${event.effect.fans} Fans</span> `;
-                if (event.effect.buzz) effectsHtml += `<span class="${event.effect.buzz > 0 ? 'text-green-400' : 'text-red-400'}">${event.effect.buzz > 0 ? '+' : ''}${event.effect.buzz}% Buzz</span> `;
-                if (event.effect.energy) effectsHtml += `<span class="${event.effect.energy > 0 ? 'text-blue-400' : 'text-red-400'}">${event.effect.energy > 0 ? '+' : ''}${event.effect.energy} ⚡</span> `;
-                effectsEl.innerHTML = effectsHtml;
+            // Limites de sécurité
+            game.player.cash   = Math.max(0, game.player.cash);
+            game.player.fans   = Math.max(0, game.player.fans);
+            game.player.buzz   = Math.max(0, Math.min(100, game.player.buzz));
+            game.player.energy = Math.max(0, Math.min(game.player.energyMax, game.player.energy));
+
+            if (overlay) {
+                overlay.style.display = 'block';
+                const modal = document.getElementById('event-modal');
+                if (modal) modal.classList.remove('hidden');
+                document.getElementById('event-title').innerText = event.title;
+                document.getElementById('event-desc').innerText  = event.desc;
+                document.getElementById('event-icon').innerText  = event.type === 'positive' ? '🟢' : '🚨';
+                const effectsEl = document.getElementById('event-effects');
+                if (effectsEl) {
+                    let effectsHtml = "";
+                    if (event.effect.cash)   effectsHtml += `<span class="${event.effect.cash > 0 ? 'text-green-400' : 'text-red-400'}">${event.effect.cash > 0 ? '+' : ''}${event.effect.cash} F</span> `;
+                    if (event.effect.fans)   effectsHtml += `<span class="${event.effect.fans > 0 ? 'text-green-400' : 'text-red-400'}">${event.effect.fans > 0 ? '+' : ''}${event.effect.fans} Fans</span> `;
+                    if (event.effect.buzz)   effectsHtml += `<span class="${event.effect.buzz > 0 ? 'text-green-400' : 'text-red-400'}">${event.effect.buzz > 0 ? '+' : ''}${event.effect.buzz}% Buzz</span> `;
+                    if (event.effect.energy) effectsHtml += `<span class="${event.effect.energy > 0 ? 'text-blue-400' : 'text-red-400'}">${event.effect.energy > 0 ? '+' : ''}${event.effect.energy} ⚡</span> `;
+                    effectsEl.innerHTML = effectsHtml;
+                }
             }
-        } 
-        
-        // Notification dans le journal (Dernières Infos)
-        if (typeof addNews === "function") {
-            const eventIcon = event.type === 'positive' ? '🟢' : '🔴';
-            addNews(`${eventIcon} ÉVÉNEMENT : ${event.title}`, event.type === 'positive' ? "success" : "error");
+            if (typeof addNews === "function") {
+                const eventIcon = event.type === 'positive' ? '🟢' : '🔴';
+                addNews(`${eventIcon} ÉVÉNEMENT : ${event.title}`, event.type === 'positive' ? "success" : "error");
+            }
         }
     }
-    // ==========================================
-    // ==========================================
     // ==========================================
     // --- 8.5 ÉVÉNEMENTS DE VIE (PARENTS / GO) ---
     // ==========================================
     
-    // Sécurité : On s'assure que l'objet "life" existe bien pour le joueur
     if (!game.player.life) {
         game.player.life = { status: 'célibataire', gfAffection: 50, parentsAffection: 50 };
     }
 
-    // On définit une probabilité d'avoir un événement de vie (ex: 20% de chance)
-    const CHANCE_LIFE_EVENT = 0.20; 
+    // Probabilité progressive — pas d'events de vie avant d'avoir prouvé sa valeur
+    // Niveau 1 : 5% | Niveau 3 : 11% | Niveau 5 : 17% (max 20%)
+    const BASE_LIFE_CHANCE = 0.05;
+    const LIFE_LEVEL_BONUS = 0.03;
+    const CHANCE_LIFE_EVENT = Math.min(0.20, BASE_LIFE_CHANCE + (game.player.level - 1) * LIFE_LEVEL_BONUS);
 
     if (Math.random() < CHANCE_LIFE_EVENT && typeof LIFE_EVENTS !== 'undefined') {
-        // 1. On filtre les événements pour ne garder QUE ceux dont la condition est remplie
-        // (ex: on ne propose pas le resto si on est célibataire)
-        const validEvents = LIFE_EVENTS.filter(event => event.condition());
+        const validEvents = LIFE_EVENTS.filter(event => {
+            // 1. La condition narrative (statut, affection, etc.) doit être remplie
+            if (!event.condition()) return false;
+            // 2. Palier de fans minimal selon l'importance de l'event
+            const minFans = event.minFans || 0;
+            if (game.player.fans < minFans) return false;
+            // 3. Palier de niveau minimum (reqLevel sur l'event s'il existe)
+            const reqLvl = event.reqLevel || 1;
+            if (game.player.level < reqLvl) return false;
+            return true;
+        });
 
-        // 2. S'il y a au moins un événement valide, on en tire un au sort
         if (validEvents.length > 0) {
             const randomLifeEvent = validEvents[Math.floor(Math.random() * validEvents.length)];
-            
-            // 3. On affiche la fenêtre de choix
             if (typeof showLifeEventModal === "function") {
                 showLifeEventModal(randomLifeEvent);
             }
