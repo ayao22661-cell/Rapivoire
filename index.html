@@ -694,13 +694,16 @@ input:focus, select:focus {
     </div>
 
     <div class="flex gap-2 items-center">
-<button id="musicToggleBtn" onclick="toggleMusic()" class="flex items-center justify-center w-8 h-8 bg-surface-2 border border-white/10 rounded-lg hover:bg-white/10 transition-colors"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg></button>
+        <button id="musicToggleBtn" onclick="toggleMusic()" class="flex items-center justify-center w-8 h-8 bg-surface-2 border border-white/10 rounded-lg hover:bg-white/10 transition-colors"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg></button>
         <div class="bg-surface-2 px-2.5 py-1.5 rounded-lg font-bold text-xs text-[#00E676] flex items-center gap-1 border border-white/5">
             <span id="stat-cash">1,500</span><span>F</span>
         </div>
         <div class="bg-surface-2 px-2.5 py-1.5 rounded-lg font-bold text-xs text-[#2979FF] flex items-center gap-1 border border-white/5">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="#2979FF"><path d="M7 2v11h3v9l7-12h-4l4-8z"/></svg> <span id="stat-energy">100</span>
         </div>
+        <button onclick="openSettingsModal()" class="flex items-center justify-center w-8 h-8 bg-surface-2 border border-white/10 rounded-lg hover:bg-white/10 transition-colors">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" class="text-zinc-400"><path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.07-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.74,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.8,11.69,4.8,12s0.02,0.64,0.07,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.44-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.47-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6 s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z"/></svg>
+        </button>
     </div>
 </header>
 
@@ -764,19 +767,13 @@ input:focus, select:focus {
                 <span id="action-count" class="ml-2 bg-black/40 text-white px-2 py-0.5 rounded-full text-[10px]">3</span>
             </button>
 
-            <!-- IMPRO RAPIDE : accès direct au mini-jeu de paroles -->
             <button onclick="launchImproRapide()" class="pill-button w-full text-sm py-3.5" style="background:#1a1a2e;border:1px solid rgba(124,77,255,0.35);color:#a78bfa;">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="display:inline;vertical-align:middle;margin-right:6px"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
                 IMPRO RAPIDE
                 <span style="font-size:9px;opacity:0.6;margin-left:6px">mini-jeu gratuit</span>
             </button>
-            
-            <div class="grid grid-cols-2 gap-3">
-                <button onclick="saveGame()" class="pill-button btn-secondary text-xs py-3.5"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="display:inline;vertical-align:middle;margin-right:4px"><path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/></svg> Sauvegarder</button>
-                <button onclick="resetGame()" class="pill-button btn-secondary text-[#FF5252] border-[#FF5252]/30 text-xs py-3.5"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="display:inline;vertical-align:middle;margin-right:4px"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg> Reset</button>
-            </div>
 
-            <button onclick="processNextWeek()" id="btn-next-week" class="pill-button btn-primary w-full text-base py-5 mt-4 shadow-lg shadow-primary/10">
+            <button onclick="processNextWeek()" id="btn-next-week" class="pill-button btn-primary w-full text-base py-5 mt-2 shadow-lg shadow-primary/10">
                 TERMINER LA SEMAINE <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style="display:inline;vertical-align:middle"><path d="M8 5v14l11-7z"/></svg>
             </button>
         </section>
@@ -4865,6 +4862,43 @@ function checkMilestones() {
 
 
 // ==========================================
+// PARAMÈTRES & RESET
+// ==========================================
+
+function openSettingsModal() {
+    document.getElementById('settings-modal').classList.remove('hidden');
+    document.getElementById('settings-modal').classList.add('flex');
+}
+
+function closeSettingsModal() {
+    document.getElementById('settings-modal').classList.add('hidden');
+    document.getElementById('settings-modal').classList.remove('flex');
+}
+
+function resetGameSafe() {
+    closeSettingsModal();
+    document.getElementById('reset-confirm-modal').classList.remove('hidden');
+    document.getElementById('reset-confirm-modal').classList.add('flex');
+}
+
+function closeResetConfirm() {
+    document.getElementById('reset-confirm-modal').classList.add('hidden');
+    document.getElementById('reset-confirm-modal').classList.remove('flex');
+}
+
+function confirmReset() {
+    // Supprime toutes les clés de save connues
+    localStorage.removeItem('buzzKingSaveData');
+    localStorage.removeItem('rapIvoireSaveData');
+    // Force le rechargement sans cache
+    window.location.href = window.location.href.split('?')[0] + '?reset=' + Date.now();
+}
+
+function resetGame() {
+    resetGameSafe();
+}
+
+// ==========================================
 // MODAL LÉGENDE VIVANTE — RÉCAP CARRIÈRE
 // ==========================================
 
@@ -5037,6 +5071,59 @@ window.onload = function() {
         </button>
 
         <button onclick="closeShareCard()" class="pill-button btn-secondary text-sm py-3 opacity-50">FERMER</button>
+    </div>
+</div>
+
+<!-- MODAL PARAMÈTRES -->
+<div id="settings-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-[450] hidden flex items-end justify-center p-4">
+    <div class="bg-[#15161D] border border-white/10 w-full max-w-md rounded-2xl overflow-hidden shadow-2xl mb-2">
+        <div class="p-5 border-b border-white/5 flex justify-between items-center">
+            <h3 class="text-white font-black text-lg uppercase tracking-tight">Paramètres</h3>
+            <button onclick="closeSettingsModal()" class="w-8 h-8 flex items-center justify-center bg-white/5 rounded-full hover:bg-white/10 transition">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+            </button>
+        </div>
+        <div class="p-5 space-y-3">
+            <!-- Musique -->
+            <button onclick="toggleMusic(); closeSettingsModal()" class="w-full flex items-center gap-4 p-4 bg-white/5 rounded-xl hover:bg-white/8 transition text-left">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="#2979FF"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
+                <div>
+                    <div class="text-white font-bold text-sm">Musique</div>
+                    <div class="text-zinc-500 text-xs">Activer / désactiver la bande son</div>
+                </div>
+            </button>
+            <!-- Sauvegarder -->
+            <button onclick="saveGame(); closeSettingsModal()" class="w-full flex items-center gap-4 p-4 bg-white/5 rounded-xl hover:bg-white/8 transition text-left">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="#00E676"><path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/></svg>
+                <div>
+                    <div class="text-white font-bold text-sm">Sauvegarder</div>
+                    <div class="text-zinc-500 text-xs">Enregistrer la progression</div>
+                </div>
+            </button>
+            <!-- Reset -->
+            <button onclick="resetGameSafe()" class="w-full flex items-center gap-4 p-4 bg-red-500/8 border border-red-500/20 rounded-xl hover:bg-red-500/15 transition text-left">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="#FF5252"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                <div>
+                    <div class="text-[#FF5252] font-bold text-sm">Recommencer à zéro</div>
+                    <div class="text-zinc-500 text-xs">Effacer toute la progression</div>
+                </div>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL CONFIRMATION RESET -->
+<div id="reset-confirm-modal" class="fixed inset-0 bg-black/90 backdrop-blur-md z-[460] hidden flex items-center justify-center p-6">
+    <div class="bg-[#1C1D26] border border-red-500/30 w-full max-w-sm rounded-2xl p-6 text-center shadow-2xl">
+        <div class="w-14 h-14 bg-red-500/10 border border-red-500/30 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="#FF5252"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>
+        </div>
+        <h3 class="text-white font-black text-xl mb-2">Effacer la carrière ?</h3>
+        <p class="text-zinc-400 text-sm mb-6 leading-relaxed">Toute ta progression sera perdue. Cette action est irréversible.</p>
+        <div class="flex flex-col gap-3">
+            <button onclick="confirmReset()" class="pill-button py-3 text-sm font-black" style="background:#FF5252;color:#000;">OUI, TOUT EFFACER</button>
+            <button onclick="closeResetConfirm()" class="pill-button btn-secondary py-3 text-sm opacity-70">ANNULER</button>
+        </div>
     </div>
 </div>
 
