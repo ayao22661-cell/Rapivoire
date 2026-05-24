@@ -2266,44 +2266,37 @@ function resetGame() {
 // ==========================================
 
 function updateUI() {
-    // Stats Header
+    // 1. STATS HEADER (Cash & Énergie)
     const prevCash = parseInt(document.getElementById('stat-cash').textContent.replace(/\s/g,'').replace(/,/g,'')) || 0;
     const newCash = Math.floor(game.player.cash);
     document.getElementById('stat-cash').textContent = newCash.toLocaleString();
     
-    // ✨ FINITION : Flash vert si le cash augmente
+    // FINITION : Flash vert si le cash augmente
     if (newCash > prevCash) {
         const cashEl = document.getElementById('stat-cash').parentElement;
-        cashEl.style.transition = 'box-shadow 0.1s ease';
-        cashEl.style.boxShadow = '0 0 12px rgba(0, 230, 118, 0.6)';
-        setTimeout(() => { cashEl.style.boxShadow = ''; }, 600);
+        // On utilise des classes Tailwind pour le flash, c'est plus propre
+        cashEl.classList.add('ring-2', 'ring-[#00e676]/50');
+        setTimeout(() => { cashEl.classList.remove('ring-2', 'ring-[#00e676]/50'); }, 600);
     }
     
+    // Énergie
     document.getElementById('stat-energy').textContent = `${Math.floor(game.player.energy)}/${game.player.energyMax}`;
     
-    // Dates
+    // 2. DATES
     const months = ["Jan", "Fév", "Mar", "Avr", "Mai", "Juin", "Juil", "Août", "Sep", "Oct", "Nov", "Déc"];
     const currentMonth = months[Math.floor(((game.world.week - 1) % 48) / 4)];
     document.getElementById('game-date').textContent = `Semaine ${game.world.week} - ${currentMonth} ${game.world.year}`;
 
-    // Titles based on Buzz & Fans
+    // 3. TITRES (Logiciel intact)
     let title = "INCONNU DU QUARTIER";
-    
-    // --- LES DÉBUTS (La galère) ---
     if(game.player.fans > 100) title = "FREESTYLER DU GHETTO";
     if(game.player.fans > 500) title = "ARTISTE LOCAL";
     if(game.player.fans > 1500) title = "PÉPITE DU TIEKS";
-    
-    // --- L'ASCENSION (On commence à te voir) ---
     if(game.player.fans > 5000) title = "RECONNU EN VILLE";
     if(game.player.fans > 10000) title = "PHÉNOMÈNE WEB";
     if(game.player.fans > 25000) title = "STAR D'ABIDJAN";
-    
-    // --- LA COUR DES GRANDS (Le succès) ---
     if(game.player.fans > 50000) title = "VALIDÉ PAR LA RUE";
     if(game.player.fans > 100000) title = "BOSS DU RAP IVOIRE";
-    
-    // --- LE END-GAME (Les légendes) ---
     if(game.player.fans > 250000) title = "CÉLÉBRITÉ NATIONALE";
     if(game.player.fans > 500000) title = "FIERTÉ DE LA NATION";
     if(game.player.fans > 1000000) title = "ICÔNE AFRICAINE";
@@ -2312,11 +2305,8 @@ function updateUI() {
 
     document.getElementById('player-title').textContent = title;
 
-    // Main Dashboard
-    // On plafonne directement la vraie variable
+    // 4. MAIN DASHBOARD (Buzz & Stats)
     game.player.buzz = Math.max(0, Math.min(100, game.player.buzz));
-
-// On affiche la vraie variable
     document.getElementById('stat-buzz-text').textContent = Math.floor(game.player.buzz) + "%";
     document.getElementById('bar-buzz').style.width = game.player.buzz + "%";
 
@@ -2326,28 +2316,27 @@ function updateUI() {
     
     document.getElementById('action-count').textContent = game.world.actionsLeft;
     
-    // XP & Level
+    // 5. XP & Level
     document.getElementById('stat-level').textContent = game.player.level;
     document.getElementById('stat-xp-points').textContent = game.player.perkPoints;
     
-    // On utilise notre nouvelle courbe de progression pour la barre d'XP
     const xpForNextLevel = getXpRequirement(game.player.level);
     const xpProgress = Math.min(100, (game.player.xp / xpForNextLevel) * 100);
-    
     document.getElementById('bar-xp').style.width = xpProgress + "%";
 
-    // Bouton Fin de semaine
+    // 6. BOUTON FIN DE SEMAINE (Logique conservée avec classes Tailwind)
     const btnNext = document.getElementById('btn-next-week');
     if(game.world.actionsLeft > 0) {
-        btnNext.classList.add('opacity-30', 'grayscale');
+        btnNext.classList.add('opacity-30', 'grayscale', 'cursor-not-allowed');
+        btnNext.classList.remove('animate-pulse');
         btnNext.style.pointerEvents = 'none';
     } else {
-        btnNext.classList.remove('opacity-30', 'grayscale');
-        btnNext.style.pointerEvents = 'auto';
+        btnNext.classList.remove('opacity-30', 'grayscale', 'cursor-not-allowed');
         btnNext.classList.add('animate-pulse');
+        btnNext.style.pointerEvents = 'auto';
     }
 
-    // BUZZKING : stat bounces + milestone check
+    // 7. BUZZKING : stat bounces + milestone check (Logique conservée)
     bounceStatEl('stat-fans');
     bounceStatEl('stat-cash');
     if (typeof checkMilestones === 'function') checkMilestones();
