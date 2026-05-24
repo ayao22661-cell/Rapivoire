@@ -917,140 +917,160 @@ input:focus, select:focus {
     <!-- MODALS (PLEIN ECRAN) -->
     <!-- ========================================================= -->
 
-    <!-- MENU ACTIONS -->
-    <div id="menu-actions" class="full-screen-menu">
-        <div class="menu-header">
+<div id="menu-actions" class="full-screen-menu bg-[#09090E]">
+        <div class="sticky top-0 z-50 flex justify-between items-center px-6 py-4 bg-[#0b0c14]/90 backdrop-blur-md border-b border-white/5">
             <div>
-                <h2 class="text-xl font-black uppercase">Activités</h2>
-                <p class="text-xs text-zinc-400">Gagne du cash, du buzz ou des fans.</p>
+                <h2 class="text-lg font-black uppercase text-white tracking-wider">Activités</h2>
+                <p class="text-[10px] text-zinc-400 font-bold uppercase tracking-widest mt-0.5">Gagne du cash, buzz ou fans</p>
             </div>
-            <button onclick="closeAllMenus()" class="p-2 bg-white/5 rounded-full hover:bg-white/10 transition flex items-center justify-center"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button>
+            <button onclick="closeAllMenus()" class="w-10 h-10 bg-white/5 border border-white/10 rounded-full hover:bg-white/10 transition-colors flex items-center justify-center active:scale-90">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" class="text-white/70"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+            </button>
         </div>
-        <div class="scroll-area space-y-4" id="actions-list">
-            <!-- Liste injectée par JS -->
-        </div>
+        <div class="scroll-area px-4 py-6 space-y-4 pb-32" id="actions-list">
+            </div>
     </div>
 
-    <!-- MENU STUDIO (ENREGISTREMENT) -->
-    <div id="menu-studio" class="full-screen-menu">
-        <div class="menu-header">
+    <div id="menu-studio" class="full-screen-menu bg-[#09090E]">
+        <div class="sticky top-0 z-50 flex justify-between items-center px-6 py-4 bg-[#15161D]/90 backdrop-blur-md border-b border-[#2979FF]/20 shadow-[0_4px_30px_rgba(41,121,255,0.1)]">
             <div>
-                <h2 class="text-xl font-black italic uppercase text-info">Studio Record</h2>
-                <p class="text-xs text-info/70">Crée le prochain banger.</p>
+                <h2 class="text-lg font-black italic uppercase text-[#2979FF] tracking-wider">Studio Record</h2>
+                <p class="text-[10px] text-[#2979FF]/70 font-bold uppercase tracking-widest mt-0.5">Crée le prochain banger</p>
             </div>
-            <button onclick="closeAllMenus()" class="p-2 bg-white/5 rounded-full hover:bg-white/10 transition flex items-center justify-center"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button>
+            <button onclick="closeAllMenus()" class="w-10 h-10 bg-[#2979FF]/10 border border-[#2979FF]/20 rounded-full hover:bg-[#2979FF]/20 transition-colors flex items-center justify-center active:scale-90">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="#2979FF"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+            </button>
         </div>
-        <div class="scroll-area space-y-6">
-            <div class="glass-card border-info/30">
-                <label class="text-[10px] font-bold text-info block mb-2 uppercase tracking-widest">Nom du Titre</label>
-                <input id="input-song-name" type="text" placeholder="Ex: Mon Lahan, Enfant Béni..." class="w-full bg-black/40 border border-white/10 p-4 rounded-xl outline-none focus:border-info text-white font-bold transition">
+        
+        <div class="scroll-area px-4 py-6 space-y-5 pb-32">
+            <div class="bg-[#15161D] rounded-2xl p-4 border border-white/5 shadow-lg relative overflow-hidden group focus-within:border-[#2979FF]/50 transition-colors">
+                <div class="absolute inset-y-0 left-0 w-1 bg-[#2979FF] opacity-0 group-focus-within:opacity-100 transition-opacity"></div>
+                <label class="text-[10px] font-black text-[#2979FF] block mb-2 uppercase tracking-widest">Nom du Titre</label>
+                <input id="input-song-name" type="text" placeholder="Ex: Mon Lahan, Enfant Béni..." class="w-full bg-black/40 border border-white/5 p-4 rounded-xl outline-none text-white font-bold placeholder:text-zinc-600 focus:bg-black/60 transition-all">
             </div>
             
-            <div class="glass-card">
-                <label class="text-[10px] font-bold text-zinc-400 block mb-3 uppercase tracking-widest">Choix de l'Instru (Beat)</label>
+            <div class="bg-[#15161D] rounded-2xl p-4 border border-white/5 shadow-lg">
+                <label class="text-[10px] font-black text-zinc-400 block mb-3 uppercase tracking-widest">Choix de l'Instru (Beat)</label>
                 <div class="grid gap-3" id="beat-selection">
-                    <!-- Généré en JS -->
+                    </div>
+            </div>
+
+            <div class="bg-[#15161D] rounded-2xl p-4 border border-white/5 shadow-lg">
+                <label class="text-[10px] font-black text-zinc-400 block mb-3 uppercase tracking-widest">Thème des Lyrics</label>
+                <div class="relative">
+                    <select id="select-song-theme" class="w-full bg-black/40 border border-white/10 p-4 rounded-xl outline-none text-sm font-bold text-white appearance-none focus:border-[#2979FF]/50 transition-colors">
+                        <option value="drill">Drill Ivoire (Sombre & Agressif)</option>
+                        <option value="rap_nouchi">Rap Nouchi (Rue & Maquis)</option>
+                        <option value="trap_ego">Trap Ego Trip (Argent & Flex)</option>
+                        <option value="afrobeat">Afrobeat (Groove Continental)</option>
+                        <option value="afro_love">Afro Love (Amour & Zouk)</option>
+                        <option value="ambiance">Coupé-Décalé (Fête & Farotage)</option>
+                        <option value="zouglou">Zouglou Urbain (Identité & Vérité)</option>
+                        <option value="conscient">Trap Consciente (Message Profond)</option>
+                    </select>
+                    <div class="absolute inset-y-0 right-4 flex items-center pointer-events-none">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" class="text-zinc-500"><path d="M7 10l5 5 5-5z"/></svg>
+                    </div>
                 </div>
             </div>
 
-            <div class="glass-card">
-                <label class="text-[10px] font-bold text-zinc-400 block mb-3 uppercase tracking-widest">Thème des Lyrics</label>
-                <select id="select-song-theme" class="w-full bg-black/40 border border-white/10 p-4 rounded-xl outline-none text-sm font-bold text-white appearance-none">
-    <option value="drill">Drill Ivoire (Sombre & Agressif)</option>
-    <option value="rap_nouchi">Rap Nouchi (Rue & Maquis)</option>
-    <option value="trap_ego">Trap Ego Trip (Argent & Flex)</option>
-    <option value="afrobeat">Afrobeat (Groove Continental)</option>
-    <option value="afro_love">Afro Love (Amour & Zouk)</option>
-    <option value="ambiance">Coupé-Décalé (Fête & Farotage)</option>
-    <option value="zouglou">Zouglou Urbain (Identité & Vérité)</option>
-    <option value="conscient">Trap Consciente (Message Profond)</option>
-</select>
-            </div>
+            <div class="pt-2 space-y-3">
+                <button onclick="startRecording()" class="relative overflow-hidden w-full bg-[#2979FF] text-white h-16 rounded-2xl font-black text-lg shadow-[0_0_20px_rgba(41,121,255,0.3)] hover:brightness-110 active:scale-95 transition-all flex items-center justify-center gap-2 group">
+                    <div class="absolute inset-0 bg-white/20 -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]"></div>
+                    ENTRER EN CABINE 
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 15c1.66 0 2.99-1.34 2.99-3L15 6c0-1.66-1.34-3-3-3S9 4.34 9 6v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 15 6.7 12H5c0 3.42 2.72 6.23 6 6.72V22h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z"/></svg>
+                    <div class="absolute bottom-1 text-[9px] font-bold text-white/70 uppercase tracking-widest">-50 Énergie</div>
+                </button>
 
-            <button onclick="startRecording()" class="pill-button bg-info text-black h-16 text-lg w-full font-black shadow-[0_0_20px_rgba(30,144,255,0.4)] border-none">
-                ENTRER EN CABINE <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style="display:inline;vertical-align:middle"><path d="M12 15c1.66 0 2.99-1.34 2.99-3L15 6c0-1.66-1.34-3-3-3S9 4.34 9 6v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 15 6.7 12H5c0 3.42 2.72 6.23 6 6.72V22h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z"/></svg>
-            </button>
-            <p class="text-center text-xs text-zinc-500">-50 Énergie requise</p>
+                <button onclick="releaseAlbum()" class="w-full bg-[#15161D] border border-[#7C4DFF]/30 hover:bg-[#7C4DFF]/10 text-white h-16 rounded-2xl transition-all flex flex-col items-center justify-center active:scale-95 group relative overflow-hidden">
+                    <div class="flex items-center gap-2 font-black text-sm text-[#7C4DFF]">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 14.5c-2.49 0-4.5-2.01-4.5-4.5S9.51 7.5 12 7.5s4.5 2.01 4.5 4.5-2.01 4.5-4.5 4.5zm0-5.5c-.55 0-1 .45-1 1s.45 1 1 1 1-.45 1-1-.45-1-1-1z"/></svg>
+                        ENREGISTRER UN ALBUM
+                    </div>
+                    <span class="text-[9px] text-zinc-400 font-bold uppercase tracking-widest mt-0.5">2 000 000 F • 90 NRJ</span>
+                </button>
+            </div>
         </div>
-        <button onclick="releaseAlbum()" class="bg-white/5 border border-white/10 hover:bg-white/10 hover:border-purple-500/50 text-white py-3 px-4 rounded-xl transition-all flex flex-col items-center justify-center gap-1">
-    ENTRER EN CABINE <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style="display:inline;vertical-align:middle"><path d="M12 15c1.66 0 2.99-1.34 2.99-3L15 6c0-1.66-1.34-3-3-3S9 4.34 9 6v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 15 6.7 12H5c0 3.42 2.72 6.23 6 6.72V22h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z"/></svg>
-    <span class="text-[10px] text-zinc-400 font-normal">2 000 000 F • 90 NRJ</span>
-</button>
     </div>
    
-
-    <!-- MENU CATALOGUE (SONS & RELEASES) -->
-    <div id="menu-songs" class="full-screen-menu">
-        <div class="menu-header">
-            <div>
-                <h2 class="text-xl font-black uppercase text-purple-400">Discographie</h2>
-                <p class="text-xs text-purple-400/70">Gère tes sorties et surveille tes streams.</p>
-            </div>
-            <button onclick="closeAllMenus()" class="p-2 bg-white/5 rounded-full hover:bg-white/10 transition flex items-center justify-center"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button>
-        </div>
-        
-        <div class="px-6 pt-4 flex gap-2">
-            <button onclick="switchSongTab('inventory')" id="tab-inventory" class="flex-1 py-2 text-sm font-bold border-b-2 border-primary text-white transition">En Stock</button>
-            <button onclick="switchSongTab('released')" id="tab-released" class="flex-1 py-2 text-sm font-bold border-b-2 border-transparent text-zinc-500 transition">Sortis (En Ligne)</button>
-        </div>
-
-        <div class="scroll-area space-y-4" id="songs-list-container">
-            <!-- Injecté par JS -->
-        </div>
-    </div>
-
-    <!-- MENU BUSINESS (SHOP & CONCERTS) -->
-    <div id="menu-biz" class="full-screen-menu">
-        <div class="menu-header">
-            <div>
-                <h2 class="text-xl font-black uppercase text-accent">Business & Life</h2>
-                <p class="text-xs text-accent/70">Investis ton argent, fais des concerts.</p>
-            </div>
-            <button onclick="closeAllMenus()" class="p-2 bg-white/5 rounded-full hover:bg-white/10 transition flex items-center justify-center"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button>
-        </div>
-        
-        <div class="scroll-area space-y-6">
-            <!-- Section Concerts -->
-            <div>
-                <h3 class="text-sm font-black text-white mb-3 uppercase flex items-center gap-2"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M22 10V6c0-1.11-.9-2-2-2H4c-1.1 0-1.99.89-1.99 2v4c1.1 0 1.99.9 1.99 2s-.89 2-2 2v4c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2v-4c-1.1 0-2-.9-2-2s.9-2 2-2zm-2-1.46c-1.19.69-2 1.99-2 3.46s.81 2.77 2 3.46V18H4v-2.54c1.19-.69 2-1.99 2-3.46 0-1.48-.8-2.77-2-3.46V6h16v2.54z"/></svg> Booker un Concert</h3>
-                <div class="grid gap-3" id="concerts-list">
-                    <!-- Injecté -->
+    <div id="menu-songs" class="full-screen-menu bg-[#09090E]">
+        <div class="sticky top-0 z-50 bg-[#0b0c14]/95 backdrop-blur-md border-b border-white/5 pt-4">
+            <div class="flex justify-between items-center px-6 pb-4">
+                <div>
+                    <h2 class="text-lg font-black uppercase text-white tracking-wider">Discographie</h2>
+                    <p class="text-[10px] text-zinc-400 font-bold uppercase tracking-widest mt-0.5">Gère tes sorties et streams</p>
                 </div>
+                <button onclick="closeAllMenus()" class="w-10 h-10 bg-white/5 border border-white/10 rounded-full hover:bg-white/10 transition-colors flex items-center justify-center active:scale-90">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" class="text-white/70"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+                </button>
             </div>
-
-            <div class="w-full h-px bg-white/10 my-4"></div>
-
-            <!-- Section Shop -->
-            <div>
-                <h3 class="text-sm font-black text-white mb-3 uppercase flex items-center gap-2"><svg width="20" height="20" viewBox="0 0 24 24" fill="#7C4DFF"><path d="M19 3H5L2 9l10 12L22 9l-3-6zm-8.5 12.5L4.21 9.5 6.5 5h11l2.29 4.5L10.5 15.5z"/></svg> Lifestyle & Achats (Boost Passif)</h3>
-                <div class="grid grid-cols-2 gap-3" id="shop-list">
-                    <!-- Injecté -->
-                </div>
+            
+            <div class="px-4 flex gap-2 w-full pb-0">
+                <button onclick="switchSongTab('inventory')" id="tab-inventory" class="flex-1 py-3 text-xs font-black uppercase tracking-widest border-b-2 border-primary text-white transition-all">En Stock</button>
+                <button onclick="switchSongTab('released')" id="tab-released" class="flex-1 py-3 text-xs font-black uppercase tracking-widest border-b-2 border-transparent text-zinc-500 hover:text-white transition-all">En Ligne</button>
             </div>
         </div>
+
+        <div class="scroll-area px-4 py-6 space-y-4 pb-32" id="songs-list-container">
+            </div>
     </div>
 
-    <!-- MENU TALENTS (ARBRE DE COMPÉTENCES) -->
-    <div id="menu-perks" class="full-screen-menu">
-        <div class="menu-header bg-teal-900/50">
+    <div id="menu-biz" class="full-screen-menu bg-[#09090E]">
+        <div class="sticky top-0 z-50 flex justify-between items-center px-6 py-4 bg-[#15161D]/90 backdrop-blur-md border-b border-[#FF9100]/20 shadow-[0_4px_30px_rgba(255,145,0,0.1)]">
             <div>
-                <h2 class="text-xl font-black uppercase text-teal-400">Talents</h2>
-                <p class="text-xs text-teal-400/70">Dépense tes points d'XP pour t'améliorer.</p>
+                <h2 class="text-lg font-black uppercase text-[#FF9100] tracking-wider">Business & Life</h2>
+                <p class="text-[10px] text-[#FF9100]/70 font-bold uppercase tracking-widest mt-0.5">Investis & Fais le show</p>
             </div>
-            <button onclick="closeAllMenus()" class="p-2 bg-white/5 rounded-full hover:bg-white/10 transition flex items-center justify-center"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button>
+            <button onclick="closeAllMenus()" class="w-10 h-10 bg-[#FF9100]/10 border border-[#FF9100]/20 rounded-full hover:bg-[#FF9100]/20 transition-colors flex items-center justify-center active:scale-90">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="#FF9100"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+            </button>
         </div>
         
-        <div class="p-6 bg-teal-950/30 border-b border-teal-500/20 text-center">
-            <div class="text-sm text-zinc-400 font-bold uppercase mb-1">Points Disponibles</div>
-            <div class="text-4xl font-black text-teal-400" id="perks-points-display">0</div>
-        </div>
+        <div class="scroll-area px-4 py-6 space-y-8 pb-32">
+            <div class="bg-[#15161D] rounded-3xl p-5 border border-white/5 shadow-xl relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-[#FF9100]/5 rounded-bl-full pointer-events-none"></div>
+                <h3 class="text-[11px] font-black text-white mb-4 uppercase tracking-[0.2em] flex items-center gap-2 relative z-10">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="#FF9100"><path d="M22 10V6c0-1.11-.9-2-2-2H4c-1.1 0-1.99.89-1.99 2v4c1.1 0 1.99.9 1.99 2s-.89 2-2 2v4c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2v-4c-1.1 0-2-.9-2-2s.9-2 2-2zm-2-1.46c-1.19.69-2 1.99-2 3.46s.81 2.77 2 3.46V18H4v-2.54c1.19-.69 2-1.99 2-3.46 0-1.48-.8-2.77-2-3.46V6h16v2.54z"/></svg> 
+                    Booker un Concert
+                </h3>
+                <div class="grid gap-3 relative z-10" id="concerts-list">
+                    </div>
+            </div>
 
-        <div class="scroll-area space-y-4" id="perks-list">
-            <!-- Injecté par JS -->
+            <div class="bg-[#15161D] rounded-3xl p-5 border border-white/5 shadow-xl relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-[#7C4DFF]/5 rounded-bl-full pointer-events-none"></div>
+                <h3 class="text-[11px] font-black text-white mb-4 uppercase tracking-[0.2em] flex items-center gap-2 relative z-10">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="#7C4DFF"><path d="M19 3H5L2 9l10 12L22 9l-3-6zm-8.5 12.5L4.21 9.5 6.5 5h11l2.29 4.5L10.5 15.5z"/></svg> 
+                    Lifestyle & Achats
+                </h3>
+                <div class="grid gap-3" id="shop-list">
+                    </div>
+            </div>
         </div>
     </div>
 
-</div>
+    <div id="menu-perks" class="full-screen-menu bg-[#09090E]">
+        <div class="sticky top-0 z-50 flex justify-between items-center px-6 py-4 bg-[#042f2e]/90 backdrop-blur-md border-b border-[#2dd4bf]/20 shadow-[0_4px_30px_rgba(45,212,191,0.1)]">
+            <div>
+                <h2 class="text-lg font-black uppercase text-[#2dd4bf] tracking-wider">Talents</h2>
+                <p class="text-[10px] text-[#2dd4bf]/70 font-bold uppercase tracking-widest mt-0.5">Évolue et progresse</p>
+            </div>
+            <button onclick="closeAllMenus()" class="w-10 h-10 bg-[#2dd4bf]/10 border border-[#2dd4bf]/20 rounded-full hover:bg-[#2dd4bf]/20 transition-colors flex items-center justify-center active:scale-90">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="#2dd4bf"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+            </button>
+        </div>
+        
+        <div class="px-6 py-8 bg-gradient-to-b from-[#042f2e]/50 to-transparent flex flex-col items-center justify-center border-b border-[#2dd4bf]/10 relative overflow-hidden">
+            <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                <div class="w-32 h-32 bg-[#2dd4bf]/10 rounded-full blur-3xl"></div>
+            </div>
+            <span class="text-[10px] text-zinc-400 font-black uppercase tracking-[0.2em] mb-2 relative z-10">Points Disponibles</span>
+            <div class="text-6xl font-black text-transparent bg-clip-text bg-gradient-to-br from-[#2dd4bf] to-[#0d9488] drop-shadow-lg relative z-10" id="perks-points-display">0</div>
+        </div>
+
+        <div class="scroll-area px-4 py-6 space-y-4 pb-32" id="perks-list">
+            </div>
+    </div>
 
 <!-- ========================================================= -->
 <!-- MOTEUR DU JEU EN JAVASCRIPT -->
