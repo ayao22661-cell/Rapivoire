@@ -76,14 +76,17 @@ body {
     box-shadow: 0 0 40px rgba(0,0,0,0.5);
 }
 
-/* Cartes (Loi de Clôture et Fond/Figure) */
+/* Cartes */
 .glass-card {
-    background: var(--surface-1);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    border-radius: 20px;
-    padding: 1.5rem; /* Respiration (Loi de proximité) */
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    transition: transform 0.2s ease, border-color 0.2s ease;
+    background: #1a1b2a;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 18px;
+    padding: 14px;
+    transition: background 0.2s ease;
+}
+
+.glass-card:hover {
+    background: #202136;
 }
 
 /* Boutons standardisés (Loi de Similarité) */
@@ -91,26 +94,26 @@ body {
    BOUTONS & COULEURS (Règle stricte des 3 couleurs)
    ========================================= */
 
-/* Base du bouton (Forme et Typographie) */
+/* Boutons standardisés — Style Mobile Game */
 .pill-button {
     border-radius: 16px;
-    padding: 16px 24px;
-    font-weight: 800; /* Plus gras pour une meilleure lisibilité */
+    padding: 15px 20px;
+    font-weight: 900;
     text-transform: uppercase;
-    font-size: 14px;
-    letter-spacing: 0.5px;
+    font-size: 13px;
+    letter-spacing: 0.06em;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
     gap: 8px;
     border: none;
     cursor: pointer;
     width: 100%;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: none !important; /* On supprime les ombres qui rendent les boutons illisibles */
+    transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+    font-family: inherit;
 }
 
-.pill-button:active { transform: scale(0.95); }
+.pill-button:active { transform: scale(0.96); }
 .pill-button:disabled, .pill-button.disabled { opacity: 0.4; cursor: not-allowed; filter: grayscale(100%); }
 
 /* MAPPING DES 3 COULEURS (Loi de similarité)
@@ -120,27 +123,31 @@ body {
 
 /* 1. COULEUR PRIMAIRE (Vert Néon) : Action positive, Avancer, Argent */
 .btn-primary, .bg-green-grad, .bg-yellow-grad, .bg-info { 
-    background: #00E676 !important; 
-    color: #000000 !important; /* Texte NOIR sur Vert pour le contraste WCAG (très lisible) */
+    background: #00e676 !important; 
+    color: #000000 !important;
     background-image: none !important;
+    border-radius: 16px !important;
 }
-.btn-primary:hover { background: #00C853 !important; }
+.btn-primary:hover { background: #00c853 !important; }
 
 /* 2. COULEUR SECONDAIRE (Violet Profond) : Studio, Talents, Création */
 .btn-accent, .bg-purple-grad, .bg-pink-grad, .bg-blue-grad, .bg-teal-grad, .bg-orange-grad { 
-    background: #7C4DFF !important; 
-    color: #FFFFFF !important;
+    background: #7c4dff !important; 
+    color: #ffffff !important;
     background-image: none !important;
+    border-radius: 16px !important;
 }
+.btn-accent:hover { background: #6c3fff !important; }
 
-/* 3. COULEUR NEUTRE (Gris/Surface) : Sauvegarder, Fermer, Options secondaires */
+/* 3. COULEUR NEUTRE */
 .btn-secondary, .bg-dark-grad { 
-    background: var(--surface-2) !important; 
+    background: #1a1b2a !important; 
     color: var(--text-main) !important; 
-    border: 1px solid rgba(255,255,255,0.1) !important;
+    border: 1px solid rgba(255,255,255,0.08) !important;
     background-image: none !important;
+    border-radius: 16px !important;
 }
-.btn-secondary:hover { background: rgba(255,255,255,0.05) !important; }
+.btn-secondary:hover { background: #252842 !important; }
 
 /* Exception UI : Actions destructrices (Reset) */
 .text-danger { color: #FF5252 !important; }
@@ -170,11 +177,11 @@ body {
     background: rgba(9, 9, 14, 0.97);
     backdrop-filter: blur(24px);
     -webkit-backdrop-filter: blur(24px);
-    height: calc(70px + var(--safe-bottom));
+    height: calc(68px + var(--safe-bottom));
     display: flex;
     justify-content: space-around;
     align-items: flex-start;
-    padding-top: 10px;
+    padding-top: 8px;
     border-top: 1px solid rgba(255, 255, 255, 0.06);
     position: absolute;
     bottom: 0;
@@ -187,25 +194,25 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    color: var(--text-muted);
+    color: rgba(255,255,255,0.3);
     transition: color 0.25s ease, transform 0.15s ease;
     cursor: pointer;
-    gap: 4px;
+    gap: 3px;
     position: relative;
-    padding-top: 4px;
+    padding-top: 2px;
 }
 
-/* Pill indicator derrière l'icône active */
+/* Barre indicateur en haut */
 .nav-item::before {
     content: '';
     position: absolute;
-    top: 0;
+    top: -8px;
     left: 50%;
     transform: translateX(-50%) scaleX(0);
-    width: 44px;
-    height: 3px;
+    width: 28px;
+    height: 2.5px;
     background: var(--primary);
-    border-radius: 0 0 4px 4px;
+    border-radius: 0 0 3px 3px;
     transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
@@ -213,29 +220,27 @@ body {
     transform: translateX(-50%) scaleX(1);
 }
 
-/* Glow subtil sur l'icône active */
-.nav-item.active svg {
-    filter: drop-shadow(0 0 6px rgba(0, 230, 118, 0.5));
-}
-
 .nav-item.active {
     color: var(--primary);
 }
 
-/* Feedback tactile au tap */
+.nav-item.active svg {
+    filter: drop-shadow(0 0 5px rgba(0, 230, 118, 0.45));
+}
+
 .nav-item:active {
     transform: scale(0.88);
 }
 
 .nav-item span { 
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-    transition: opacity 0.25s;
+    font-size: 8px;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
 }
 
 .nav-item:not(.active) span {
-    opacity: 0.55;
+    opacity: 0.5;
 }
        /* =========================================
    MENUS & OVERLAYS (Gestalt & WCAG)
@@ -253,12 +258,12 @@ body {
 }
 
 .menu-header {
-    padding: 1.5rem;
+    padding: 16px 18px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     border-bottom: 1px solid rgba(255,255,255,0.05);
-    background: rgba(9, 9, 14, 0.95); /* Loi de fond/figure : Contraste avec le contenu */
+    background: #0d0e1a;
     backdrop-filter: blur(10px);
     z-index: 10;
 }
@@ -349,19 +354,26 @@ body {
    POLISH & FINITIONS — MICRO-INTERACTIONS
    ========================================= */
 
-/* Bouton CTA principal : glow animé + état milestone */
+/* Bouton Semaine Suivante */
 #btn-next-week {
     position: relative;
     overflow: hidden;
-    box-shadow: 0 0 0 rgba(0, 230, 118, 0);
-    transition: all 0.3s ease, box-shadow 0.4s ease !important;
+    background: #00e676 !important;
+    color: #000 !important;
+    border-radius: 18px !important;
+    padding: 18px 24px !important;
+    font-size: 15px !important;
+    justify-content: center !important;
+    gap: 10px !important;
+    box-shadow: 0 0 28px rgba(0, 230, 118, 0.25);
+    transition: filter 0.15s ease, transform 0.12s ease !important;
 }
 
 #btn-next-week::after {
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.12) 50%, transparent 100%);
+    background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.15) 50%, transparent 100%);
     transform: translateX(-100%);
     transition: transform 0.6s ease;
 }
@@ -371,13 +383,13 @@ body {
 }
 
 #btn-next-week:hover {
-    box-shadow: 0 0 28px rgba(0, 230, 118, 0.35), 0 4px 16px rgba(0, 0, 0, 0.4) !important;
-    transform: translateY(-1px);
+    filter: brightness(1.08);
+    box-shadow: 0 0 36px rgba(0, 230, 118, 0.4) !important;
 }
 
 #btn-next-week:active {
-    transform: scale(0.97) translateY(0) !important;
-    box-shadow: 0 0 12px rgba(0, 230, 118, 0.2) !important;
+    transform: scale(0.97) !important;
+    box-shadow: 0 0 16px rgba(0, 230, 118, 0.2) !important;
 }
 
 /* Glass card : hover feedback subtil */
@@ -748,115 +760,143 @@ input:focus, select:focus {
     </button>
 </div>
 
-<header class="p-4 flex justify-between items-center border-b border-white/5 bg-[#09090e] z-50">
-    <div class="flex items-center gap-3">
-        <img id="player-avatar-img" src="" class="w-10 h-10 rounded-xl border-2 border-primary object-cover hidden shadow-[0_0_10px_rgba(0,230,118,0.3)]">
-        
-        <div class="flex flex-col gap-0.5">
-            <span id="game-date" class="text-[10px] text-zinc-400 font-bold uppercase tracking-wider">Semaine 1 - Jan 2024</span>
-            <h1 id="player-title" class="text-sm text-white font-black tracking-tight m-0 uppercase">ESPOIR DU QUARTIER</h1>
+<!-- ============================================================
+     HEADER — Style Mobile Game
+     ============================================================ -->
+<header style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:#0b0c14;border-bottom:1px solid rgba(255,255,255,0.05);position:relative;z-index:50;">
+    <!-- Gauche : date + titre joueur -->
+    <div style="display:flex;align-items:center;gap:10px;">
+        <img id="player-avatar-img" src="" style="width:36px;height:36px;border-radius:10px;border:2px solid #00e676;object-fit:cover;display:none;box-shadow:0 0 10px rgba(0,230,118,0.3);">
+        <div>
+            <span id="game-date" style="display:block;font-size:10px;color:rgba(255,255,255,0.4);font-weight:800;text-transform:uppercase;letter-spacing:0.1em;">Sem. 1 — Jan 2024</span>
+            <h1 id="player-title" style="margin:0;font-size:12px;font-weight:900;color:#ffffff;text-transform:uppercase;letter-spacing:0.05em;line-height:1.2;">ESPOIR DU QUARTIER</h1>
         </div>
     </div>
-
-    <div class="flex gap-2 items-center">
-        <div class="bg-surface-2 px-2.5 py-1.5 rounded-lg font-bold text-xs text-[#00E676] flex items-center gap-1 border border-white/5">
-            <span id="stat-cash">1,500</span><span>F</span>
+    <!-- Droite : cash + energie + settings -->
+    <div style="display:flex;align-items:center;gap:8px;">
+        <div style="background:#1a1b2a;border:1px solid rgba(0,230,118,0.2);border-radius:10px;padding:6px 10px;display:flex;align-items:center;gap:4px;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="#00e676"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>
+            <span id="stat-cash" style="font-size:12px;font-weight:900;color:#00e676;">1 500</span>
+            <span style="font-size:10px;font-weight:700;color:rgba(0,230,118,0.6);">F</span>
         </div>
-        <div class="bg-surface-2 px-2.5 py-1.5 rounded-lg font-bold text-xs text-[#2979FF] flex items-center gap-1 border border-white/5">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="#2979FF"><path d="M7 2v11h3v9l7-12h-4l4-8z"/></svg> <span id="stat-energy">100</span>
+        <div style="background:#1a1b2a;border:1px solid rgba(41,121,255,0.2);border-radius:10px;padding:6px 10px;display:flex;align-items:center;gap:4px;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="#2979FF"><path d="M7 2v11h3v9l7-12h-4l4-8z"/></svg>
+            <span id="stat-energy" style="font-size:12px;font-weight:900;color:#2979ff;">100</span>
         </div>
-        <button onclick="openSettingsModal()" class="flex items-center justify-center w-8 h-8 bg-surface-2 border border-white/10 rounded-lg hover:bg-white/10 transition-colors">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" class="text-zinc-400"><path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.07-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.74,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.8,11.69,4.8,12s0.02,0.64,0.07,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.44-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.47-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6 s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z"/></svg>
+        <button onclick="openSettingsModal()" style="width:34px;height:34px;background:#1a1b2a;border:1px solid rgba(255,255,255,0.08);border-radius:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background 0.2s;" onmouseover="this.style.background='#252842'" onmouseout="this.style.background='#1a1b2a'">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="rgba(255,255,255,0.5)"><path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.07-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.74,8.87C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.8,11.69,4.8,12s0.02,0.64,0.07,0.94l-2.03,1.58c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.44-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.47-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z"/></svg>
         </button>
     </div>
 </header>
 
-    <main class="flex-1 overflow-y-auto pb-32 px-4 pt-5 space-y-5" id="main-dashboard">
-        
-        <section id="news-section" class="mb-2">
-            <div class="flex items-center gap-2 mb-2">
-                <span class="relative flex h-2 w-2">
-                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
-                    <span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+    <main class="flex-1 overflow-y-auto pb-32 px-4 pt-4 space-y-3" id="main-dashboard">
+
+        <!-- NEWS -->
+        <section id="news-section" style="margin-bottom:4px;">
+            <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px;">
+                <span style="position:relative;display:flex;height:8px;width:8px;">
+                    <span class="animate-ping" style="position:absolute;display:inline-flex;height:100%;width:100%;border-radius:50%;background:#00e676;opacity:0.75;"></span>
+                    <span style="position:relative;display:inline-flex;border-radius:50%;height:8px;width:8px;background:#00e676;"></span>
                 </span>
-                <h3 class="text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em]">Dernières Infos</h3>
+                <h3 style="font-size:9px;font-weight:900;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:0.2em;margin:0;">Dernières Infos</h3>
             </div>
-            <div id="news-container" class="space-y-2">
-            </div>
+            <div id="news-container" class="space-y-2"></div>
         </section>
 
-        <section class="grid grid-cols-2 gap-3">
-            <div class="glass-card !p-3.5 flex flex-col items-start justify-center">
-                <span class="text-[10px] text-zinc-400 uppercase font-bold tracking-widest">Niveau</span>
-                <span id="stat-level" class="text-2xl font-black text-white mt-0.5">1</span>
-                <div class="progress-container h-1.5 mt-2">
-                    <div id="bar-xp" class="progress-fill" style="width: 0%"></div>
+        <!-- FAME + TALENTS row -->
+        <section style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+            <!-- Niveau Buzz (Fame) -->
+            <div style="background:#1a1b2a;border-radius:18px;padding:14px;border:1.5px solid rgba(0,230,118,0.2);display:flex;align-items:center;gap:10px;">
+                <div style="width:36px;height:36px;background:#00e676;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="#000"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg>
+                </div>
+                <div>
+                    <div style="font-size:8px;font-weight:900;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.12em;">Niveau Buzz</div>
+                    <div id="stat-level" style="font-size:22px;font-weight:900;color:#ffffff;line-height:1;">1</div>
+                    <div class="progress-container" style="height:4px;margin-top:4px;width:100%;"><div id="bar-xp" class="progress-fill" style="width:0%"></div></div>
                 </div>
             </div>
-            
-            <button onclick="openMenu('perks')" class="glass-card !p-3.5 flex flex-col justify-center items-center hover:bg-surface-2 transition-transform active:scale-95">
-                <span class="text-base font-black text-[#7C4DFF]">TALENTS</span>
-                <span class="text-[10px] text-zinc-400 mt-1"><span id="stat-xp-points">0</span> pts dispo</span>
+            <!-- Talents -->
+            <button onclick="openMenu('perks')" style="background:#1a1b2a;border-radius:18px;padding:14px;border:1.5px solid rgba(124,77,255,0.25);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;transition:background 0.2s;" onmouseover="this.style.background='#252842'" onmouseout="this.style.background='#1a1b2a'">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="#7c4dff"><path d="M19 3H5L2 9l10 12L22 9l-3-6zm-8.5 12.5L4.21 9.5 6.5 5h11l2.29 4.5L10.5 15.5z"/></svg>
+                <span style="font-size:11px;font-weight:900;color:#7c4dff;text-transform:uppercase;letter-spacing:0.06em;">TALENTS</span>
+                <span style="font-size:9px;color:rgba(255,255,255,0.3);font-weight:700;"><span id="stat-xp-points">0</span> pts dispo</span>
             </button>
         </section>
 
-        <section class="glass-card !p-4">
-            <div class="flex justify-between items-end mb-2">
-                <h2 class="text-[10px] font-black text-zinc-400 uppercase tracking-wider m-0">Buzz Actuel</h2>
-                <span id="stat-buzz-text" class="text-sm font-black text-[#FF9100]">15%</span>
+        <!-- POPULARITÉ (Buzz) -->
+        <section style="background:linear-gradient(135deg,#c62828,#b71c1c);border-radius:18px;padding:14px 16px;position:relative;overflow:hidden;">
+            <div style="position:absolute;top:-20px;right:-20px;width:80px;height:80px;background:rgba(255,255,255,0.05);border-radius:50%;"></div>
+            <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="rgba(255,255,255,0.8)"><path d="M13.5.67s.74 2.65.74 4.8c0 2.06-1.35 3.73-3.41 3.73-2.07 0-3.63-1.67-3.63-3.73l.03-.36C5.21 7.51 4 10.62 4 14c0 4.42 3.58 8 8 8s8-3.58 8-8C20 8.61 17.41 3.8 13.5.67z"/></svg>
+                <span style="font-size:9px;font-weight:900;color:rgba(255,255,255,0.75);text-transform:uppercase;letter-spacing:0.18em;">POPULARITÉ</span>
+                <span id="stat-buzz-text" style="font-size:11px;font-weight:900;color:#ffffff;margin-left:auto;">15%</span>
             </div>
-            <div class="progress-container h-2 mb-4">
-                <div id="bar-buzz" class="progress-fill" style="background-color: #FF9100; width: 15%"></div>
+            <div style="background:rgba(0,0,0,0.3);border-radius:6px;height:8px;overflow:hidden;">
+                <div id="bar-buzz" style="height:100%;background:#ffffff;border-radius:6px;width:15%;position:relative;overflow:hidden;">
+                    <div style="position:absolute;top:0;left:-80%;width:60%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.35),transparent);animation:shimmer 2s infinite;"></div>
+                </div>
             </div>
-            
-            <div class="grid grid-cols-3 gap-2 border-t border-white/5 pt-4">
-                <div class="text-center">
-                    <div id="stat-fans" class="text-lg font-black text-white leading-none">120</div>
-                    <div class="text-[9px] font-bold text-zinc-500 uppercase mt-1">Fans</div>
+            <!-- Stats row -->
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;margin-top:12px;border-top:1px solid rgba(255,255,255,0.1);padding-top:10px;">
+                <div style="text-align:center;">
+                    <div id="stat-fans" style="font-size:17px;font-weight:900;color:#ffffff;line-height:1;">120</div>
+                    <div style="font-size:8px;font-weight:700;color:rgba(255,255,255,0.55);text-transform:uppercase;letter-spacing:0.1em;margin-top:3px;">Fans</div>
                 </div>
-                <div class="text-center border-l border-white/5">
-                    <div id="stat-streams" class="text-lg font-black text-[#2979FF] leading-none">0</div>
-                    <div class="text-[9px] font-bold text-zinc-500 uppercase mt-1">Streams</div>
+                <div style="text-align:center;border-left:1px solid rgba(255,255,255,0.1);border-right:1px solid rgba(255,255,255,0.1);">
+                    <div id="stat-streams" style="font-size:17px;font-weight:900;color:#ffffff;line-height:1;">0</div>
+                    <div style="font-size:8px;font-weight:700;color:rgba(255,255,255,0.55);text-transform:uppercase;letter-spacing:0.1em;margin-top:3px;">Streams</div>
                 </div>
-                <div class="text-center border-l border-white/5">
-                    <div id="stat-beats" class="text-lg font-black text-[#7C4DFF] leading-none">0</div>
-                    <div class="text-[9px] font-bold text-zinc-500 uppercase mt-1">Sons</div>
+                <div style="text-align:center;">
+                    <div id="stat-beats" style="font-size:17px;font-weight:900;color:#ffffff;line-height:1;">0</div>
+                    <div style="font-size:8px;font-weight:700;color:rgba(255,255,255,0.55);text-transform:uppercase;letter-spacing:0.1em;margin-top:3px;">Sons</div>
                 </div>
             </div>
         </section>
 
-        <section class="space-y-3">
-            <button onclick="openMenu('actions')" class="pill-button btn-accent w-full text-sm py-4">
-                ACTIONS DE LA SEMAINE 
-                <span id="action-count" class="ml-2 bg-black/40 text-white px-2 py-0.5 rounded-full text-[10px]">3</span>
+        <!-- BOUTONS D'ACTION -->
+        <section style="display:flex;flex-direction:column;gap:10px;">
+            <!-- ACTIONS -->
+            <button onclick="openMenu('actions')" style="background:#7c4dff;border:none;border-radius:16px;padding:16px 20px;font-family:inherit;font-weight:900;font-size:13px;text-transform:uppercase;letter-spacing:0.08em;color:#ffffff;cursor:pointer;width:100%;display:flex;align-items:center;justify-content:space-between;transition:filter 0.15s;" onmouseover="this.style.filter='brightness(1.1)'" onmouseout="this.style.filter='brightness(1)'">
+                ACTIONS DE LA SEMAINE
+                <span id="action-count" style="background:rgba(0,0,0,0.3);border-radius:20px;padding:3px 12px;font-size:12px;font-weight:900;">3</span>
             </button>
 
-            <button onclick="launchImproRapide()" class="pill-button w-full text-sm py-3.5" style="background:#1a1a2e;border:1px solid rgba(124,77,255,0.35);color:#a78bfa;">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="display:inline;vertical-align:middle;margin-right:6px"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
-                IMPRO RAPIDE
-                <span style="font-size:9px;opacity:0.6;margin-left:6px">mini-jeu gratuit</span>
+            <!-- IMPRO RAPIDE -->
+            <button onclick="launchImproRapide()" style="background:#1a1b2a;border:1.5px solid rgba(124,77,255,0.3);border-radius:16px;padding:14px 20px;font-family:inherit;font-weight:900;font-size:12px;text-transform:uppercase;letter-spacing:0.08em;color:#b39ddb;cursor:pointer;width:100%;display:flex;align-items:center;justify-content:space-between;transition:background 0.2s;" onmouseover="this.style.background='#252842'" onmouseout="this.style.background='#1a1b2a'">
+                <span style="display:flex;align-items:center;gap:8px;">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
+                    IMPRO RAPIDE
+                </span>
+                <span style="font-size:9px;color:rgba(255,255,255,0.3);font-weight:700;">mini-jeu gratuit</span>
             </button>
 
-            <button onclick="processNextWeek()" id="btn-next-week" class="pill-button btn-primary w-full text-base py-5 mt-2 shadow-lg shadow-primary/10">
-                TERMINER LA SEMAINE <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style="display:inline;vertical-align:middle"><path d="M8 5v14l11-7z"/></svg>
+            <!-- SEMAINE SUIVANTE -->
+            <button onclick="processNextWeek()" id="btn-next-week" style="background:#00e676;border:none;border-radius:18px;padding:18px 24px;font-family:inherit;font-weight:900;font-size:15px;text-transform:uppercase;letter-spacing:0.08em;color:#000000;cursor:pointer;width:100%;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 0 28px rgba(0,230,118,0.25);transition:filter 0.15s,transform 0.12s;" onmouseover="this.style.filter='brightness(1.08)'" onmouseout="this.style.filter='brightness(1)'" onmousedown="this.style.transform='scale(0.97)'" onmouseup="this.style.transform='scale(1)'">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M6 18l8.5-6L6 6v12zm2-8.14L11.03 12 8 14.14V9.86zM16 6h2v12h-2z"/></svg>
+                SEMAINE SUIVANTE
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M6 18l8.5-6L6 6v12zm2-8.14L11.03 12 8 14.14V9.86zM16 6h2v12h-2z"/></svg>
             </button>
         </section>
     </main>
 
-    <nav class="bottom-nav">
-        <div onclick="closeAllMenus(); setActiveNav('nav-home')" class="nav-item active" id="nav-home">
+    <!-- ============================================================
+         NAV BAS — Style Mobile Game
+         ============================================================ -->
+    <nav class="bottom-nav" style="background:rgba(9,9,14,0.97);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);height:calc(68px + var(--safe-bottom));display:flex;justify-content:space-around;align-items:flex-start;padding-top:8px;border-top:1px solid rgba(255,255,255,0.06);position:absolute;bottom:0;width:100%;z-index:100;">
+        <div onclick="closeAllMenus(); setActiveNav('nav-home')" class="nav-item active" id="nav-home" style="display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;color:rgba(255,255,255,0.35);font-size:8px;font-weight:900;text-transform:uppercase;letter-spacing:0.08em;padding:2px 12px;position:relative;transition:color 0.2s;">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
             <span>HOME</span>
         </div>
-        <div onclick="openMenu('studio'); setActiveNav('nav-studio')" class="nav-item" id="nav-studio">
+        <div onclick="openMenu('studio'); setActiveNav('nav-studio')" class="nav-item" id="nav-studio" style="display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;color:rgba(255,255,255,0.35);font-size:8px;font-weight:900;text-transform:uppercase;letter-spacing:0.08em;padding:2px 12px;position:relative;transition:color 0.2s;">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
             <span>STUDIO</span>
         </div>
-        <div onclick="openMenu('biz'); setActiveNav('nav-biz')" class="nav-item" id="nav-biz">
+        <div onclick="openMenu('biz'); setActiveNav('nav-biz')" class="nav-item" id="nav-biz" style="display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;color:rgba(255,255,255,0.35);font-size:8px;font-weight:900;text-transform:uppercase;letter-spacing:0.08em;padding:2px 12px;position:relative;transition:color 0.2s;">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>
             <span>BUSINESS</span>
         </div>
-        <div onclick="openMenu('songs'); setActiveNav('nav-songs')" class="nav-item" id="nav-songs">
+        <div onclick="openMenu('songs'); setActiveNav('nav-songs')" class="nav-item" id="nav-songs" style="display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;color:rgba(255,255,255,0.35);font-size:8px;font-weight:900;text-transform:uppercase;letter-spacing:0.08em;padding:2px 12px;position:relative;transition:color 0.2s;">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8 12.5v-9l6 2.25v-9z"/></svg>
             <span>CATALOGUE</span>
         </div>
