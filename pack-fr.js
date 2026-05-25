@@ -17,27 +17,82 @@ window.PACK_DATA = {
     // TRADUCTIONS UI
     // ─────────────────────────────────────────
     UI: {
+        // ── Chargement ──
         loading: 'Initialisation du studio...',
-        onboardingTitle: 'BUZZKING',
-        onboardingSubtitle: 'Deviens une Légende',
+
+        // ── App subtitle ──
         appSubtitle: 'Deviens une Légende',
+
+        // ── Onboarding — step pseudo ──
+        onboardingTitle:    'CRÉE TA LÉGENDE',
+        onboardingDesc:     'Tout grand rappeur a besoin d\'un blase qui claque. Comment va-t-on t\'appeler dans les rues de Paris ?',
+        pseudoPlaceholder:  'Ton nom de scène...',
+        btnSubmitPseudo:    'VALIDER MON BLASE',
+
+        // ── Onboarding — step tutorial ──
+        tutorialTitle:      'COMMENT JOUER ?',
+        btnUnderstood:      'C\'est bon frère !',
+        tutorialEnergy:     'L\'Énergie : Chaque action coûte de l\'énergie. Une fois tes 4 actions utilisées, clique sur "Semaine Suivante" pour te reposer — ce bouton génère tes revenus et te redonne 50 NRJ.',
+        tutorialProjects:   'Les Projets : Sors des sons et économise 2 Millions pour sortir un Album (les streams de l\'album sont multipliés par 10 !).',
+        tutorialClash:      'Les Clashs : Attaque les autres rappeurs pour voler leur Buzz. Plus de buzz = plus d\'écoutes sur tes sons.',
+        tutorialContracts:  'Les Contrats : Fais grimper tes Fans et tes Streams pour attirer des Sponsors (revenus hebdos) et des Maisons de disques.',
+
+        // ── Sélection de personnage ──
         charSelectTitle: 'T\'es qui toi ?',
-        charSelectSub: 'Choisis ton profil de départ.',
+        charSelectSub:   'Choisis ton profil de départ.',
         btnConfirmAvatar: 'CHOISIR CE PROFIL',
-        navHome: 'HOME',
+
+        // ── Navigation ──
+        navHome:    'HOME',
         navActions: 'MOVES',
-        navStudio: 'STUDIO',
-        navBiz: 'BIZNESS',
-        navPerks: 'SKILLS',
-        lyricsTitle: 'CHOIX DU COUPLET',
+        navStudio:  'STUDIO',
+        navBiz:     'BIZNESS',
+        navPerks:   'SKILLS',
+
+        // ── Mini-jeu paroles ──
+        lyricsTitle:  'CHOIX DU COUPLET',
         lyricsPrompt: 'Choisis la bonne punchline pour l\'instru...',
-        btnNextWeek: 'SEMAINE SUIVANTE',
-        btnUnderstood: 'C\'est bon frère !',
+
+        // ── Clash ──
         clashTitle: 'CHOISIR UNE CIBLE',
-        clashCost: 'Coûte 30 Énergie & 1 Action',
+        clashCost:  'Coûte 30 Énergie & 1 Action',
+
+        // ── Bouton fin de semaine ──
+        btnNextWeek: 'SEMAINE SUIVANTE',
+
+        // ── Sauvegarde ──
         saved: 'Partie sauvegardée !',
-        welcomeBack: 'Bienvenue sur la scène, ',
-        newGame: 'Bienvenue dans le game. La galère commence maintenant.',
+
+        // ── Titres de bilan de semaine ──
+        weekTitleQuiet: 'SEMAINE TRANQUILLE',
+        weekTitleGood:  'BON FLOW !',
+        weekTitleUp:    'TU MONTES !',
+        weekTitleFire:  'SEMAINE DE FEU 🔥',
+        weekTitleViral: 'VIRAL ! 🚀',
+        weekSummary:    'Semaine {n} terminée. Continue sur cette lancée.',
+
+        // ── Messages dynamiques (addNews / tips) ──
+        welcomeBack:  'Bon retour dans le Game, ',
+        newGame:      'Bienvenue dans le Game. La galère commence maintenant.',
+        firstDay:     '🔥 La carrière de {name} commence aujourd\'hui sur BUZZKING !',
+        newsAlbum:    'ALBUM SORTI : "{name}" ({quality}% Qualité) est disponible !',
+        newsNewYear:  '🥂 Bonne année {year} !',
+        newsClassic:  '🏆 HISTORIQUE : "{name}" est devenu un Classique !',
+        newsCertif:   '🚨 CERTIF : "{name}" certifié {certif} !',
+        newsBonus:    '🎁 Bonus : +{cash} F CFA, +{fans} Fans.',
+        newsLabelCut: '💿 Part Label : -{cut} F.',
+        newsStreams:  'Total Streams : +{streams}.',
+        newsRevenue:  'Revenus : +{revenue} F CFA.',
+        newsSponsor:  '🤝 Contrat Exclusif ({name}) : +{cash} F.',
+        newsSignature:'🚨 SIGNATURE : Tu rejoins l\'écurie {name} ! Avance de {cash} F.',
+        newsSponsorAccepted: '🤝 SPONSOR : {name} devient ton partenaire officiel.',
+        newsRefused:  'Tu as refusé l\'offre de {name}. Tu gardes ton indépendance !',
+
+        // ── Conseils contextuels ──
+        tipGeneric:   'Essaie de varier tes actions cette semaine.',
+        tipNoSongs:   '⚠️ Tu n\'as encore sorti aucun son. Va au Studio, crée et publie un son — c\'est lui qui ramène des fans chaque semaine.',
+        tipLowBuzz:   '⚠️ Ton Buzz est trop bas. Fais un Challenge TikTok ou un Clash pour le remonter.',
+        tipLowCash:   '⚠️ T\'as plus de cash. Fais un freestyle en métro ou un petit boulot pour renflouer.',
     },
 
     // ─────────────────────────────────────────
