@@ -17,82 +17,159 @@ window.PACK_DATA = {
     // TRADUCTIONS UI
     // ─────────────────────────────────────────
     UI: {
-        // ── Chargement ──
+        // ── Loading ──
         loading: 'Initialisation du studio...',
 
-        // ── App subtitle ──
+        // ── Onboarding ──
+        onboardingTitle: 'BUZZKING',
+        onboardingSubtitle: 'Deviens une Légende',
         appSubtitle: 'Deviens une Légende',
+        onboardingTagline: 'Tout grand rappeur a besoin d\'un blase qui claque. Comment va-t-on t\'appeler dans les rues de Paris ?',
+        onboardingPlaceholder: 'Ton nom de scène...',
+        btnValidatePseudo: 'VALIDER MON BLASE',
 
-        // ── Onboarding — step pseudo ──
-        onboardingTitle:    'CRÉE TA LÉGENDE',
-        onboardingDesc:     'Tout grand rappeur a besoin d\'un blase qui claque. Comment va-t-on t\'appeler dans les rues de Paris ?',
-        pseudoPlaceholder:  'Ton nom de scène...',
-        btnSubmitPseudo:    'VALIDER MON BLASE',
-
-        // ── Onboarding — step tutorial ──
-        tutorialTitle:      'COMMENT JOUER ?',
-        btnUnderstood:      'C\'est bon frère !',
-        tutorialEnergy:     'L\'Énergie : Chaque action coûte de l\'énergie. Une fois tes 4 actions utilisées, clique sur "Semaine Suivante" pour te reposer — ce bouton génère tes revenus et te redonne 50 NRJ.',
-        tutorialProjects:   'Les Projets : Sors des sons et économise 2 Millions pour sortir un Album (les streams de l\'album sont multipliés par 10 !).',
-        tutorialClash:      'Les Clashs : Attaque les autres rappeurs pour voler leur Buzz. Plus de buzz = plus d\'écoutes sur tes sons.',
-        tutorialContracts:  'Les Contrats : Fais grimper tes Fans et tes Streams pour attirer des Sponsors (revenus hebdos) et des Maisons de disques.',
-
-        // ── Sélection de personnage ──
+        // ── Sélection personnage ──
         charSelectTitle: 'T\'es qui toi ?',
-        charSelectSub:   'Choisis ton profil de départ.',
+        charSelectSub: 'Choisis ton profil de départ.',
         btnConfirmAvatar: 'CHOISIR CE PROFIL',
 
-        // ── Navigation ──
-        navHome:    'HOME',
-        navActions: 'MOVES',
-        navStudio:  'STUDIO',
-        navBiz:     'BIZNESS',
-        navPerks:   'SKILLS',
+        // ── Tutoriel ──
+        tutorialTitle: 'COMMENT JOUER ?',
+        tutorialEnergy: 'L\'Énergie :',
+        tutorialEnergyDesc: 'Chaque action coûte de l\'énergie. Une fois tes 4 actions utilisées, clique sur',
+        tutorialEnergyBtn: '"Terminer la Semaine"',
+        tutorialEnergyDesc2: 'pour te reposer — c\'est ce bouton qui génère tes revenus et te redonne 50 NRJ. Tant qu\'il reste des actions disponibles, le bouton est grisé : il faut d\'abord tout dépenser.',
+        tutorialProjects: 'Les Projets :',
+        tutorialProjectsDesc: 'Sors des sons et économise pour sortir un',
+        tutorialAlbum: 'Album',
+        tutorialAlbumDesc: '(les streams de l\'album sont multipliés par 10 !).',
+        tutorialClash: 'Les Clashs :',
+        tutorialClashDesc: 'Attaque les autres rappeurs pour voler leur Buzz. Plus de buzz = plus d\'écoutes sur tes sons.',
+        tutorialContracts: 'Les Contrats :',
+        tutorialContractsDesc: 'Fais grimper tes Fans et tes Streams pour attirer des Sponsors (revenus hebdos) et des Maisons de disques (jusqu\'à 760 000€ d\'avance).',
+        btnStartGame: 'J\'AI COMPRIS, AU BOULOT !',
 
-        // ── Mini-jeu paroles ──
-        lyricsTitle:  'CHOIX DU COUPLET',
+        // ── Navigation ──
+        navHome: 'HOME',
+        navActions: 'MOVES',
+        navStudio: 'STUDIO',
+        navBiz: 'BIZNESS',
+        navPerks: 'SKILLS',
+        navCatalogue: 'CATALOGUE',
+
+        // ── Menu Actions ──
+        menuActionsTitle: 'Activités',
+        menuActionsSubtitle: 'Gagne du cash, buzz ou fans',
+
+        // ── Menu Studio ──
+        menuStudioTitle: 'Studio Record',
+        menuStudioSubtitle: 'Crée le prochain banger',
+        studioEnergy: 'Énergie',
+        studioInStock: 'En Stock',
+        studioOnline: 'En Ligne',
+        studioSongName: 'Nom du Titre',
+        studioBeatChoice: 'Choix de l\'Instru (Beat)',
+        studioLyricsTheme: 'Thème des Lyrics',
+        studioEnergyCost: '-50 Énergie',
+        studioAlbumCost: '760 000€ • 90 NRJ',
+        menuDiscTitle: 'Discographie',
+        menuDiscSubtitle: 'Gère tes sorties et streams',
+        discInStock: 'En Stock',
+        discOnline: 'En Ligne',
+        discTotalStreams: 'Streams Totaux',
+        discBestSong: 'Meilleur Son',
+        btnReleaseSong: 'SORTIR LE SON',
+        releaseHint: 'Ces sons ne génèrent rien tant qu\'ils ne sont pas sortis. Appuie sur',
+        releaseHintBtn: 'SORTIR LE SON',
+        releaseHintEnd: 'pour commencer à gagner des écoutes.',
+
+        // ── Menu Business & Life ──
+        menuBizTitle: 'Business & Life',
+        menuBizSubtitle: 'Investis & Fais le show',
+        bizPassiveIncome: 'Revenus Passifs / Semaine',
+        bizStreamsLabel: '€ Streams',
+        bizSponsorsLabel: '€ Sponsors',
+        bizBookConcert: 'Booker un Concert',
+        bizLifestyle: 'Lifestyle & Achats',
+
+        // ── Menu Talents / Perks ──
+        menuPerksTitle: 'Skills',
+        menuPerksSubtitle: 'Monte en puissance',
+        perksPointsLabel: 'Points Disponibles',
+        perksLevelLabel: 'Niv.',
+        perksMaxed: 'MAXIMUM ATTEINT',
+        perksUpgrade: 'AMÉLIORER',
+
+        // ── News section ──
+        newsTitle: 'Dernières Infos',
+        talentsBtn: 'Skills',
+
+        // ── Lyrics mini-jeu ──
+        lyricsTitle: 'CHOIX DU COUPLET',
         lyricsPrompt: 'Choisis la bonne punchline pour l\'instru...',
 
         // ── Clash ──
         clashTitle: 'CHOISIR UNE CIBLE',
-        clashCost:  'Coûte 30 Énergie & 1 Action',
+        clashCost: 'Coûte 30 Énergie & 1 Action',
 
-        // ── Bouton fin de semaine ──
+        // ── Boutons ──
         btnNextWeek: 'SEMAINE SUIVANTE',
+        btnUnderstood: 'C\'est bon frère !',
 
-        // ── Sauvegarde ──
+        // ── Messages système ──
         saved: 'Partie sauvegardée !',
+        welcomeBack: 'Bienvenue sur la scène, ',
+        newGame: 'Bienvenue dans le game. La galère commence maintenant.',
+        onboardingWelcome: 'Bienvenue dans le game, ',
 
-        // ── Titres de bilan de semaine ──
-        weekTitleQuiet: 'SEMAINE TRANQUILLE',
-        weekTitleGood:  'BON FLOW !',
-        weekTitleUp:    'TU MONTES !',
-        weekTitleFire:  'SEMAINE DE FEU 🔥',
+        // ── Notifications actions ──
+        notifNoActions: 'Plus d\'actions. Termine la semaine !',
+        notifNoActionsWeek: 'Plus d\'actions cette semaine !',
+        notifLowResources: 'Ressources insuffisantes (Énergie ou Cash).',
+        notifTooTired50: 'Tu es trop fatigué (50⚡ requis).',
+        notifTooTired30: 'Pas assez d\'énergie (30 requis) !',
+        notifTooTired80: 'Trop fatigué. Il faut 80⚡ minimum.',
+        notifActionDone: 'Action réussie : ',
+        notifNoMoney: 'Fonds insuffisants !',
+        notifAlreadyOwned: 'Déjà possédé.',
+        notifBought: 'Achat validé : ',
+        notifConditions: 'Conditions non remplies.',
+        notifClashOnce: 'Tu as déjà clashé cette semaine. Attends la prochaine !',
+        notifPerkDone: 'Compétence améliorée !',
+        notifPerkNoPoints: 'Pas assez de points !',
+        notifSongRecorded: 'Nouveau son enregistré : ',
+        notifSongQuality: '% Qualité',
+        notifRecordDone: 'Enregistrement terminé !',
+        notifSongReleased: 'Son publié ! +',
+        notifSongReleasedFans: ' Fans',
+        notifNoMoneyBeat: 'Pas assez d\'argent pour cette instru !',
+        notifNoMoneyAlbum: 'Fonds insuffisants ! Il te faut 760 000€.',
+        notifNoEnergyAlbum: 'Pas assez d\'énergie ! Il te faut 90⚡. Repose-toi.',
+        notifAlbumReleased: 'ALBUM SORTI : ',
+        notifAlbumAvailable: ' est disponible !',
+        notifAlbumFans: 'Album sorti ! +',
+        notifAlbumFansEnd: ' fans',
+        notifConcertLimit: 'Tu as atteint la limite de 4 concerts pour cette année ! Reviens la saison prochaine.',
+        notifConcertNoMoney: 'Pas assez d\'argent pour louer la salle.',
+        notifItemRepaired: ' réparé(e) pour ',
+        notifItemRepairImpossible: 'Cet article est déjà en parfait état !',
+        notifItemRepairNoMoney: 'Fonds insuffisants. Il faut ',
+        notifItemRepairNoMoneyEnd: '€ pour réparer.',
+        notifAvatarSelected: 'Profil sélectionné !',
+        notifNoStyle: 'Aucun style disponible.',
+
+        // ── Bilan de fin de semaine ──
+        weekTitleCalm: 'SEMAINE TRANQUILLE',
+        weekTitleGood: 'BON FLOW !',
+        weekTitleRising: 'TU MONTES !',
+        weekTitleFire: 'SEMAINE DE FEU 🔥',
         weekTitleViral: 'VIRAL ! 🚀',
-        weekSummary:    'Semaine {n} terminée. Continue sur cette lancée.',
-
-        // ── Messages dynamiques (addNews / tips) ──
-        welcomeBack:  'Bon retour dans le Game, ',
-        newGame:      'Bienvenue dans le Game. La galère commence maintenant.',
-        firstDay:     '🔥 La carrière de {name} commence aujourd\'hui sur BUZZKING !',
-        newsAlbum:    'ALBUM SORTI : "{name}" ({quality}% Qualité) est disponible !',
-        newsNewYear:  '🥂 Bonne année {year} !',
-        newsClassic:  '🏆 HISTORIQUE : "{name}" est devenu un Classique !',
-        newsCertif:   '🚨 CERTIF : "{name}" certifié {certif} !',
-        newsBonus:    '🎁 Bonus : +{cash} F CFA, +{fans} Fans.',
-        newsLabelCut: '💿 Part Label : -{cut} F.',
-        newsStreams:  'Total Streams : +{streams}.',
-        newsRevenue:  'Revenus : +{revenue} F CFA.',
-        newsSponsor:  '🤝 Contrat Exclusif ({name}) : +{cash} F.',
-        newsSignature:'🚨 SIGNATURE : Tu rejoins l\'écurie {name} ! Avance de {cash} F.',
-        newsSponsorAccepted: '🤝 SPONSOR : {name} devient ton partenaire officiel.',
-        newsRefused:  'Tu as refusé l\'offre de {name}. Tu gardes ton indépendance !',
-
-        // ── Conseils contextuels ──
-        tipGeneric:   'Essaie de varier tes actions cette semaine.',
-        tipNoSongs:   '⚠️ Tu n\'as encore sorti aucun son. Va au Studio, crée et publie un son — c\'est lui qui ramène des fans chaque semaine.',
-        tipLowBuzz:   '⚠️ Ton Buzz est trop bas. Fais un Challenge TikTok ou un Clash pour le remonter.',
-        tipLowCash:   '⚠️ T\'as plus de cash. Fais un freestyle en métro ou un petit boulot pour renflouer.',
+        weekSummary: 'terminée. Continue sur cette lancée.',
+        weekTipGeneric: 'Essaie de varier tes actions cette semaine.',
+        weekTipNoSongs: '⚠️ Tu n\'as encore sorti aucun son. Va au Studio, crée et publie un son — c\'est lui qui ramène des fans chaque semaine.',
+        weekTipLowBuzz: '⚠️ Ton Buzz est trop bas. Fais un Challenge TikTok ou un Clash pour le remonter.',
+        weekTipLowCash: '⚠️ T\'as plus de cash. Fais un petit boulot pour renflouer.',
+        weekPrefix: 'Semaine ',
     },
 
     // ─────────────────────────────────────────
