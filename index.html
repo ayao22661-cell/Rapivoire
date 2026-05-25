@@ -943,6 +943,26 @@ input:focus, select:focus {
         </div>
         
         <div class="scroll-area px-4 py-6 space-y-5 pb-32">
+
+            <!-- HERO STUDIO -->
+            <div class="bg-[#15161D] rounded-2xl p-4 border border-[#2979FF]/20 relative overflow-hidden">
+                <div class="absolute -top-8 -right-8 w-28 h-28 bg-[#2979FF]/10 rounded-full blur-2xl pointer-events-none"></div>
+                <div class="grid grid-cols-3 gap-2 relative z-10">
+                    <div class="bg-black/30 rounded-xl p-2 text-center border border-white/5">
+                        <div id="studio-stat-energy" class="text-lg font-black text-[#2979FF] leading-none mb-1">100</div>
+                        <div class="text-[8px] font-bold text-zinc-500 uppercase tracking-widest">Énergie</div>
+                    </div>
+                    <div class="bg-black/30 rounded-xl p-2 text-center border border-white/5">
+                        <div id="studio-stat-songs" class="text-lg font-black text-white leading-none mb-1">0</div>
+                        <div class="text-[8px] font-bold text-zinc-500 uppercase tracking-widest">En Stock</div>
+                    </div>
+                    <div class="bg-black/30 rounded-xl p-2 text-center border border-white/5">
+                        <div id="studio-stat-released" class="text-lg font-black text-white leading-none mb-1">0</div>
+                        <div class="text-[8px] font-bold text-zinc-500 uppercase tracking-widest">En Ligne</div>
+                    </div>
+                </div>
+            </div>
+
             <div class="bg-[#15161D] rounded-2xl p-4 border border-white/5 shadow-lg relative overflow-hidden group focus-within:border-[#2979FF]/50 transition-colors">
                 <div class="absolute inset-y-0 left-0 w-1 bg-[#2979FF] opacity-0 group-focus-within:opacity-100 transition-opacity"></div>
                 <label class="text-[10px] font-black text-[#2979FF] block mb-2 uppercase tracking-widest">Nom du Titre</label>
@@ -1012,7 +1032,21 @@ input:focus, select:focus {
         </div>
 
         <div class="scroll-area px-4 py-6 space-y-4 pb-32" id="songs-list-container">
-            </div>
+
+            <!-- HERO CATALOGUE -->
+            <div class="bg-[#15161D] rounded-2xl p-4 border border-white/10 relative overflow-hidden mb-2">
+                <div class="absolute -top-8 -right-8 w-28 h-28 bg-[#7C4DFF]/10 rounded-full blur-2xl pointer-events-none"></div>
+                <div class="grid grid-cols-2 gap-2 relative z-10">
+                    <div class="bg-black/30 rounded-xl p-2 text-center border border-white/5">
+                        <div id="cat-stat-streams" class="text-lg font-black text-[#7C4DFF] leading-none mb-1">0</div>
+                        <div class="text-[8px] font-bold text-zinc-500 uppercase tracking-widest">Streams Totaux</div>
+                    </div>
+                    <div class="bg-black/30 rounded-xl p-2 text-center border border-white/5">
+                        <div id="cat-stat-best" class="text-sm font-black text-white leading-none mb-1 truncate">—</div>
+                        <div class="text-[8px] font-bold text-zinc-500 uppercase tracking-widest">Meilleur Son</div>
+                    </div>
+                </div>
+            </div></div>
     </div>
 
     <div id="menu-biz" class="full-screen-menu bg-[#09090E]">
@@ -1027,6 +1061,23 @@ input:focus, select:focus {
         </div>
         
         <div class="scroll-area px-4 py-6 space-y-8 pb-32">
+
+            <!-- HERO BUSINESS -->
+            <div class="bg-[#15161D] rounded-2xl p-4 border border-[#FF9100]/20 relative overflow-hidden">
+                <div class="absolute -top-8 -right-8 w-28 h-28 bg-[#FF9100]/10 rounded-full blur-2xl pointer-events-none"></div>
+                <div class="text-[10px] font-black text-white/50 uppercase tracking-widest mb-3 relative z-10">Revenus Passifs / Semaine</div>
+                <div class="grid grid-cols-2 gap-2 relative z-10">
+                    <div class="bg-black/30 rounded-xl p-2 text-center border border-white/5">
+                        <div id="biz-stat-streams" class="text-lg font-black text-[#FF9100] leading-none mb-1">0</div>
+                        <div class="text-[8px] font-bold text-zinc-500 uppercase tracking-widest">F Streams</div>
+                    </div>
+                    <div class="bg-black/30 rounded-xl p-2 text-center border border-white/5">
+                        <div id="biz-stat-sponsors" class="text-lg font-black text-[#FF9100] leading-none mb-1">0</div>
+                        <div class="text-[8px] font-bold text-zinc-500 uppercase tracking-widest">F Sponsors</div>
+                    </div>
+                </div>
+            </div>
+
             <div class="bg-[#15161D] rounded-3xl p-5 border border-white/5 shadow-xl relative overflow-hidden">
                 <div class="absolute top-0 right-0 w-32 h-32 bg-[#FF9100]/5 rounded-bl-full pointer-events-none"></div>
                 <h3 class="text-[11px] font-black text-white mb-4 uppercase tracking-[0.2em] flex items-center gap-2 relative z-10">
@@ -2340,6 +2391,30 @@ function updateUI() {
     bounceStatEl('stat-fans');
     bounceStatEl('stat-cash');
     if (typeof checkMilestones === 'function') checkMilestones();
+
+    // HERO CARDS — Studio, Business, Catalogue
+    const studioEnergy = document.getElementById('studio-stat-energy');
+    if (studioEnergy) studioEnergy.textContent = Math.floor(game.player.energy);
+    const studioSongs = document.getElementById('studio-stat-songs');
+    if (studioSongs) studioSongs.textContent = game.player.inventory.songs.length;
+    const studioReleased = document.getElementById('studio-stat-released');
+    if (studioReleased) studioReleased.textContent = (game.player.inventory.released || []).length;
+
+    // Business : revenu streams estimé et sponsors actifs
+    const streamIncome = Math.floor(game.player.streams * 0.004);
+    const sponsorIncome = (game.player.contracts || []).reduce((sum, c) => sum + (c.weeklyPay || 0), 0);
+    const bizStreams = document.getElementById('biz-stat-streams');
+    if (bizStreams) bizStreams.textContent = streamIncome.toLocaleString('fr-FR');
+    const bizSponsors = document.getElementById('biz-stat-sponsors');
+    if (bizSponsors) bizSponsors.textContent = sponsorIncome.toLocaleString('fr-FR');
+
+    // Catalogue : streams totaux + meilleur son
+    const catStreams = document.getElementById('cat-stat-streams');
+    if (catStreams) catStreams.textContent = Math.floor(game.player.streams).toLocaleString('fr-FR');
+    const allSongs = [...(game.player.inventory.songs || []), ...(game.player.inventory.released || [])];
+    const bestSong = allSongs.length ? allSongs.reduce((a, b) => (b.streams || 0) > (a.streams || 0) ? b : a) : null;
+    const catBest = document.getElementById('cat-stat-best');
+    if (catBest) catBest.textContent = bestSong ? bestSong.name : '—';
 }
 
 // ==========================================
