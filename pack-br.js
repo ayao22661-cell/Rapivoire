@@ -11,27 +11,82 @@ window.PACK_DATA = {
     CURRENCY: { symbol: 'R$', code: 'BRL', locale: 'pt-BR', rate: 0.836 },
 
     UI: {
+        // ── Carregamento ──
         loading: 'Carregando o estúdio...',
-        onboardingTitle: 'BUZZKING',
-        onboardingSubtitle: 'Torna-se uma Lenda',
+
+        // ── App subtitle ──
         appSubtitle: 'Torna-se uma Lenda',
+
+        // ── Onboarding — step pseudo ──
+        onboardingTitle:    'CRIA TUA LENDA',
+        onboardingDesc:     'Todo MC precisa de um nome que faz barulho. Como vão te chamar nas ruas de São Paulo?',
+        pseudoPlaceholder:  'Teu nome artístico...',
+        btnSubmitPseudo:    'CONFIRMAR MEU NOME',
+
+        // ── Onboarding — step tutorial ──
+        tutorialTitle:      'COMO JOGAR?',
+        btnUnderstood:      'Tá ligado!',
+        tutorialEnergy:     'Energia: Cada ação gasta energia. Depois de usar suas 4 ações, clica em "Próxima Semana" pra descansar — esse botão gera sua renda e restaura 50 NRJ.',
+        tutorialProjects:   'Projetos: Lança músicas e junta R$2M pra soltar um Álbum (streams do álbum são multiplicados por 10!).',
+        tutorialClash:      'Clashes: Parte nos outros MCs pra roubar o Buzz deles. Mais buzz = mais plays nas tuas músicas.',
+        tutorialContracts:  'Contratos: Faz crescer teus Fãs e Streams pra atrair Patrocinadores (renda semanal) e Gravadoras.',
+
+        // ── Seleção de personagem ──
         charSelectTitle: 'Quem é você, mano?',
-        charSelectSub: 'Escolha seu perfil inicial.',
+        charSelectSub:   'Escolha seu perfil inicial.',
         btnConfirmAvatar: 'ESCOLHER ESSE PERFIL',
-        navHome: 'INÍCIO',
+
+        // ── Navegação ──
+        navHome:    'INÍCIO',
         navActions: 'MOVES',
-        navStudio: 'ESTÚDIO',
-        navBiz: 'GRANA',
-        navPerks: 'SKILLS',
-        lyricsTitle: 'ESCOLHA A LETRA',
+        navStudio:  'ESTÚDIO',
+        navBiz:     'GRANA',
+        navPerks:   'SKILLS',
+
+        // ── Mini-jogo de letras ──
+        lyricsTitle:  'ESCOLHA A LETRA',
         lyricsPrompt: 'Escolha o verso certo pro beat...',
-        btnNextWeek: 'PRÓXIMA SEMANA',
-        btnUnderstood: 'Tá ligado!',
+
+        // ── Clash ──
         clashTitle: 'ESCOLHER UM ALVO',
-        clashCost: 'Custa 30 Energia & 1 Ação',
+        clashCost:  'Custa 30 Energia & 1 Ação',
+
+        // ── Botão próxima semana ──
+        btnNextWeek: 'PRÓXIMA SEMANA',
+
+        // ── Salvar ──
         saved: 'Jogo salvo, mano!',
-        welcomeBack: 'De volta ao jogo, ',
-        newGame: 'Bem-vindo ao jogo. O trampo começa agora.',
+
+        // ── Títulos do bilan semanal ──
+        weekTitleQuiet: 'SEMANA TRANQUILA',
+        weekTitleGood:  'BOM FLOW!',
+        weekTitleUp:    'TÁ SUBINDO!',
+        weekTitleFire:  'SEMANA DE FOGO 🔥',
+        weekTitleViral: 'VIRAL! 🚀',
+        weekSummary:    'Semana {n} concluída. Continua nesse ritmo.',
+
+        // ── Mensagens dinâmicas (addNews / tips) ──
+        welcomeBack:  'De volta ao jogo, ',
+        newGame:      'Bem-vindo ao jogo. O trampo começa agora.',
+        firstDay:     '🔥 A carreira de {name} começa hoje no BUZZKING!',
+        newsAlbum:    'ÁLBUM LANÇADO: "{name}" ({quality}% Qualidade) disponível agora!',
+        newsNewYear:  '🥂 Feliz Ano Novo {year}!',
+        newsClassic:  '🏆 CLÁSSICO: "{name}" virou um hit eterno!',
+        newsCertif:   '🚨 CERTIFICADO: "{name}" vai a {certif}!',
+        newsBonus:    '🎁 Bônus: +R${cash}, +{fans} Fãs.',
+        newsLabelCut: '💿 Corte da Gravadora: -R${cut}.',
+        newsStreams:  'Total de Streams: +{streams}.',
+        newsRevenue:  'Receita: +R${revenue}.',
+        newsSponsor:  '🤝 Contrato Exclusivo ({name}): +R${cash}.',
+        newsSignature:'🚨 ASSINOU: Você entrou no cast da {name}! Adiantamento de R${cash}.',
+        newsSponsorAccepted: '🤝 PATROCÍNIO: {name} agora é seu parceiro oficial.',
+        newsRefused:  'Você recusou a oferta de {name}. Continua independente!',
+
+        // ── Dicas contextuais ──
+        tipGeneric:   'Tenta variar as ações essa semana.',
+        tipNoSongs:   '⚠️ Você ainda não lançou nenhuma música. Vai pro Estúdio, grava e publica — é isso que traz fãs toda semana.',
+        tipLowBuzz:   '⚠️ Seu Buzz tá baixo. Faz um TikTok Challenge ou um Clash pra subir.',
+        tipLowCash:   '⚠️ Você tá sem grana. Faz um trampo extra ou um freestyle pra juntar dinheiro.',
     },
 
     TITLES: [
