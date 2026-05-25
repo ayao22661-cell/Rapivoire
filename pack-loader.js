@@ -241,15 +241,20 @@ function applyPackData(data) {
 
     // 3. Actions (on remplace les actions de niveau 1 localisées, on garde la structure)
     if (data.ACTIONS_LOCAL) {
-        // Remplacer les actions ayant un id dans ACTIONS_LOCAL
-        data.ACTIONS_LOCAL.forEach(newAct => {
-            const idx = window.ACTIONS_POOL.findIndex(a => a.id === newAct.id);
-            if (idx !== -1) {
-                window.ACTIONS_POOL[idx] = newAct;
-            } else {
-                window.ACTIONS_POOL.unshift(newAct); // Ajouter si nouvelle
-            }
-        });
+        // ACTIONS_POOL est const dans le jeu — vérifier qu'il est dispo
+        if (Array.isArray(window.ACTIONS_POOL)) {
+            data.ACTIONS_LOCAL.forEach(newAct => {
+                const idx = window.ACTIONS_POOL.findIndex(a => a.id === newAct.id);
+                if (idx !== -1) {
+                    window.ACTIONS_POOL[idx] = newAct;
+                } else {
+                    window.ACTIONS_POOL.unshift(newAct);
+                }
+            });
+        } else {
+            // Stocker pour appliquer après init()
+            window._PENDING_ACTIONS_LOCAL = data.ACTIONS_LOCAL;
+        }
     }
 
     // 4. Lyrics mini-jeu
@@ -277,46 +282,48 @@ function applyPackData(data) {
 // APPLIQUER LES TRADUCTIONS UI
 // ─────────────────────────────────────────────
 function applyUI(ui) {
-    // Map : id_element → texte traduit
-    const map = {
-        // Loading
-        'loading-text': ui.loading,
-        // Onboarding
-        'onboarding-title': ui.onboardingTitle,
-        'onboarding-subtitle': ui.onboardingSubtitle,
-        // Character selection
-        'char-select-title': ui.charSelectTitle,
-        'char-select-sub': ui.charSelectSub,
-        'btn-confirm-avatar': ui.btnConfirmAvatar,
-        // Nav labels
-        'nav-label-home': ui.navHome,
-        'nav-label-actions': ui.navActions,
-        'nav-label-studio': ui.navStudio,
-        'nav-label-biz': ui.navBiz,
-        'nav-label-perks': ui.navPerks,
-        // Lyrics overlay
-        'lyrics-title': ui.lyricsTitle,
-        'lyrics-prompt-default': ui.lyricsPrompt,
-        // Buttons
-        'btn-next-week-label': ui.btnNextWeek,
-        // Event modal
-        'event-understood-btn': ui.btnUnderstood,
-        // Clash
-        'clash-title': ui.clashTitle,
-        'clash-cost-label': ui.clashCost,
-    };
-
-    Object.entries(map).forEach(([id, text]) => {
+    function setText(id, text) {
         if (!text) return;
         const el = document.getElementById(id);
         if (el) el.textContent = text;
-    });
-
-    // Subtitle de l'app
-    if (ui.appSubtitle) {
-        const sub = document.querySelector('.app-subtitle');
-        if (sub) sub.textContent = ui.appSubtitle;
     }
+    function setTextQ(selector, text) {
+        if (!text) return;
+        const el = document.querySelector(selector);
+        if (el) el.textContent = text;
+    }
+
+    // Loading screen
+    setText('loading-text', ui.loading);
+
+    // Lyrics overlay — titre dans <h3> sans ID
+    setTextQ('#lyrics-overlay h3', ui.lyricsTitle);
+    setText('lyrics-prompt', ui.lyricsPrompt);
+
+    // Clash overlay — titre dans <h3> sans ID, coût dans div sans ID
+    setTextQ('#clash-overlay h3', ui.clashTitle);
+    setTextQ('#clash-overlay .text-center.uppercase', ui.clashCost);
+
+    // Bouton Semaine Suivante — <span> dans le bouton
+    setTextQ('#btn-next-week span', ui.btnNextWeek);
+
+    // Bouton Confirmer Avatar
+    setText('btn-confirm-avatar', ui.btnConfirmAvatar);
+
+    // Nav labels — <span> dans chaque nav-item
+    setTextQ('#nav-home span', ui.navHome);
+    setTextQ('#nav-studio span', ui.navStudio);
+    setTextQ('#nav-biz span', ui.navBiz);
+
+    // Onboarding — textes dans #step-pseudo
+    setTextQ('#step-pseudo h2', ui.onboardingSubtitle);
+    setTextQ('#step-pseudo p', ui.onboardingSubtitle);
+
+    // Subtitle app
+    setTextQ('.app-subtitle', ui.appSubtitle);
+
+    // Stocker les strings pour usage dynamique
+    window.UI_STRINGS = ui;
 }
 
 // ─────────────────────────────────────────────
@@ -369,6 +376,22 @@ function launchGame() {
     if (typeof init === 'function') {
         init();
     }
+
+    // Appliquer les actions en attente si ACTIONS_POOL n'était pas dispo au moment du pack load
+    setTimeout(() => {
+        if (window._PENDING_ACTIONS_LOCAL && Array.isArray(window.ACTIONS_POOL)) {
+            window._PENDING_ACTIONS_LOCAL.forEach(newAct => {
+                const idx = window.ACTIONS_POOL.findIndex(a => a.id === newAct.id);
+                if (idx !== -1) {
+                    window.ACTIONS_POOL[idx] = newAct;
+                } else {
+                    window.ACTIONS_POOL.unshift(newAct);
+                }
+            });
+            window._PENDING_ACTIONS_LOCAL = null;
+            if (typeof renderActions === 'function') renderActions();
+        }
+    }, 100);
 }
 
 // ─────────────────────────────────────────────
