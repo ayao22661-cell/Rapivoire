@@ -3513,12 +3513,15 @@ function executeFinalClash(target) {
     game.player.energy -= 30;
     game.world.actionsLeft--;
 
-    const successChance = 0.8 - (target.power * 0.05);
+    // Chance de succès : base 60% + 5% par level joueur - 5% par power cible, min 30%, max 90%
+    const successChance = Math.min(0.90, Math.max(0.30, 0.60 + (game.player.level * 0.05) - (target.power * 0.05)));
     const isSuccess = Math.random() < successChance;
 
     if (isSuccess) {
         const buzzGain   = Math.floor(target.power * 8);
-        const fansStolen = Math.floor(target.power * 50 * (1 + game.player.level * 0.3));
+        // Garanti min intéressant même au début, scale bien en fin de partie
+        const baseStolen = Math.floor(target.power * 80 * (1 + game.player.level * 0.3));
+        const fansStolen = baseStolen;
         game.player.buzz += buzzGain;
         game.player.fans += fansStolen;
         addXP(target.power * 5);
@@ -3536,7 +3539,8 @@ function executeFinalClash(target) {
 
     } else {
         const energyLoss = 15 + (target.power * 2);
-        const fansLost   = Math.floor(target.power * 200);
+        // Perte proportionnelle : 4% des fans actuels par point de power, min 20, max 500
+        const fansLost   = Math.min(500, Math.max(20, Math.floor(game.player.fans * 0.04 * target.power)));
         game.player.energy = Math.max(0, game.player.energy - energyLoss);
         game.player.fans   = Math.max(0, game.player.fans - fansLost);
         addNews(`💀 ÉCHEC : ${target.name} t'a remis à ta place. -${energyLoss}⚡, -${fansLost.toLocaleString()} Fans`, "danger");
