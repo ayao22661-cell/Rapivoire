@@ -1,7 +1,13 @@
 /**
- * BUZZKING — PACK LOADER v1.0
+ * BUZZKING — PACK LOADER v2.0
  * Moteur de sélection du pays et de remplacement des données culturelles.
  * Chaque pack externe écrase : AVATARS, SPONSORS, ACTIONS locales, LYRICS, UI_STRINGS, LABELS, CONCERT_VENUES.
+ *
+ * v2.0 — Correction complète de applyUI() :
+ *   - Injection de toutes les clés UI des packs (navActions, charSelectTitle/Sub,
+ *     btnUnderstood, welcomeBack, newGame, et tous les textes statiques des menus)
+ *   - Fallback CI défini pour chaque clé
+ *   - UI_STRINGS exposé globalement pour usage dans les notify() dynamiques
  */
 
 // ─────────────────────────────────────────────
@@ -77,6 +83,166 @@ const PACK_CATALOG = [
 // STATE DU PACK ACTIF
 // ─────────────────────────────────────────────
 window.ACTIVE_PACK = 'ci'; // défaut
+
+// ─────────────────────────────────────────────
+// UI STRINGS FALLBACK — Pack CI (Côte d'Ivoire)
+// Ces valeurs s'appliquent si aucun pack externe n'est chargé.
+// Chaque pack externe peut surcharger n'importe laquelle de ces clés.
+// ─────────────────────────────────────────────
+window.UI_STRINGS = {
+    // Loading
+    loading: 'Initialisation du studio...',
+
+    // Onboarding
+    onboardingTitle: 'BUZZKING',
+    onboardingSubtitle: 'Deviens une Légende',
+    appSubtitle: 'Deviens une Légende',
+    onboardingTagline: 'Tout grand rappeur a besoin d\'un blase qui claque. Comment va-t-on t\'appeler dans les rues ?',
+    onboardingPlaceholder: 'Ton nom de scène...',
+    btnValidatePseudo: 'VALIDER MON BLASE',
+
+    // Sélection personnage
+    charSelectTitle: 'T\'es qui toi ?',
+    charSelectSub: 'Choisis ton profil de départ.',
+    btnConfirmAvatar: 'CHOISIR CE PROFIL',
+
+    // Tutoriel
+    tutorialTitle: 'COMMENT JOUER ?',
+    tutorialEnergy: 'L\'Énergie :',
+    tutorialEnergyDesc: 'Chaque action coûte de l\'énergie. Une fois tes 4 actions utilisées, clique sur',
+    tutorialEnergyBtn: '"Terminer la Semaine"',
+    tutorialEnergyDesc2: 'pour te reposer — c\'est ce bouton qui génère tes revenus et te redonne 50 NRJ. Tant qu\'il reste des actions disponibles, le bouton est grisé : il faut d\'abord tout dépenser.',
+    tutorialProjects: 'Les Projets :',
+    tutorialProjectsDesc: 'Sors des sons et économise 2 Millions pour sortir un',
+    tutorialAlbum: 'Album',
+    tutorialAlbumDesc: '(les streams de l\'album sont multipliés par 10 !).',
+    tutorialClash: 'Les Clashs :',
+    tutorialClashDesc: 'Attaque les autres rappeurs pour voler leur Buzz. Plus de buzz = plus d\'écoutes sur tes sons.',
+    tutorialContracts: 'Les Contrats :',
+    tutorialContractsDesc: 'Fais grimper tes Fans et tes Streams pour attirer des Sponsors (revenus hebdos) et des Maisons de disques (jusqu\'à 50 Millions d\'avance).',
+    btnStartGame: 'J\'AI COMPRIS, AU BOULOT !',
+
+    // Navigation
+    navHome: 'HOME',
+    navActions: 'MOVES',
+    navStudio: 'STUDIO',
+    navBiz: 'BUSINESS',
+    navCatalogue: 'CATALOGUE',
+
+    // Menu Actions
+    menuActionsTitle: 'Activités',
+    menuActionsSubtitle: 'Gagne du cash, buzz ou fans',
+
+    // Menu Studio
+    menuStudioTitle: 'Studio Record',
+    menuStudioSubtitle: 'Crée le prochain banger',
+    studioEnergy: 'Énergie',
+    studioInStock: 'En Stock',
+    studioOnline: 'En Ligne',
+    studioSongName: 'Nom du Titre',
+    studioBeatChoice: 'Choix de l\'Instru (Beat)',
+    studioLyricsTheme: 'Thème des Lyrics',
+    studioEnergyCost: '-50 Énergie',
+    studioAlbumCost: '2 000 000 F • 90 NRJ',
+    menuDiscTitle: 'Discographie',
+    menuDiscSubtitle: 'Gère tes sorties et streams',
+    discInStock: 'En Stock',
+    discOnline: 'En Ligne',
+    discTotalStreams: 'Streams Totaux',
+    discBestSong: 'Meilleur Son',
+    btnReleaseSong: 'SORTIR LE SON',
+    releaseHint: 'Ces sons ne génèrent rien tant qu\'ils ne sont pas sortis. Appuie sur',
+    releaseHintBtn: 'SORTIR LE SON',
+    releaseHintEnd: 'pour commencer à gagner des écoutes.',
+
+    // Menu Business & Life
+    menuBizTitle: 'Business & Life',
+    menuBizSubtitle: 'Investis & Fais le show',
+    bizPassiveIncome: 'Revenus Passifs / Semaine',
+    bizStreamsLabel: 'F Streams',
+    bizSponsorsLabel: 'F Sponsors',
+    bizBookConcert: 'Booker un Concert',
+    bizLifestyle: 'Lifestyle & Achats',
+
+    // Menu Talents / Perks
+    menuPerksTitle: 'Talents',
+    menuPerksSubtitle: 'Évolue et progresse',
+    perksPointsLabel: 'Points Disponibles',
+    perksLevelLabel: 'Niv.',
+    perksMaxed: 'MAXIMUM ATTEINT',
+    perksUpgrade: 'AMÉLIORER',
+
+    // News section
+    newsTitle: 'Dernières Infos',
+    talentsBtn: 'Talents',
+
+    // Lyrics mini-jeu
+    lyricsTitle: 'CHOIX DU COUPLET',
+    lyricsPrompt: 'Choisis la bonne punchline pour l\'instru...',
+
+    // Clash
+    clashTitle: 'CHOISIR UNE CIBLE',
+    clashCost: 'Coûte 30 Énergie & 1 Action',
+
+    // Boutons / actions
+    btnNextWeek: 'SEMAINE SUIVANTE',
+    btnUnderstood: 'Compris !',
+
+    // Messages système
+    saved: 'Partie sauvegardée !',
+    welcomeBack: 'Bon retour dans le Game, ',
+    newGame: 'Bienvenue dans le Game. Le chemin sera long.',
+    onboardingWelcome: 'Bienvenue dans le game, ',
+
+    // Notifications actions
+    notifNoActions: 'Plus d\'actions. Termine la semaine !',
+    notifNoActionsWeek: 'Plus d\'actions cette semaine !',
+    notifLowResources: 'Ressources insuffisantes (Énergie ou Cash).',
+    notifTooTired50: 'Tu es trop fatigué (50⚡ requis).',
+    notifTooTired30: 'Pas assez d\'énergie (30 requis) !',
+    notifTooTired80: 'Trop fatigué. Il faut 80⚡ minimum.',
+    notifActionDone: 'Action réussie : ',
+    notifNoMoney: 'Fonds insuffisants !',
+    notifAlreadyOwned: 'Déjà possédé.',
+    notifBought: 'Achat validé : ',
+    notifConditions: 'Conditions non remplies.',
+    notifClashOnce: 'Tu as déjà clashé cette semaine. Attends la prochaine !',
+    notifPerkDone: 'Compétence améliorée !',
+    notifPerkNoPoints: 'Pas assez de points !',
+    notifSongRecorded: 'Nouveau son enregistré : ',
+    notifSongQuality: '% Qualité',
+    notifRecordDone: 'Enregistrement terminé !',
+    notifSongReleased: 'Son publié ! +',
+    notifSongReleasedFans: ' Fans',
+    notifNoMoneyBeat: 'Pas assez d\'argent pour cette instru !',
+    notifNoMoneyAlbum: 'Fonds insuffisants ! Il te faut 2 Millions F CFA.',
+    notifNoEnergyAlbum: 'Pas assez d\'énergie ! Il te faut 90⚡. Repose-toi.',
+    notifAlbumReleased: 'ALBUM SORTI : ',
+    notifAlbumAvailable: ' est disponible !',
+    notifAlbumFans: 'Album sorti ! +',
+    notifAlbumFansEnd: ' fans',
+    notifConcertLimit: 'Tu as atteint la limite de 4 concerts pour cette année ! Reviens l\'année prochaine.',
+    notifConcertNoMoney: 'Pas assez d\'argent pour louer la salle.',
+    notifItemRepaired: ' réparé(e) pour ',
+    notifItemRepairImpossible: 'Cet article est déjà en parfait état !',
+    notifItemRepairNoMoney: 'Fonds insuffisants. Il faut ',
+    notifItemRepairNoMoneyEnd: ' F pour réparer.',
+    notifAvatarSelected: 'Profil sélectionné !',
+    notifNoStyle: 'Aucun style disponible.',
+
+    // Bilan de fin de semaine
+    weekTitleCalm: 'SEMAINE TRANQUILLE',
+    weekTitleGood: 'BON FLOW !',
+    weekTitleRising: 'TU MONTES !',
+    weekTitleFire: 'SEMAINE DE FEU 🔥',
+    weekTitleViral: 'VIRAL ! 🚀',
+    weekSummary: 'terminée. Continue sur cette lancée.',
+    weekTipGeneric: 'Essaie de varier tes actions cette semaine.',
+    weekTipNoSongs: '⚠️ Tu n\'as encore sorti aucun son. Va au Studio, crée et publie un son — c\'est lui qui ramène des fans chaque semaine.',
+    weekTipLowBuzz: '⚠️ Ton Buzz est trop bas. Fais un Challenge TikTok ou un Clash pour le remonter.',
+    weekTipLowCash: '⚠️ T\'as plus de cash. Fais une action rémunérée pour renflouer.',
+    weekPrefix: 'Semaine ',
+};
 
 // ─────────────────────────────────────────────
 // AFFICHER L'ÉCRAN DE SÉLECTION DU PAYS
@@ -196,7 +362,7 @@ function selectPack(packId) {
 
     window.ACTIVE_PACK = packId;
     window.ACTIVE_SAVE_KEY = pack.saveKey;
-    localStorage.setItem('buzzking_last_pack', packId); // mémoriser pour le prochain démarrage
+    localStorage.setItem('buzzking_last_pack', packId);
 
     // Patch saveGame/loadGame pour utiliser la bonne clé
     patchSaveSystem(pack.saveKey);
@@ -210,19 +376,20 @@ function selectPack(packId) {
     }
 
     if (pack.file === null) {
-        // Pack CI — base, on lance directement
+        // Pack CI — base, on lance directement avec les UI_STRINGS CI déjà définis
+        applyUI(window.UI_STRINGS);
         launchGame();
     } else {
         // Charger le fichier pack externe
         const script = document.createElement('script');
         script.src = pack.file;
         script.onload = () => {
-            // Le pack a défini window.PACK_DATA — on l'applique
             if (window.PACK_DATA) applyPackData(window.PACK_DATA);
             launchGame();
         };
         script.onerror = () => {
             console.warn(`Pack ${pack.file} non trouvé — fallback CI`);
+            applyUI(window.UI_STRINGS);
             launchGame();
         };
         document.head.appendChild(script);
@@ -239,9 +406,8 @@ function applyPackData(data) {
     // 2. Sponsors
     if (data.SPONSORS) window.SPONSORS = data.SPONSORS;
 
-    // 3. Actions (on remplace les actions de niveau 1 localisées, on garde la structure)
+    // 3. Actions localisées
     if (data.ACTIONS_LOCAL) {
-        // ACTIONS_POOL est const dans le jeu — vérifier qu'il est dispo
         if (Array.isArray(window.ACTIONS_POOL)) {
             data.ACTIONS_LOCAL.forEach(newAct => {
                 const idx = window.ACTIONS_POOL.findIndex(a => a.id === newAct.id);
@@ -252,7 +418,6 @@ function applyPackData(data) {
                 }
             });
         } else {
-            // Stocker pour appliquer après init()
             window._PENDING_ACTIONS_LOCAL = data.ACTIONS_LOCAL;
         }
     }
@@ -266,8 +431,11 @@ function applyPackData(data) {
     // 6. Concert venues
     if (data.CONCERT_VENUES) window.CONCERT_VENUES = data.CONCERT_VENUES;
 
-    // 7. Traductions UI
-    if (data.UI) applyUI(data.UI);
+    // 7. Traductions UI — merge sur le fallback CI, puis injection DOM
+    if (data.UI) {
+        window.UI_STRINGS = Object.assign({}, window.UI_STRINGS, data.UI);
+        applyUI(window.UI_STRINGS);
+    }
 
     // 8. Titres de progression
     if (data.TITLES) window.PLAYER_TITLES = data.TITLES;
@@ -279,7 +447,8 @@ function applyPackData(data) {
 }
 
 // ─────────────────────────────────────────────
-// APPLIQUER LES TRADUCTIONS UI
+// APPLIQUER LES TRADUCTIONS UI DANS LE DOM
+// Couvre TOUS les textes statiques et dynamiques.
 // ─────────────────────────────────────────────
 function applyUI(ui) {
     function setText(id, text) {
@@ -287,98 +456,135 @@ function applyUI(ui) {
         const el = document.getElementById(id);
         if (el) el.textContent = text;
     }
+    function setHTML(id, html) {
+        if (!html) return;
+        const el = document.getElementById(id);
+        if (el) el.innerHTML = html;
+    }
     function setTextQ(selector, text) {
         if (!text) return;
         const el = document.querySelector(selector);
         if (el) el.textContent = text;
     }
-    function setAttr(selector, attr, text) {
-        if (!text) return;
+    function setAttr(selector, attr, value) {
+        if (!value) return;
         const el = document.querySelector(selector);
-        if (el) el.setAttribute(attr, text);
+        if (el) el.setAttribute(attr, value);
     }
 
-    // Loading screen
+    // ── Loading screen ──
     setText('loading-text', ui.loading);
 
-    // Lyrics overlay — titre dans <h3> sans ID
-    setTextQ('#lyrics-overlay h3', ui.lyricsTitle);
-    setText('lyrics-prompt', ui.lyricsPrompt);
+    // ── Onboarding #step-pseudo ──
+    setTextQ('#step-pseudo h2', ui.onboardingSubtitle || ui.onboardingTitle);
+    setTextQ('#step-pseudo > p, #step-pseudo .slide-from-bottom-delay-2', ui.onboardingTagline);
+    setAttr('#player-pseudo-input', 'placeholder', ui.onboardingPlaceholder);
+    setText('btn-validate-pseudo', ui.btnValidatePseudo);
+    // Fallback querySelector si pas d'id
+    if (!document.getElementById('btn-validate-pseudo')) {
+        setTextQ('#step-pseudo .pill-button', ui.btnValidatePseudo);
+    }
 
-    // Clash overlay — titre dans <h3> sans ID, coût dans div sans ID
-    setTextQ('#clash-overlay h3', ui.clashTitle);
-    setTextQ('#clash-overlay .text-center.uppercase', ui.clashCost);
-
-    // Bouton Semaine Suivante — <span> dans le bouton
-    setTextQ('#btn-next-week span', ui.btnNextWeek);
-
-    // Bouton Confirmer Avatar
+    // ── Sélection avatar ──
+    setTextQ('#step-avatar h2, #char-select-title', ui.charSelectTitle);
+    setTextQ('#step-avatar p, #char-select-sub', ui.charSelectSub);
     setText('btn-confirm-avatar', ui.btnConfirmAvatar);
 
-    // Nav labels — <span> dans chaque nav-item
+    // ── Tutoriel #step-tutorial ──
+    setTextQ('#step-tutorial h2', ui.tutorialTitle);
+    setText('btn-start-game', ui.btnStartGame);
+    // Fallback querySelector si pas d'id
+    if (!document.getElementById('btn-start-game')) {
+        setTextQ('#step-tutorial .pill-button', ui.btnStartGame);
+    }
+    // Blocs de contenu du tutoriel — injection via data-tuto-key si présents
+    const tuBlocks = document.querySelectorAll('[data-tuto-key]');
+    tuBlocks.forEach(el => {
+        const key = el.dataset.tutoKey;
+        if (ui[key]) el.textContent = ui[key];
+    });
+
+    // ── Navigation bottom ──
     setTextQ('#nav-home span', ui.navHome);
     setTextQ('#nav-studio span', ui.navStudio);
     setTextQ('#nav-biz span', ui.navBiz);
+    setTextQ('#nav-actions span, #nav-moves span', ui.navActions);
+    setTextQ('#nav-songs span, #nav-catalogue span', ui.navCatalogue);
 
-    // ── ONBOARDING step-pseudo ──
-    // Titre "CRÉE TA LÉGENDE"
-    setTextQ('#step-pseudo h2', ui.onboardingTitle);
-    // Paragraphe de description sous le titre
-    setTextQ('#step-pseudo p', ui.onboardingDesc);
-    // Placeholder de l'input pseudo
-    setAttr('#player-pseudo-input', 'placeholder', ui.pseudoPlaceholder);
-    // Bouton "VALIDER MON BLASE"
-    setTextQ('#step-pseudo button[onclick="submitPseudo()"]', ui.btnSubmitPseudo);
+    // ── Menu Actions ──
+    setTextQ('#menu-actions .menu-header h2', ui.menuActionsTitle);
+    setTextQ('#menu-actions .menu-header p', ui.menuActionsSubtitle);
 
-    // ── ONBOARDING step-tutorial ──
-    // Titre "COMMENT JOUER ?"
-    setTextQ('#step-tutorial h2', ui.tutorialTitle);
-    // Bouton "J'AI COMPRIS, AU BOULOT !"
-    setTextQ('#step-tutorial button[onclick="startGameOnboarding()"]', ui.btnUnderstood);
-    // Blocs explicatifs du tutoriel
-    if (ui.tutorialEnergy)    setTextQ('#tuto-energy',    ui.tutorialEnergy);
-    if (ui.tutorialProjects)  setTextQ('#tuto-projects',  ui.tutorialProjects);
-    if (ui.tutorialClash)     setTextQ('#tuto-clash',     ui.tutorialClash);
-    if (ui.tutorialContracts) setTextQ('#tuto-contracts', ui.tutorialContracts);
+    // ── Menu Studio ──
+    setTextQ('#menu-studio .menu-header h2', ui.menuStudioTitle);
+    setTextQ('#menu-studio .menu-header p', ui.menuStudioSubtitle);
+    // Labels du formulaire studio
+    setText('studio-label-songname', ui.studioSongName);
+    setText('studio-label-beat', ui.studioBeatChoice);
+    setText('studio-label-theme', ui.studioLyricsTheme);
+    setText('studio-energy-label', ui.studioEnergy);
+    setText('studio-energy-cost', ui.studioEnergyCost);
+    setText('studio-album-cost', ui.studioAlbumCost);
+    // Discographie
+    setTextQ('#menu-studio .disc-title', ui.menuDiscTitle);
+    setTextQ('#menu-studio .disc-subtitle', ui.menuDiscSubtitle);
+    setText('disc-label-streams', ui.discTotalStreams);
+    setText('disc-label-bestsong', ui.discBestSong);
 
-    // ── CHARACTER SELECTION ──
-    setTextQ('#character-selection-screen h2', ui.charSelectTitle);
-    setTextQ('#character-selection-screen p',  ui.charSelectSub);
+    // ── Menu Business & Life ──
+    setTextQ('#menu-biz .menu-header h2', ui.menuBizTitle);
+    setTextQ('#menu-biz .menu-header p', ui.menuBizSubtitle);
+    setText('biz-passive-label', ui.bizPassiveIncome);
+    setText('biz-streams-label', ui.bizStreamsLabel);
+    setText('biz-sponsors-label', ui.bizSponsorsLabel);
+    setText('biz-concerts-title', ui.bizBookConcert);
+    setText('biz-shop-title', ui.bizLifestyle);
 
-    // ── EVENT MODAL ──
-    setTextQ('#event-modal button[onclick="closeEventModal()"]', ui.btnUnderstood);
+    // ── Menu Talents / Perks ──
+    setTextQ('#menu-perks .menu-header h2', ui.menuPerksTitle);
+    setTextQ('#menu-perks .menu-header p', ui.menuPerksSubtitle);
+    setText('perks-points-label', ui.perksPointsLabel);
 
-    // Subtitle app
+    // ── Section news (HOME) ──
+    setTextQ('#news-section h3', ui.newsTitle);
+    setTextQ('.perks-btn-label', ui.talentsBtn);
+
+    // ── Lyrics overlay ──
+    setTextQ('#lyrics-overlay h3', ui.lyricsTitle);
+    setText('lyrics-prompt', ui.lyricsPrompt);
+
+    // ── Clash overlay ──
+    setTextQ('#clash-overlay h3', ui.clashTitle);
+    setTextQ('#clash-overlay .text-center.uppercase', ui.clashCost);
+
+    // ── Bouton Semaine Suivante ──
+    setTextQ('#btn-next-week span', ui.btnNextWeek);
+
+    // ── Subtitle app ──
     setTextQ('.app-subtitle', ui.appSubtitle);
 
-    // Stocker les strings pour usage dynamique (addNews, tips, bilan de semaine, etc.)
+    // ── Stocker dans window.UI_STRINGS pour usage dynamique dans le JS du jeu ──
     window.UI_STRINGS = ui;
 }
 
 // ─────────────────────────────────────────────
-// HELPER TRADUCTION — interpolation des strings dynamiques
+// HELPERS — Raccourcis pour les notify() du jeu
+// Appelés depuis index.html au lieu des strings hardcodées
 // ─────────────────────────────────────────────
-// Utilisation : t('newsAlbum', { name: 'Mon son', quality: 85 })
-// Remplace {name}, {quality}, etc. dans la string correspondante.
-// Fallback sur la valeur brute si la clé n'existe pas.
-window.t = function(key, vars = {}) {
-    const s = window.UI_STRINGS;
-    if (!s || !s[key]) return key;
-    let str = s[key];
-    for (const [k, v] of Object.entries(vars)) {
-        str = str.replace(new RegExp(`\\{${k}\\}`, 'g'), v);
-    }
-    return str;
-};
+function uiStr(key, fallback) {
+    return (window.UI_STRINGS && window.UI_STRINGS[key]) ? window.UI_STRINGS[key] : (fallback || key);
+}
+window.uiStr = uiStr;
+
+// ─────────────────────────────────────────────
+// PATCH DU SYSTÈME DE SAUVEGARDE
+// ─────────────────────────────────────────────
 function patchSaveSystem(saveKey) {
-    // Override saveGame pour utiliser la clé du pack
     window.saveGame = function() {
         localStorage.setItem(saveKey, JSON.stringify(game));
-        const s = window.UI_STRINGS;
-        notify(s ? s.saved || "Saved!" : "Partie sauvegardée !");
+        notify(uiStr('saved', 'Saved!'));
     };
 
-    // Override loadGame
     window.loadGame = function() {
         const saved = localStorage.getItem(saveKey);
         if (saved) {
@@ -405,16 +611,12 @@ function patchSaveSystem(saveKey) {
 // LANCER LE JEU APRÈS CHARGEMENT DU PACK
 // ─────────────────────────────────────────────
 function launchGame() {
-    // Afficher le loading screen
     const loadingScreen = document.getElementById('loading-screen');
     if (loadingScreen) loadingScreen.style.display = 'flex';
 
-    // S'assurer que patchSaveSystem a bien été appliqué avant init()
-    // En forçant loadGame() à utiliser la bonne clé immédiatement
     const activeKey = window.ACTIVE_SAVE_KEY || 'buzzKingSaveData';
     patchSaveSystem(activeKey);
 
-    // Lancer init() du jeu
     if (typeof init === 'function') {
         init();
     }
@@ -439,13 +641,11 @@ function launchGame() {
 // ─────────────────────────────────────────────
 // TITRES DE PROGRESSION — fallback CI si pack non défini
 // ─────────────────────────────────────────────
-window.PLAYER_TITLES = null; // sera défini par le pack
+window.PLAYER_TITLES = null;
 window.CURRENCY = { symbol: 'F', code: 'XOF', locale: 'fr-FR' }; // défaut CI
 
-// Patch updateUI pour utiliser les titres du pack et la devise
 const _origUpdateUITitles = typeof updateUI === 'function' ? updateUI : null;
 
-// Hook post-load pour patcher getPlayerTitle si le pack a des titres
 window.addEventListener('packLoaded', () => {
     if (window.PLAYER_TITLES) {
         window.getPlayerTitle = function(fans) {
@@ -460,9 +660,7 @@ window.addEventListener('packLoaded', () => {
 });
 
 // ─────────────────────────────────────────────
-// AUTO-DÉMARRAGE — intercepter init() original
+// AUTO-DÉMARRAGE
 // ─────────────────────────────────────────────
-// On attend que le DOM soit prêt, puis on affiche le sélecteur
-// au lieu de lancer init() directement.
 window._packLoaderReady = true;
-console.log('[BUZZKING] Pack Loader v1.0 ready ✓');
+console.log('[BUZZKING] Pack Loader v2.0 ready ✓');
