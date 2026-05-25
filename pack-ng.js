@@ -11,27 +11,82 @@ window.PACK_DATA = {
     CURRENCY: { symbol: '₦', code: 'NGN', locale: 'en-NG', rate: 2.65 },
 
     UI: {
+        // ── Loading ──
         loading: 'Loading the vibe...',
-        onboardingTitle: 'BUZZKING',
-        onboardingSubtitle: 'Become a Legend',
+
+        // ── App subtitle ──
         appSubtitle: 'Become a Legend',
+
+        // ── Onboarding — step pseudo ──
+        onboardingTitle:    'BUILD YOUR LEGACY',
+        onboardingDesc:     'Every legend needs a name that shakes Lagos. What are they gonna call you on the streets of Naija?',
+        pseudoPlaceholder:  'Your stage name...',
+        btnSubmitPseudo:    'LOCK IN MY NAME',
+
+        // ── Onboarding — step tutorial ──
+        tutorialTitle:      'HOW TO PLAY?',
+        btnUnderstood:      'I don see am!',
+        tutorialEnergy:     'Energy: Every action costs energy. Once you\'ve used your 4 actions, hit "Next Week" to rest — that\'s what generates your income and restores 50 NRJ.',
+        tutorialProjects:   'Projects: Drop songs and save up ₦2M to release an Album (album streams are multiplied by 10!).',
+        tutorialClash:      'Clashes: Beef other artists to steal their Buzz. More buzz = more plays on your songs.',
+        tutorialContracts:  'Contracts: Grow your Fans and Streams to land Sponsors (weekly income) and Record Labels.',
+
+        // ── Character selection ──
         charSelectTitle: 'Who be you, omo?',
-        charSelectSub: 'Choose your starting profile.',
+        charSelectSub:   'Choose your starting profile.',
         btnConfirmAvatar: 'LOCK THIS PROFILE',
-        navHome: 'HOME',
+
+        // ── Navigation ──
+        navHome:    'HOME',
         navActions: 'MOVES',
-        navStudio: 'STUDIO',
-        navBiz: 'CASH',
-        navPerks: 'SKILLS',
-        lyricsTitle: 'PICK YOUR VERSE',
+        navStudio:  'STUDIO',
+        navBiz:     'CASH',
+        navPerks:   'SKILLS',
+
+        // ── Lyrics mini-game ──
+        lyricsTitle:  'PICK YOUR VERSE',
         lyricsPrompt: 'Choose the right lyrics for the afrobeat...',
-        btnNextWeek: 'NEXT WEEK',
-        btnUnderstood: 'I don see am!',
+
+        // ── Clash ──
         clashTitle: 'PICK YOUR TARGET',
-        clashCost: 'Costs 30 Energy & 1 Action',
+        clashCost:  'Costs 30 Energy & 1 Action',
+
+        // ── Next week button ──
+        btnNextWeek: 'NEXT WEEK',
+
+        // ── Save ──
         saved: 'Saved, omo!',
-        welcomeBack: 'Welcome back to the game, ',
-        newGame: 'Welcome to the game. The hustle starts now.',
+
+        // ── Week summary titles ──
+        weekTitleQuiet: 'QUIET WEEK',
+        weekTitleGood:  'E DEY GO!',
+        weekTitleUp:    'YOU DEY RISE!',
+        weekTitleFire:  'WEEK ON FIRE 🔥',
+        weekTitleViral: 'VIRAL, ABEG! 🚀',
+        weekSummary:    'Week {n} done. Keep the hustle going, omo.',
+
+        // ── Dynamic messages (addNews / tips) ──
+        welcomeBack:  'Welcome back to the game, ',
+        newGame:      'Welcome to the game. The hustle starts now.',
+        firstDay:     '🔥 {name}\'s journey begins today on BUZZKING!',
+        newsAlbum:    'ALBUM DROPPED: "{name}" ({quality}% Quality) is out now!',
+        newsNewYear:  '🥂 Happy New Year {year}!',
+        newsClassic:  '🏆 CLASSIC: "{name}" don become a timeless hit!',
+        newsCertif:   '🚨 CERTIFIED: "{name}" goes {certif}!',
+        newsBonus:    '🎁 Bonus: +₦{cash}, +{fans} Fans.',
+        newsLabelCut: '💿 Label Cut: -₦{cut}.',
+        newsStreams:  'Total Streams: +{streams}.',
+        newsRevenue:  'Revenue: +₦{revenue}.',
+        newsSponsor:  '🤝 Exclusive Deal ({name}): +₦{cash}.',
+        newsSignature:'🚨 SIGNED: You don join {name}\'s roster! ₦{cash} advance.',
+        newsSponsorAccepted: '🤝 SPONSOR: {name} is now your official partner.',
+        newsRefused:  'You reject {name}\'s offer. You remain independent, omo!',
+
+        // ── Contextual tips ──
+        tipGeneric:   'Try to mix up your actions this week.',
+        tipNoSongs:   '⚠️ You haven\'t dropped any song yet. Go to the Studio, record and release — that\'s what brings in fans every week.',
+        tipLowBuzz:   '⚠️ Your Buzz is too low. Do a TikTok challenge or a Clash to bring it back up.',
+        tipLowCash:   '⚠️ You\'re broke, omo. Do a hustle or a freestyle to get some naira.',
     },
 
     TITLES: [
