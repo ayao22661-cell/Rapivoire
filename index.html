@@ -3510,8 +3510,15 @@ function executeFinalClash(target) {
     closeClashMenu();
     closeAllMenus();
 
+    // 1 clash max par semaine
+    if (game.player.clashDoneThisWeek) {
+        notify("Tu as déjà clashé cette semaine. Attends la prochaine !", "error");
+        return;
+    }
+
     game.player.energy -= 30;
     game.world.actionsLeft--;
+    game.player.clashDoneThisWeek = true;
 
     // Chance de succès : base 60% + 5% par level joueur - 5% par power cible, min 30%, max 90%
     const successChance = Math.min(0.90, Math.max(0.30, 0.60 + (game.player.level * 0.05) - (target.power * 0.05)));
@@ -3519,8 +3526,8 @@ function executeFinalClash(target) {
 
     if (isSuccess) {
         const buzzGain   = Math.floor(target.power * 8);
-        // Garanti min intéressant même au début, scale bien en fin de partie
-        const baseStolen = Math.floor(target.power * 80 * (1 + game.player.level * 0.3));
+        // Gains modérés : ~50-60 fans au level 1, scale progressivement
+        const baseStolen = Math.floor(target.power * 30 * (1 + game.player.level * 0.25));
         const fansStolen = baseStolen;
         game.player.buzz += buzzGain;
         game.player.fans += fansStolen;
@@ -4152,7 +4159,8 @@ function processNextWeek() {
     if (!game.player.inventory.released) game.player.inventory.released = [];
 
     game.world.actionsLeft = game.world.actionsMax;
-    game.player.energy = game.player.energyMax; 
+    game.player.energy = game.player.energyMax;
+    game.player.clashDoneThisWeek = false; // Reset clash hebdomadaire
 
     // --- 4. CALCUL DES STREAMS ---
     let totalStreamsThisWeek = 0;
