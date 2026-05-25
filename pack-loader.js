@@ -292,6 +292,11 @@ function applyUI(ui) {
         const el = document.querySelector(selector);
         if (el) el.textContent = text;
     }
+    function setAttr(selector, attr, text) {
+        if (!text) return;
+        const el = document.querySelector(selector);
+        if (el) el.setAttribute(attr, text);
+    }
 
     // Loading screen
     setText('loading-text', ui.loading);
@@ -315,25 +320,62 @@ function applyUI(ui) {
     setTextQ('#nav-studio span', ui.navStudio);
     setTextQ('#nav-biz span', ui.navBiz);
 
-    // Onboarding — textes dans #step-pseudo
-    setTextQ('#step-pseudo h2', ui.onboardingSubtitle);
-    setTextQ('#step-pseudo p', ui.onboardingSubtitle);
+    // ── ONBOARDING step-pseudo ──
+    // Titre "CRÉE TA LÉGENDE"
+    setTextQ('#step-pseudo h2', ui.onboardingTitle);
+    // Paragraphe de description sous le titre
+    setTextQ('#step-pseudo p', ui.onboardingDesc);
+    // Placeholder de l'input pseudo
+    setAttr('#player-pseudo-input', 'placeholder', ui.pseudoPlaceholder);
+    // Bouton "VALIDER MON BLASE"
+    setTextQ('#step-pseudo button[onclick="submitPseudo()"]', ui.btnSubmitPseudo);
+
+    // ── ONBOARDING step-tutorial ──
+    // Titre "COMMENT JOUER ?"
+    setTextQ('#step-tutorial h2', ui.tutorialTitle);
+    // Bouton "J'AI COMPRIS, AU BOULOT !"
+    setTextQ('#step-tutorial button[onclick="startGameOnboarding()"]', ui.btnUnderstood);
+    // Blocs explicatifs du tutoriel
+    if (ui.tutorialEnergy)    setTextQ('#tuto-energy',    ui.tutorialEnergy);
+    if (ui.tutorialProjects)  setTextQ('#tuto-projects',  ui.tutorialProjects);
+    if (ui.tutorialClash)     setTextQ('#tuto-clash',     ui.tutorialClash);
+    if (ui.tutorialContracts) setTextQ('#tuto-contracts', ui.tutorialContracts);
+
+    // ── CHARACTER SELECTION ──
+    setTextQ('#character-selection-screen h2', ui.charSelectTitle);
+    setTextQ('#character-selection-screen p',  ui.charSelectSub);
+
+    // ── EVENT MODAL ──
+    setTextQ('#event-modal button[onclick="closeEventModal()"]', ui.btnUnderstood);
 
     // Subtitle app
     setTextQ('.app-subtitle', ui.appSubtitle);
 
-    // Stocker les strings pour usage dynamique
+    // Stocker les strings pour usage dynamique (addNews, tips, bilan de semaine, etc.)
     window.UI_STRINGS = ui;
 }
 
 // ─────────────────────────────────────────────
-// PATCH DU SYSTÈME DE SAUVEGARDE
+// HELPER TRADUCTION — interpolation des strings dynamiques
 // ─────────────────────────────────────────────
+// Utilisation : t('newsAlbum', { name: 'Mon son', quality: 85 })
+// Remplace {name}, {quality}, etc. dans la string correspondante.
+// Fallback sur la valeur brute si la clé n'existe pas.
+window.t = function(key, vars = {}) {
+    const s = window.UI_STRINGS;
+    if (!s || !s[key]) return key;
+    let str = s[key];
+    for (const [k, v] of Object.entries(vars)) {
+        str = str.replace(new RegExp(`\\{${k}\\}`, 'g'), v);
+    }
+    return str;
+};
 function patchSaveSystem(saveKey) {
     // Override saveGame pour utiliser la clé du pack
     window.saveGame = function() {
         localStorage.setItem(saveKey, JSON.stringify(game));
-        notify(window.UI_STRINGS ? window.UI_STRINGS.saved || "Saved !" : "Partie sauvegardée !");
+        const s = window.UI_STRINGS;
+        notify(s ? s.saved || "Saved!" : "Partie sauvegardée !");
     };
 
     // Override loadGame
