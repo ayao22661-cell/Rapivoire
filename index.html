@@ -7,6 +7,7 @@
     
     <title>BUZZKING</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="pack-loader.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Space+Grotesk:wght@300;500;700&display=swap" rel="stylesheet">
     <style>
        /* =========================================
@@ -5231,7 +5232,18 @@ function attachRippleToButtons() {
 window.onload = function() {
     spawnLoadingParticles();
     animateLoadingBar();
-    init();
+
+    // Pack Loader intercept — affiche le sélecteur de pays avant init()
+    if (typeof showPackSelector === 'function') {
+        // Cacher le loading-screen jusqu'à ce que launchGame() du loader le montre
+        const ls = document.getElementById('loading-screen');
+        if (ls) ls.style.display = 'none';
+        showPackSelector();
+    } else {
+        // Fallback si pack-loader.js non disponible
+        init();
+    }
+
     setTimeout(attachRippleToButtons, 1500);
     // Masquer le bouton partage natif si non supporté (desktop)
     if (!navigator.share) {
