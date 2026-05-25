@@ -11,27 +11,82 @@ window.PACK_DATA = {
     CURRENCY: { symbol: '£', code: 'GBP', locale: 'en-GB', rate: 0.00130 },
 
     UI: {
+        // ── Loading ──
         loading: 'Loading the ting...',
-        onboardingTitle: 'BUZZKING',
-        onboardingSubtitle: 'Become a Legend',
+
+        // ── App subtitle ──
         appSubtitle: 'Become a Legend',
-        charSelectTitle: "Who's this mandem?",
-        charSelectSub: 'Pick your starting profile, fam.',
+
+        // ── Onboarding — step pseudo ──
+        onboardingTitle:    'BUILD YOUR LEGACY',
+        onboardingDesc:     'Every legend needs a name that rings bells. What are they gonna call you in the ends of London?',
+        pseudoPlaceholder:  'Your road name...',
+        btnSubmitPseudo:    'LOCK IN MY NAME',
+
+        // ── Onboarding — step tutorial ──
+        tutorialTitle:      'HOW TO PLAY?',
+        btnUnderstood:      'Say nuttin!',
+        tutorialEnergy:     'Energy: Every action costs energy. Once you\'ve used your 4 actions, hit "Next Week" to rest — that\'s what generates your income and restores 50 NRJ.',
+        tutorialProjects:   'Projects: Drop tings and save up £2M to release an Album (album streams are multiplied by 10!).',
+        tutorialClash:      'Clashes: Diss other rappers to steal their Buzz. More buzz = more plays on your tings.',
+        tutorialContracts:  'Contracts: Grow your Fans and Streams to land Sponsors (weekly income) and Labels (up to £50M advance).',
+
+        // ── Character selection ──
+        charSelectTitle: 'Who\'s this mandem?',
+        charSelectSub:   'Pick your starting profile, fam.',
         btnConfirmAvatar: 'LOCK IN THIS TING',
-        navHome: 'ENDS',
+
+        // ── Navigation ──
+        navHome:    'ENDS',
         navActions: 'MOVES',
-        navStudio: 'STUDIO',
-        navBiz: 'P\'S',
-        navPerks: 'SKILLS',
-        lyricsTitle: 'PICK YOUR BAR',
+        navStudio:  'STUDIO',
+        navBiz:     'P\'S',
+        navPerks:   'SKILLS',
+
+        // ── Lyrics mini-game ──
+        lyricsTitle:  'PICK YOUR BAR',
         lyricsPrompt: 'Choose the right lyrics for the riddim...',
-        btnNextWeek: 'NEXT WEEK',
-        btnUnderstood: 'Say nuttin!',
+
+        // ── Clash ──
         clashTitle: 'PICK A WASTEMAN',
-        clashCost: 'Costs 30 Energy & 1 Action',
+        clashCost:  'Costs 30 Energy & 1 Action',
+
+        // ── Next week button ──
+        btnNextWeek: 'NEXT WEEK',
+
+        // ── Save ──
         saved: 'Saved, bruv!',
-        welcomeBack: 'Welcome back to the scene, ',
-        newGame: 'Welcome to the game. Road life starts now.',
+
+        // ── Week summary titles ──
+        weekTitleQuiet: 'QUIET WEEK',
+        weekTitleGood:  'DECENT FLOW!',
+        weekTitleUp:    'YOU\'RE MOVING!',
+        weekTitleFire:  'WEEK ON MADNESS 🔥',
+        weekTitleViral: 'VIRAL, FAM! 🚀',
+        weekSummary:    'Week {n} done. Don\'t slow down now.',
+
+        // ── Dynamic messages (addNews / tips) ──
+        welcomeBack:  'Welcome back to the scene, ',
+        newGame:      'Welcome to the game. Road life starts now.',
+        firstDay:     '🔥 {name}\'s career kicks off today on BUZZKING!',
+        newsAlbum:    'ALBUM DROPPED: "{name}" ({quality}% Quality) is out now!',
+        newsNewYear:  '🥂 Happy New Year {year}!',
+        newsClassic:  '🏆 CLASSIC: "{name}" is a timeless ting now!',
+        newsCertif:   '🚨 CERTIFIED: "{name}" goes {certif}!',
+        newsBonus:    '🎁 Bonus: +£{cash}, +{fans} Fans.',
+        newsLabelCut: '💿 Label Cut: -£{cut}.',
+        newsStreams:  'Total Streams: +{streams}.',
+        newsRevenue:  'Revenue: +£{revenue}.',
+        newsSponsor:  '🤝 Exclusive Deal ({name}): +£{cash}.',
+        newsSignature:'🚨 SIGNED: You just joined {name}\'s roster! £{cash} advance.',
+        newsSponsorAccepted: '🤝 SPONSOR: {name} is your official partner now.',
+        newsRefused:  'You blanked {name}\'s offer. Keeping it independent, bruv.',
+
+        // ── Contextual tips ──
+        tipGeneric:   'Mix up your moves this week, fam.',
+        tipNoSongs:   '⚠️ You haven\'t dropped any tracks yet. Head to the Studio, record and release a ting — that\'s what brings in fans every week.',
+        tipLowBuzz:   '⚠️ Your Buzz is too low. Do a TikTok challenge or a Clash to bring it back.',
+        tipLowCash:   '⚠️ You\'re skint. Do a delivery run or a freestyle session to get P\'s.',
     },
 
     TITLES: [
