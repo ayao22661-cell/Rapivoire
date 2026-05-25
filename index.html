@@ -667,60 +667,6 @@ input:focus, select:focus {
 <body>
 
 <div class="app-container">
-    
-<!-- ═══════════════════════════════════════════
-     PACK SELECTOR — Sélection de la région
-     z-[3000] = au-dessus du loading-screen (z-2000)
-     ═══════════════════════════════════════════ -->
-<div id="pack-selector-overlay" class="fixed inset-0 z-[3000] bg-[#09090E] flex flex-col items-center justify-center p-5" style="display:flex;">
-    <div style="text-align:center;margin-bottom:1.5rem;">
-        <svg width="48" height="40" viewBox="0 0 100 80" fill="none" style="margin:0 auto 0.5rem;">
-            <defs><linearGradient id="psg1" x1="0" y1="0" x2="100" y2="80" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#00E676"/><stop offset="100%" stop-color="#7C4DFF"/></linearGradient></defs>
-            <polygon points="10,70 20,20 50,50 80,20 90,70" fill="url(#psg1)"/>
-            <circle cx="50" cy="50" r="7" fill="#FFD700"/>
-        </svg>
-        <h1 style="font-weight:900;font-size:1.8rem;letter-spacing:0.12em;background:linear-gradient(135deg,#00E676,#7C4DFF);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:0.25rem;">BUZZKING</h1>
-        <p style="color:#a1a1aa;font-size:0.85rem;margin-bottom:0.5rem;">Choisis ta scène mondiale</p>
-    </div>
-    <div id="pack-selector-grid" style="display:grid;grid-template-columns:repeat(2,1fr);gap:0.75rem;width:100%;max-width:420px;max-height:65vh;overflow-y:auto;padding:0.25rem;">
-        <div onclick="_selectPackById('ci')" style="background:#1C1D26;border:2px solid rgba(247,127,0,0.5);border-radius:16px;padding:1rem 0.75rem;display:flex;flex-direction:column;align-items:center;cursor:pointer;">
-            <span style="font-size:2.2rem;margin-bottom:0.4rem;">🇨🇮</span>
-            <span style="color:#fff;font-weight:900;font-size:0.85rem;text-align:center;">Côte d'Ivoire</span>
-            <span style="color:#71717a;font-size:0.7rem;text-align:center;margin-top:2px;">Abidjan — Nouchi</span>
-        </div>
-        <div onclick="_selectPackById('fr')" style="background:#1C1D26;border:2px solid rgba(0,49,137,0.5);border-radius:16px;padding:1rem 0.75rem;display:flex;flex-direction:column;align-items:center;cursor:pointer;">
-            <span style="font-size:2.2rem;margin-bottom:0.4rem;">🇫🇷</span>
-            <span style="color:#fff;font-weight:900;font-size:0.85rem;text-align:center;">France</span>
-            <span style="color:#71717a;font-size:0.7rem;text-align:center;margin-top:2px;">Paris — Drill</span>
-        </div>
-        <div onclick="_selectPackById('us')" style="background:#1C1D26;border:2px solid rgba(178,34,52,0.5);border-radius:16px;padding:1rem 0.75rem;display:flex;flex-direction:column;align-items:center;cursor:pointer;">
-            <span style="font-size:2.2rem;margin-bottom:0.4rem;">🇺🇸</span>
-            <span style="color:#fff;font-weight:900;font-size:0.85rem;text-align:center;">USA</span>
-            <span style="color:#71717a;font-size:0.7rem;text-align:center;margin-top:2px;">NY / ATL — Trap</span>
-        </div>
-        <div onclick="_selectPackById('uk')" style="background:#1C1D26;border:2px solid rgba(200,16,46,0.5);border-radius:16px;padding:1rem 0.75rem;display:flex;flex-direction:column;align-items:center;cursor:pointer;">
-            <span style="font-size:2.2rem;margin-bottom:0.4rem;">🇬🇧</span>
-            <span style="color:#fff;font-weight:900;font-size:0.85rem;text-align:center;">UK</span>
-            <span style="color:#71717a;font-size:0.7rem;text-align:center;margin-top:2px;">London — UK Drill</span>
-        </div>
-        <div onclick="_selectPackById('br')" style="background:#1C1D26;border:2px solid rgba(0,156,59,0.5);border-radius:16px;padding:1rem 0.75rem;display:flex;flex-direction:column;align-items:center;cursor:pointer;">
-            <span style="font-size:2.2rem;margin-bottom:0.4rem;">🇧🇷</span>
-            <span style="color:#fff;font-weight:900;font-size:0.85rem;text-align:center;">Brasil</span>
-            <span style="color:#71717a;font-size:0.7rem;text-align:center;margin-top:2px;">SP / RJ — Funk</span>
-        </div>
-        <div onclick="_selectPackById('ng')" style="background:#1C1D26;border:2px solid rgba(0,135,81,0.5);border-radius:16px;padding:1rem 0.75rem;display:flex;flex-direction:column;align-items:center;cursor:pointer;">
-            <span style="font-size:2.2rem;margin-bottom:0.4rem;">🇳🇬</span>
-            <span style="color:#fff;font-weight:900;font-size:0.85rem;text-align:center;">Nigeria</span>
-            <span style="color:#71717a;font-size:0.7rem;text-align:center;margin-top:2px;">Lagos — Afrobeats</span>
-        </div>
-        <div onclick="_selectPackById('de')" style="background:#1C1D26;border:2px solid rgba(221,0,0,0.5);border-radius:16px;padding:1rem 0.75rem;display:flex;flex-direction:column;align-items:center;cursor:pointer;">
-            <span style="font-size:2.2rem;margin-bottom:0.4rem;">🇩🇪</span>
-            <span style="color:#fff;font-weight:900;font-size:0.85rem;text-align:center;">Deutschland</span>
-            <span style="color:#71717a;font-size:0.7rem;text-align:center;margin-top:2px;">Berlin — Deutschrap</span>
-        </div>
-    </div>
-</div>
-
 <div id="loading-screen" class="absolute inset-0 z-[2000] bg-[#09090E] flex flex-col items-center justify-center transition-opacity duration-700 overflow-hidden" style="display:none;">
     <!-- Particules de fond -->
     <div class="absolute inset-0 pointer-events-none" id="loading-particles"></div>
