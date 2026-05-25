@@ -5120,6 +5120,20 @@ function confirmReset() {
     // Supprime toutes les clés de save connues
     localStorage.removeItem('buzzKingSaveData');
     localStorage.removeItem('rapIvoireSaveData');
+
+    // Supprime les saves de tous les packs + la mémoire du dernier pack
+    const packKeys = [
+        'buzzKingSaveData_ci',
+        'buzzKingSaveData_fr',
+        'buzzKingSaveData_us',
+        'buzzKingSaveData_uk',
+        'buzzKingSaveData_br',
+        'buzzKingSaveData_ng',
+        'buzzKingSaveData_de',
+    ];
+    packKeys.forEach(k => localStorage.removeItem(k));
+    localStorage.removeItem('buzzking_last_pack');
+
     // Force le rechargement sans cache
     window.location.href = window.location.href.split('?')[0] + '?reset=' + Date.now();
 }
