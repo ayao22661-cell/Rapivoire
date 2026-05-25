@@ -82,6 +82,16 @@ window.ACTIVE_PACK = 'ci'; // défaut
 // AFFICHER L'ÉCRAN DE SÉLECTION DU PAYS
 // ─────────────────────────────────────────────
 function showPackSelector() {
+    // Si une session active existe, reprendre directement ce pack sans afficher le sélecteur
+    const lastPack = localStorage.getItem('buzzking_last_pack');
+    if (lastPack) {
+        const pack = PACK_CATALOG.find(p => p.id === lastPack);
+        if (pack && localStorage.getItem(pack.saveKey)) {
+            selectPack(lastPack);
+            return;
+        }
+    }
+
     // Créer l'overlay s'il n'existe pas
     let overlay = document.getElementById('pack-selector-overlay');
     if (overlay) { overlay.style.display = 'flex'; return; }
@@ -186,6 +196,7 @@ function selectPack(packId) {
 
     window.ACTIVE_PACK = packId;
     window.ACTIVE_SAVE_KEY = pack.saveKey;
+    localStorage.setItem('buzzking_last_pack', packId); // mémoriser pour le prochain démarrage
 
     // Patch saveGame/loadGame pour utiliser la bonne clé
     patchSaveSystem(pack.saveKey);
@@ -348,6 +359,11 @@ function launchGame() {
     // Afficher le loading screen
     const loadingScreen = document.getElementById('loading-screen');
     if (loadingScreen) loadingScreen.style.display = 'flex';
+
+    // S'assurer que patchSaveSystem a bien été appliqué avant init()
+    // En forçant loadGame() à utiliser la bonne clé immédiatement
+    const activeKey = window.ACTIVE_SAVE_KEY || 'buzzKingSaveData';
+    patchSaveSystem(activeKey);
 
     // Lancer init() du jeu
     if (typeof init === 'function') {
