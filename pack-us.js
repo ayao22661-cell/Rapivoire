@@ -11,27 +11,82 @@ window.PACK_DATA = {
     CURRENCY: { symbol: '$', code: 'USD', locale: 'en-US', rate: 0.00165 },
 
     UI: {
+        // ── Loading ──
         loading: 'Loading the studio...',
-        onboardingTitle: 'BUZZKING',
-        onboardingSubtitle: 'Become a Legend',
+
+        // ── App subtitle ──
         appSubtitle: 'Become a Legend',
+
+        // ── Onboarding — step pseudo ──
+        onboardingTitle:    'BUILD YOUR LEGACY',
+        onboardingDesc:     'Every legend needs a name that hits different. What are they gonna call you in the streets of New York?',
+        pseudoPlaceholder:  'Your stage name...',
+        btnSubmitPseudo:    'LOCK IN MY NAME',
+
+        // ── Onboarding — step tutorial ──
+        tutorialTitle:      'HOW TO PLAY?',
+        btnUnderstood:      'Say less!',
+        tutorialEnergy:     'Energy: Every action costs energy. Once you\'ve used your 4 actions, hit "Next Week" to rest — that\'s what generates your income and restores 50 NRJ.',
+        tutorialProjects:   'Projects: Drop tracks and save up $2M to release an Album (album streams are multiplied by 10!).',
+        tutorialClash:      'Clashes: Beef other rappers to steal their Buzz. More buzz = more plays on your songs.',
+        tutorialContracts:  'Contracts: Grow your Fans and Streams to land Sponsors (weekly income) and Record Labels (up to $50M advance).',
+
+        // ── Character selection ──
         charSelectTitle: 'Who are you?',
-        charSelectSub: 'Pick your starting profile.',
+        charSelectSub:   'Pick your starting profile.',
         btnConfirmAvatar: 'LOCK IN THIS PROFILE',
-        navHome: 'HOME',
+
+        // ── Navigation ──
+        navHome:    'HOME',
         navActions: 'MOVES',
-        navStudio: 'STUDIO',
-        navBiz: 'BIZNESS',
-        navPerks: 'SKILLS',
-        lyricsTitle: 'PICK YOUR VERSE',
+        navStudio:  'STUDIO',
+        navBiz:     'BIZNESS',
+        navPerks:   'SKILLS',
+
+        // ── Lyrics mini-game ──
+        lyricsTitle:  'PICK YOUR VERSE',
         lyricsPrompt: 'Choose the right bar for the beat...',
-        btnNextWeek: 'NEXT WEEK',
-        btnUnderstood: 'Say less!',
+
+        // ── Clash ──
         clashTitle: 'PICK A TARGET',
-        clashCost: 'Costs 30 Energy & 1 Action',
+        clashCost:  'Costs 30 Energy & 1 Action',
+
+        // ── Next week button ──
+        btnNextWeek: 'NEXT WEEK',
+
+        // ── Save ──
         saved: 'Game saved!',
-        welcomeBack: 'Welcome back to the game, ',
-        newGame: 'Welcome to the game. The grind starts now.',
+
+        // ── Week summary titles ──
+        weekTitleQuiet: 'QUIET WEEK',
+        weekTitleGood:  'GOOD FLOW!',
+        weekTitleUp:    'YOU\'RE RISING!',
+        weekTitleFire:  'WEEK ON FIRE 🔥',
+        weekTitleViral: 'VIRAL! 🚀',
+        weekSummary:    'Week {n} done. Keep that energy up.',
+
+        // ── Dynamic messages (addNews / tips) ──
+        welcomeBack:  'Welcome back to the game, ',
+        newGame:      'Welcome to the game. The grind starts now.',
+        firstDay:     '🔥 {name}\'s career kicks off today on BUZZKING!',
+        newsAlbum:    'ALBUM DROPPED: "{name}" ({quality}% Quality) is out now!',
+        newsNewYear:  '🥂 Happy New Year {year}!',
+        newsClassic:  '🏆 CLASSIC: "{name}" just became a timeless hit!',
+        newsCertif:   '🚨 CERTIFIED: "{name}" goes {certif}!',
+        newsBonus:    '🎁 Bonus: +${cash}, +{fans} Fans.',
+        newsLabelCut: '💿 Label Cut: -${cut}.',
+        newsStreams:  'Total Streams: +{streams}.',
+        newsRevenue:  'Revenue: +${revenue}.',
+        newsSponsor:  '🤝 Exclusive Deal ({name}): +${cash}.',
+        newsSignature:'🚨 SIGNED: You just joined {name}\'s roster! ${cash} advance.',
+        newsSponsorAccepted: '🤝 SPONSOR: {name} is now your official partner.',
+        newsRefused:  'You turned down {name}\'s offer. Independence secured.',
+
+        // ── Contextual tips ──
+        tipGeneric:   'Try mixing up your actions this week.',
+        tipNoSongs:   '⚠️ You haven\'t dropped any tracks yet. Head to the Studio, record and release a song — that\'s what brings in fans every week.',
+        tipLowBuzz:   '⚠️ Your Buzz is too low. Do a TikTok Challenge or a Clash to bring it back up.',
+        tipLowCash:   '⚠️ You\'re broke. Do a delivery side hustle or a subway freestyle to get some bread.',
     },
 
     TITLES: [
