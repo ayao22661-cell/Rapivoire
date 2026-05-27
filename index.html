@@ -1165,6 +1165,7 @@ let AVATARS = [
     { id: 'drillboy', name: 'Le Drillboy', img: 'drillboy.jpg', desc: 'Sombre et agressif.' },
     { id: 'influenceur', name: 'L\'Influenceur', img: 'influenceur.jpg', desc: 'Star des réseaux.' }
 ];
+window.AVATARS = AVATARS; // expose pour les packs
 
 let selectedAvatarId = null;
     
@@ -1475,6 +1476,7 @@ icon: `<svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path
         color: 'bg-danger text-white border-none' 
     }
 ];
+window.ACTIONS_POOL = ACTIONS_POOL; // expose pour les packs
 
 let BEATS_POOL = [
     // =====================================
@@ -1553,6 +1555,7 @@ let BEATS_POOL = [
         desc: "L'instrumentale ultime venue du Nigeria. Réservée aux boss de l'industrie !" 
     }
 ];
+window.BEATS_POOL = BEATS_POOL; // expose pour les packs
 
 const SHOP_ITEMS = [
     { 
@@ -2285,6 +2288,7 @@ function init() {
 
                 updateUI();
                 renderActions();
+                if(typeof renderThemeSelect === 'function') renderThemeSelect();
                 if(typeof checkLevelUp === "function") checkLevelUp();
             }, 500);
         }, 800);
@@ -2678,6 +2682,37 @@ function performAction(act) {
 // ==========================================
 // MÉCANIQUES DE JEU : STUDIO & MUSIQUE
 // ==========================================
+
+// Labels des thèmes — version CI par défaut (pack peut surcharger via THEME_LABELS)
+const THEME_LABELS_CI = {
+    'drill':        'Drill Ivoire (Sombre & Agressif)',
+    'rap_nouchi':   'Rap Nouchi (Rue & Maquis)',
+    'trap_ego':     'Trap Ego Trip (Argent & Flex)',
+    'afrobeat':     'Afrobeat (Groove Continental)',
+    'afro_love':    'Afro Love (Amour & Zouk)',
+    'ambiance':     'Coupé-Décalé (Fête & Farotage)',
+    'zouglou':      'Zouglou Urbain (Identité & Vérité)',
+    'conscient':    'Trap Consciente (Message Profond)',
+};
+
+function renderThemeSelect() {
+    const select = document.getElementById('select-song-theme');
+    if (!select) return;
+    const lyricsSource = window.LYRICS_DATA || LYRICS_MINIGAME;
+    const labelMap = window.PACK_DATA && window.PACK_DATA.THEME_LABELS
+        ? window.PACK_DATA.THEME_LABELS
+        : (window.THEME_LABELS_ACTIVE || THEME_LABELS_CI);
+    const prevValue = select.value;
+    select.innerHTML = '';
+    Object.keys(lyricsSource).forEach(key => {
+        const opt = document.createElement('option');
+        opt.value = key;
+        opt.textContent = labelMap[key] || key;
+        select.appendChild(opt);
+    });
+    // Restaurer la sélection si la clé existe encore
+    if ([...select.options].some(o => o.value === prevValue)) select.value = prevValue;
+}
 
 function renderStudioBeats() {
     const container = document.getElementById('beat-selection');
