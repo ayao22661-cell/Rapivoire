@@ -257,11 +257,11 @@ window.UI_STRINGS = {
     relPartnerCadeau: 'Offrir un cadeau',
     relPartnerStudio: 'Faire venir au studio',
     relFamilyAppel: 'Appeler la famille',
-    relFamilyEnvoyer: 'Envoyer de l'argent',
+    relFamilyEnvoyer: "Envoyer de l'argent",   // <-- CORRIGÉ ICI
     relFamilyVisite: 'Visite au quartier',
     relManagerMeeting: 'Réunion stratégie',
     relManagerBonus: 'Payer un bonus',
-    relManagerDiner: 'Dîner d'affaires',
+    relManagerDiner: "Dîner d'affaires",       // <-- CORRIGÉ ICI
     relCrewSession: 'Session studio ensemble',
     relCrewSortie: 'Sortie entre potes',
     relCrewCadeau: 'Offrir des cadeaux',
