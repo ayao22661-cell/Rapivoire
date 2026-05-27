@@ -443,7 +443,7 @@ window.PACK_DATA = {
         { 
             id: 'n1_gbaka', title: "Freestyle Ligne 4", reqLevel: 1,
             desc: "Rapper dans le métro parisien en espérant percer.", 
-            energy: 20, cash: 1500, buzz: 2, fans: 5, xp: 10, 
+            energy: 20, cash: 3, buzz: 2, fans: 5, xp: 10, 
             color: 'bg-green-grad' 
         },
         { 
