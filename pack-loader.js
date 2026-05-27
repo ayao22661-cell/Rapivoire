@@ -688,10 +688,10 @@ function launchGame() {
     if (typeof init === 'function') {
         init();
     }
-    // --- CONVERSION DU CASH DE DÉPART (CFA -> EUR) ---
+    // --- CONVERSION DU CASH DE DÉPART (CFA -> devise du pack) ---
     if (typeof game !== 'undefined' && game.world && game.world.week === 1 && game.world.actionsLeft === 4) {
-        if (window.CURRENCY && window.CURRENCY.rate) {
-            if (game.player.cash > 5000) { // Si c'est la somme par défaut en CFA (10000)
+        if (window.CURRENCY && window.CURRENCY.rate && window.CURRENCY.rate !== 1) {
+            if (game.player.cash > 0 && game.player.cash <= 1500) { // Cash de départ CI = 1500 F CFA
                 game.player.cash = Math.floor(game.player.cash * window.CURRENCY.rate);
                 if (typeof updateUI === 'function') updateUI();
             }
