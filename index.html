@@ -3005,11 +3005,14 @@ function releaseSong(id) {
     updateUI();
 }
 function releaseAlbum() {
-    const cost = 2000000; // 2 Millions F CFA
+    // --- ADAPTATION DYNAMIQUE DU COÛT SELON LE PACK ---
+    const baseCost = 2000000; // Coût de base historique (CFA)
+    const cost = (window.CURRENCY && window.CURRENCY.rate) ? Math.floor(baseCost * window.CURRENCY.rate) : baseCost;
     const energyReq = 90; // Presque toute ton énergie
 
     if (game.player.cash < cost) {
-        notify(`Fonds insuffisants ! Il te faut 2 000 000 ${((window.CURRENCY && window.CURRENCY.symbol) ? window.CURRENCY.symbol : 'F')}.`, 3000);
+        const symbol = (window.CURRENCY && window.CURRENCY.symbol) ? window.CURRENCY.symbol : 'F';
+        notify(`Fonds insuffisants ! Il te faut ${cost.toLocaleString()} ${symbol}.`, 3000);
         return;
     }
     if (game.player.energy < energyReq) {
@@ -3023,7 +3026,7 @@ function releaseAlbum() {
         albumName = "Classique Anonyme";
     }
 
-    // On paie le prix
+    // On paie le prix dynamique calculé
     game.player.cash -= cost;
     game.player.energy -= energyReq;
 
@@ -3046,8 +3049,6 @@ function releaseAlbum() {
     // ============================================================
     // CALCUL DYNAMIQUE : BASE 10K * NIVEAU * QUALITÉ
     // ============================================================
-    // Si niveau 1 et 100% qualité = 10 000 fans
-    // Si niveau 5 et 80% qualité = 40 000 fans (50k * 0.8)
     const baseFans = 10000 * game.player.level;
     const qualityFactor = albumQuality / 100;
     
