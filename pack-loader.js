@@ -453,7 +453,16 @@ function applyPackData(data) {
     }
 
     // 4. Lyrics mini-jeu
-    if (data.LYRICS_DATA) window.LYRICS_DATA = data.LYRICS_DATA;
+    if (data.LYRICS_DATA) {
+        window.LYRICS_DATA = data.LYRICS_DATA;
+        if (typeof renderThemeSelect === 'function') renderThemeSelect();
+    }
+
+    // 4b. Labels des thèmes (optionnel, fourni par le pack)
+    if (data.THEME_LABELS) {
+        if (!window.PACK_DATA) window.PACK_DATA = {};
+        window.PACK_DATA.THEME_LABELS = data.THEME_LABELS;
+    }
 
     // 5. Labels
     if (data.LABELS) window.LABELS = data.LABELS;
