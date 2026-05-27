@@ -3257,8 +3257,10 @@ function renderConcerts() {
     
     const bizSkill = (game.player.skills && game.player.skills.biz) ? game.player.skills.biz : 0;
     const bizDiscount = (PERKS_TREE.biz && PERKS_TREE.biz.levels[bizSkill]) ? PERKS_TREE.biz.levels[bizSkill] : 1;
+    const venues = window.CONCERT_VENUES || CONCERT_VENUES;
+    const currSymbol = (window.CURRENCY && window.CURRENCY.symbol) ? window.CURRENCY.symbol : 'F';
 
-    CONCERT_VENUES.forEach(venue => {
+    venues.forEach(venue => {
         const cost = Math.max(0, Math.floor((venue.cost || 0) * bizDiscount));
         const canAfford = game.player.cash >= cost;
         const hasFans = game.player.fans >= venue.reqFans;
@@ -3273,10 +3275,10 @@ function renderConcerts() {
                 <div class="flex justify-between items-start mb-2">
                     <h3 class="text-base font-black text-white m-0 tracking-tight">${venue.name}</h3>
                     <span class="px-3 py-1 rounded-lg text-xs font-bold ${canAfford ? 'bg-[#00E676]/10 text-[#00E676]' : 'bg-white/5 text-[#A1A1AA]'}">
-                        Prix: ${cost.toLocaleString()} F
+                        Prix: ${cost.toLocaleString()} ${currSymbol}
                     </span>
                 </div>
-                <div class="text-[12px] text-[#A1A1AA] mb-3">Capacité: ${venue.capacity.toLocaleString()} pl. | Ticket: ${venue.ticketPrice}F</div>
+                <div class="text-[12px] text-[#A1A1AA] mb-3">Capacité: ${venue.capacity.toLocaleString()} pl. | Ticket: ${venue.ticketPrice}${currSymbol}</div>
                 
                 <div class="flex flex-wrap gap-2">
                     <span class="px-2 py-1 rounded-md text-xs font-bold ${hasFans ? 'bg-white/10 text-white' : 'bg-white/5 text-[#A1A1AA]'} flex items-center gap-1">
@@ -3301,7 +3303,8 @@ function renderConcerts() {
 }
 
 function bookConcert(id, cost) {
-    const venue = CONCERT_VENUES.find(v => v.id === id);
+    const _venues = window.CONCERT_VENUES || CONCERT_VENUES;
+    const venue = _venues.find(v => v.id === id);
     if(!venue) return;
 
     // Sécurité : cost peut être NaN sur une vieille save, on recalcule
@@ -3317,14 +3320,14 @@ function bookConcert(id, cost) {
     }
 
     if (game.player.concertsThisYear >= 4) {
-        notify("Tu as atteint la limite de 4 concerts pour cette année ! Reviens l'année prochaine.");
+        notify(uiStr('notifConcertLimit', "Tu as atteint la limite de 4 concerts pour cette année ! Reviens l'année prochaine."));
         return; 
     }
 
     // 2. Vérifications de base (Argent, Conditions, Énergie)
-    if(game.player.cash < cost) { notify("Pas assez d'argent pour louer la salle."); return; }
-    if(game.player.fans < venue.reqFans || game.player.inventory.released.length < venue.reqSongs) { notify("Conditions non remplies."); return; }
-    if(game.player.energy < 80) { notify("Trop fatigué. Il faut 80⚡ minimum."); return; }
+    if(game.player.cash < cost) { notify(uiStr('notifConcertNoMoney', "Pas assez d'argent pour louer la salle.")); return; }
+    if(game.player.fans < venue.reqFans || game.player.inventory.released.length < venue.reqSongs) { notify(uiStr('notifConditions', "Conditions non remplies.")); return; }
+    if(game.player.energy < 80) { notify(uiStr('notifTooTired80', "Trop fatigué. Il faut 80⚡ minimum.")); return; }
     
     // 3. Paiement des coûts
     game.player.cash -= cost;
@@ -3538,10 +3541,10 @@ function launchImproRapide() {
 
 function launchTargetedClash() {
     // Vérifications
-    if (game.world.actionsLeft <= 0) return notify("Plus d'actions cette semaine !");
-    if (game.player.energy < 30) return notify("Pas assez d'énergie (30 requis) !");
+    if (game.world.actionsLeft <= 0) return notify(uiStr('notifNoActionsWeek', "Plus d'actions cette semaine !"));
+    if (game.player.energy < 30) return notify(uiStr('notifTooTired30', "Pas assez d'énergie (30 requis) !"));
 
-    const allTargets = [
+    const allTargets = window.CLASH_TARGETS || [
         { name: "Le-Père-Dalo", power: 1, req: 1, desc: "Blogueur Buzz", color: "border-blue-500" },
         { name: "Coach-Hamond", power: 1, req: 1, desc: "Caviar & Luxe", color: "border-pink-500" },
         { name: "Lolo-Beau", power: 2, req: 1, desc: "Directs Facebook", color: "border-purple-500" },
