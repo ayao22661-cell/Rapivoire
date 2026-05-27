@@ -257,6 +257,22 @@ window.PACK_DATA = {
     ],
 
     // ─────────────────────────────────────────
+    // CLASH TARGETS (rappeurs à clasher — scène FR)
+    // ─────────────────────────────────────────
+    CLASH_TARGETS: [
+        { name: "Kévin-la-Dalle",   power: 1, req: 1, desc: "Freestyleur du 93, fort en gueule",      color: "border-blue-500" },
+        { name: "DJ-Fantôme",       power: 1, req: 1, desc: "Beatmaker Soundcloud en galère",          color: "border-pink-500" },
+        { name: "Lil-Versailles",   power: 2, req: 1, desc: "Flexe sa villa louée sur Airbnb",         color: "border-purple-500" },
+        { name: "Rosé-19ème",       power: 3, req: 2, desc: "Reine de la drill féminine parisienne",   color: "border-orange-500" },
+        { name: "Mabrouk-973",      power: 3, req: 2, desc: "Rap Antilles-Paris, base solide",         color: "border-yellow-500" },
+        { name: "Le-Vrai-Zikra",    power: 5, req: 3, desc: "Conscient, textes béton, public fidèle",  color: "border-red-600" },
+        { name: "La-Duchesse",      power: 5, req: 3, desc: "Star TikTok, 2M abonnés, jet set",        color: "border-blue-400" },
+        { name: "Pharaon-94",       power: 8, req: 4, desc: "Boss du Val-de-Marne, untouchable",       color: "border-green-500" },
+        { name: "Djinn-le-Spectre", power: 9, req: 4, desc: "Légende underground, respect absolu",    color: "border-white" },
+        { name: "L'Immortel",       power: 10, req: 5, desc: "Le Goat incontesté du Rap Français",    color: "border-yellow-600" }
+    ],
+
+    // ─────────────────────────────────────────
     // CONCERT VENUES (salles françaises)
     // ─────────────────────────────────────────
     CONCERT_VENUES: [
