@@ -260,16 +260,16 @@ window.PACK_DATA = {
     // CLASH TARGETS (rappeurs à clasher — scène FR)
     // ─────────────────────────────────────────
     CLASH_TARGETS: [
-        { name: "Kévin-la-Dalle",   power: 1, req: 1, desc: "Freestyleur du 93, fort en gueule",      color: "border-blue-500" },
-        { name: "DJ-Fantôme",       power: 1, req: 1, desc: "Beatmaker Soundcloud en galère",          color: "border-pink-500" },
-        { name: "Lil-Versailles",   power: 2, req: 1, desc: "Flexe sa villa louée sur Airbnb",         color: "border-purple-500" },
-        { name: "Rosé-19ème",       power: 3, req: 2, desc: "Reine de la drill féminine parisienne",   color: "border-orange-500" },
-        { name: "Mabrouk-973",      power: 3, req: 2, desc: "Rap Antilles-Paris, base solide",         color: "border-yellow-500" },
-        { name: "Le-Vrai-Zikra",    power: 5, req: 3, desc: "Conscient, textes béton, public fidèle",  color: "border-red-600" },
-        { name: "La-Duchesse",      power: 5, req: 3, desc: "Star TikTok, 2M abonnés, jet set",        color: "border-blue-400" },
-        { name: "Pharaon-94",       power: 8, req: 4, desc: "Boss du Val-de-Marne, untouchable",       color: "border-green-500" },
-        { name: "Djinn-le-Spectre", power: 9, req: 4, desc: "Légende underground, respect absolu",    color: "border-white" },
-        { name: "L'Immortel",       power: 10, req: 5, desc: "Le Goat incontesté du Rap Français",    color: "border-yellow-600" }
+        { name: "Kaariss",        power: 1, req: 1, desc: "Le double 'Binks' de Sevran, puissance brute et punchlines thermonucléaires", color: "border-blue-500" },
+        { name: "Fréez-Corleone",  power: 1, req: 1, desc: "Le prof de la secte (667), découpage de prod chirurgical et sombres théories", color: "border-pink-500" },
+        { name: "Orelsann",       power: 2, req: 1, desc: "Le gars d'Caen, roi du storytelling et collectionneur de disques de diamant", color: "border-purple-500" },
+        { name: "Damsso",         power: 3, req: 2, desc: "Le génie noir de Bruxelles, flows cliniques et poésie ultra-sombre",           color: "border-orange-500" },
+        { name: "Nekfeuu",        power: 3, req: 2, desc: "Le Cyborg, plume technique légendaire qui disparaît dès qu'il vend tout",     color: "border-yellow-500" },
+        { name: "PNLL",           power: 5, req: 3, desc: "Les deux frères de Corbeil, le monde ou rien, légende du rap sans interviews", color: "border-red-600" },
+        { name: "Rohfff",         power: 5, req: 3, desc: "Le Padre du Rap Game, monstre sacré du 94 au flow hardcore indétrônable",     color: "border-blue-400" },
+        { name: "Ninhou",         power: 8, req: 4, desc: "L'empereur absolu des certifications, il transforme chaque couplet en or",     color: "border-green-500" },
+        { name: "JuLL",           power: 9, req: 4, desc: "L'Ovni de Marseille, machine humaine, plus gros vendeur de l'histoire du rap", color: "border-white" },
+        { name: "Boobai",         power: 10, req: 5, desc: "Le Duc de Boulogne, sur le trône depuis 20 ans, le boss final de la piraterie",color: "border-yellow-600" }
     ],
 
     // ─────────────────────────────────────────
