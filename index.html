@@ -1153,7 +1153,7 @@ input:focus, select:focus {
 // ==========================================
 // BASES DE DONNEES ET CONSTANTES
 // ==========================================
-const AVATARS = [
+let AVATARS = [
     { id: 'nouchi', name: 'Le Nouchi', img: 'nouchi.jpg', desc: 'Débrouillard de la rue.' },
     { id: 'seducteur', name: 'Le Séducteur', img: 'seducteur.jpg', desc: 'Rend les go folles.' },
     { id: 'bourgeois', name: 'Le Bourgeois', img: 'bourgeois.jpg', desc: 'Papa a de l\'argent.' },
@@ -1308,7 +1308,7 @@ const SPONSORS = [
     }
 ];
 
-const ACTIONS_POOL = [
+let ACTIONS_POOL = [
     // =====================================
     // NIVEAU 1 : LA GALÈRE (Progression Rapide)
     // =====================================
@@ -1476,7 +1476,7 @@ icon: `<svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path
     }
 ];
 
-const BEATS_POOL = [
+let BEATS_POOL = [
     // =====================================
     // NIVEAU 1 : LES GRATUITS / DÉBROUILLE (0 F - 10 000 F)
     // =====================================
@@ -2522,7 +2522,7 @@ function setActiveNav(id) {
     const grid = document.getElementById('avatar-grid');
     grid.innerHTML = ''; 
     
-    AVATARS.forEach(avatar => {
+    (window.AVATARS || AVATARS).forEach(avatar => {
         const div = document.createElement('div');
         div.className = `glass-card !p-2 flex flex-col items-center cursor-pointer transition-transform active:scale-95 border-2 border-transparent`;
         div.id = `avatar-card-${avatar.id}`;
@@ -2545,7 +2545,7 @@ function setActiveNav(id) {
 function selectAvatar(id) {
     selectedAvatarId = id;
     
-    AVATARS.forEach(avatar => {
+    (window.AVATARS || AVATARS).forEach(avatar => {
         const card = document.getElementById(`avatar-card-${avatar.id}`);
         if(card) {
             card.classList.remove('border-primary', 'bg-primary/10');
@@ -2563,7 +2563,7 @@ function selectAvatar(id) {
 }
 
 function confirmCharacterSelection() {
-    const avatar = AVATARS.find(a => a.id === selectedAvatarId);
+    const avatar = (window.AVATARS || AVATARS).find(a => a.id === selectedAvatarId);
     if (!avatar) return;
     
     document.getElementById('character-selection-screen').style.display = 'none';
@@ -2585,7 +2585,7 @@ function renderActions() {
     const list = document.getElementById('actions-list');
     list.innerHTML = "";
     
-    ACTIONS_POOL.forEach(act => {
+    (window.ACTIONS_POOL || ACTIONS_POOL).forEach(act => {
         const isLocked = game.player.level < act.reqLevel;
         const actCashDisp = (act.cash !== 0 && typeof window.convertPrice === 'function') ? (act.cash < 0 ? -window.convertPrice(Math.abs(act.cash)) : window.convertPrice(act.cash)) : act.cash;
         const canAfford = game.player.energy >= act.energy && game.player.cash >= Math.abs(actCashDisp < 0 ? actCashDisp : 0);
@@ -2687,7 +2687,7 @@ function renderStudioBeats() {
     const bizSkill = (game.player.skills && game.player.skills.biz) ? game.player.skills.biz : 0;
     const bizDiscount = (PERKS_TREE.biz && PERKS_TREE.biz.levels[bizSkill]) ? PERKS_TREE.biz.levels[bizSkill] : 1;
 
-    BEATS_POOL.forEach((beat, index) => {
+    (window.BEATS_POOL || BEATS_POOL).forEach((beat, index) => {
         const rawPrice = (beat.price && !isNaN(beat.price)) ? beat.price : 0;
         const rawPriceConverted = typeof window.convertPrice === 'function' ? window.convertPrice(rawPrice) : rawPrice;
         const price = Math.max(0, Math.floor(rawPriceConverted * bizDiscount));
@@ -2742,7 +2742,7 @@ function startRecording() {
         }
     }
     
-    const beat = BEATS_POOL[selectedBeatIndex];
+    const beat = (window.BEATS_POOL || BEATS_POOL)[selectedBeatIndex];
 
     // Sécurité : bizDiscount peut être undefined si skills.biz n'est pas initialisé
     const bizSkill = (game.player.skills && game.player.skills.biz) ? game.player.skills.biz : 0;
@@ -3586,7 +3586,7 @@ function launchImproRapide() {
     pendingSongData = {
         name: `Impro #${Math.floor(Math.random()*1000)}`,
         theme: randomStyle,
-        beat: BEATS_POOL[0], // beat gratuit
+        beat: (window.BEATS_POOL || BEATS_POOL)[0], // beat gratuit
         price: 0,
         isImpro: true
     };
