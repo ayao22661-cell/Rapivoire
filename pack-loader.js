@@ -730,17 +730,18 @@ function launchGame() {
     const activeKey = window.ACTIVE_SAVE_KEY || 'buzzKingSaveData';
     patchSaveSystem(activeKey);
 
+    // --- CONVERSION DU CASH DE DÉPART (CFA -> devise active) ---
+    // AVANT init() pour que l'UI n'affiche jamais 1500 en EUR
+    if (typeof game !== 'undefined' && window.CURRENCY && window.CURRENCY.rate && window.CURRENCY.rate !== 1) {
+        const savedRaw = localStorage.getItem(window.ACTIVE_SAVE_KEY || 'buzzKingSaveData');
+        if (!savedRaw) {
+            // Nouvelle partie : convertir le cash initial avant que init() ne l'affiche
+            game.player.cash = Math.max(1, Math.floor(game.player.cash * window.CURRENCY.rate));
+        }
+    }
+
     if (typeof init === 'function') {
         init();
-    }
-    // --- CONVERSION DU CASH DE DÉPART (CFA -> EUR) ---
-    if (typeof game !== 'undefined' && game.world && game.world.week === 1 && game.world.actionsLeft === 4) {
-        if (window.CURRENCY && window.CURRENCY.rate) {
-            if (game.player.cash > 5000) { // Si c'est la somme par défaut en CFA (10000)
-                game.player.cash = Math.floor(game.player.cash * window.CURRENCY.rate);
-                if (typeof updateUI === 'function') updateUI();
-            }
-        }
     }
 
     // Appliquer les actions en attente si ACTIONS_POOL n'était pas dispo au moment du pack load
