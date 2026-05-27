@@ -2647,7 +2647,8 @@ function renderStudioBeats() {
 
     BEATS_POOL.forEach((beat, index) => {
         const rawPrice = (beat.price && !isNaN(beat.price)) ? beat.price : 0;
-        const price = Math.max(0, Math.floor(rawPrice * bizDiscount));
+        const rawPriceConverted = typeof window.convertPrice === 'function' ? window.convertPrice(rawPrice) : rawPrice;
+        const price = Math.max(0, Math.floor(rawPriceConverted * bizDiscount));
         const div = document.createElement('div');
         div.className = `p-3 rounded-xl border cursor-pointer transition ${index === 0 ? 'bg-info/20 border-info' : 'bg-black/30 border-white/10 hover:border-white/30'}`;
         div.id = `beat-card-${index}`;
@@ -2705,9 +2706,10 @@ function startRecording() {
     const bizSkill = (game.player.skills && game.player.skills.biz) ? game.player.skills.biz : 0;
     const bizDiscount = (PERKS_TREE.biz && PERKS_TREE.biz.levels[bizSkill]) ? PERKS_TREE.biz.levels[bizSkill] : 1;
     
-    // price est toujours un nombre >= 0, jamais NaN
+    // price est toujours un nombre >= 0, jamais NaN — converti dans la devise active
     const rawPrice = (beat.price && !isNaN(beat.price)) ? beat.price : 0;
-    const price = Math.max(0, Math.floor(rawPrice * bizDiscount));
+    const rawPriceConverted = typeof window.convertPrice === 'function' ? window.convertPrice(rawPrice) : rawPrice;
+    const price = Math.max(0, Math.floor(rawPriceConverted * bizDiscount));
 
     // Beat gratuit : on ne bloque jamais
     if(price > 0 && game.player.cash < price) {
@@ -2759,7 +2761,8 @@ function toggleMusic() {
 // ==========================================
 
 function getThreeRandomChoices(styleId) {
-    const styleData = LYRICS_MINIGAME[styleId];
+    const lyricsSource = (window.LYRICS_DATA) ? window.LYRICS_DATA : LYRICS_MINIGAME;
+    const styleData = lyricsSource[styleId];
     if (!styleData || !styleData.choices) return [];
     
     const shuffled = [...styleData.choices].sort(() => 0.5 - Math.random());
@@ -2767,9 +2770,10 @@ function getThreeRandomChoices(styleId) {
 }
 
 function startLyricsMinigame(styleId) {
-    const styleData = LYRICS_MINIGAME[styleId];
+    const lyricsSource = (window.LYRICS_DATA) ? window.LYRICS_DATA : LYRICS_MINIGAME;
+    const styleData = lyricsSource[styleId];
     
-    // Si le style n'existe pas dans LYRICS_MINIGAME, on crée le son directement
+    // Si le style n'existe pas dans la source active, on crée le son directement
     if (!styleData) {
         finishRecording();
         return;
@@ -3529,9 +3533,11 @@ function checkLevelUp() {
 const IMPRO_STYLES = ['trap', 'coupé_décalé', 'conscient', 'afrobeat', 'zouglou'];
 
 function launchImproRapide() {
-    // On choisit un style au hasard parmi les styles disponibles dans LYRICS_MINIGAME
-    const availableStyles = IMPRO_STYLES.filter(s => LYRICS_MINIGAME[s]);
-    if (availableStyles.length === 0) { notify("Aucun style disponible."); return; }
+    // Utiliser les styles du pack actif si définis, sinon les styles CI par défaut
+    const activeStyles = window.IMPRO_STYLES || IMPRO_STYLES;
+    const lyricsSource = (window.LYRICS_DATA) ? window.LYRICS_DATA : LYRICS_MINIGAME;
+    const availableStyles = activeStyles.filter(s => lyricsSource[s]);
+    if (availableStyles.length === 0) { notify(uiStr('notifNoStyle', "Aucun style disponible.")); return; }
     const randomStyle = availableStyles[Math.floor(Math.random() * availableStyles.length)];
 
     // On stocke un pendingSongData minimal pour que resolveLyricsMinigame puisse appeler finishCreateSong
@@ -3598,7 +3604,7 @@ function executeFinalClash(target) {
 
     // 1 clash max par semaine
     if (game.player.clashDoneThisWeek) {
-        notify("Tu as déjà clashé cette semaine. Attends la prochaine !", "error");
+        notify(uiStr('notifClashOnce', "Tu as déjà clashé cette semaine. Attends la prochaine !"), "error");
         return;
     }
 
@@ -3640,7 +3646,7 @@ function executeFinalClash(target) {
 
         showEventModal(
             `${target.name} T'A ÉCRASÉ 😤`,
-            `${target.name} t'a démoli en public. Ses fans se moquent de toi sur les réseaux. Tu rentres au quartier la tête basse.`,
+            uiStr('clashFailDesc', `${target.name} t\'a démoli en public. Ses fans se moquent de toi sur les réseaux.`),
             [
                 { icon: '⚡', val: `-${energyLoss} Énergie` },
                 { icon: '👥', val: `-${fansLost.toLocaleString()} Fans` }
@@ -3668,8 +3674,8 @@ const LIFE_EVENTS = [
         desc: 'Ta petite amie se plaint que tu passes trop de temps au studio. Elle veut aller manger dans un bon resto à Bietry.',
         choices: [
             { text: 'L\'emmener (💰 -30,000 F)', action: () => { 
-                if(game.player.cash < 30000) { notify('Fonds insuffisants, elle est fâchée !', 'error'); game.player.life.gfAffection -= 15; return; }
-                game.player.cash -= 30000; game.player.life.gfAffection += 20; game.player.energy += 10; notify('Super soirée ! (+20 Affection, +10⚡)', 'success'); 
+                if(game.player.cash < (typeof window.convertPrice==='function'?window.convertPrice(30000):30000)) { notify('Fonds insuffisants, elle est fâchée !', 'error'); game.player.life.gfAffection -= 15; return; }
+                game.player.cash -= (typeof window.convertPrice==='function'?window.convertPrice(30000):30000); game.player.life.gfAffection += 20; game.player.energy += 10; notify('Super soirée ! (+20 Affection, +10⚡)', 'success'); 
             }},
             { text: 'Dire que tu dois bosser (💔 -20 Affection)', action: () => { 
                 game.player.life.gfAffection -= 20; game.player.xp = (game.player.xp || 0) + 20; notify('Elle te fait la tête, mais tu as pu bosser (+20 XP).', 'info'); 
@@ -3680,14 +3686,14 @@ const LIFE_EVENTS = [
         id: 'gf_dubai_mid',
         icon: '✈️',
         title: 'Pression des Réseaux',
-        condition: () => game.player.life.status === 'en couple' && (game.player.level || 1) >= 4 && (game.player.level || 1) <= 6 && game.player.cash > 2000000,
+        condition: () => game.player.life.status === 'en couple' && (game.player.level || 1) >= 4 && (game.player.level || 1) <= 6 && game.player.cash > (typeof window.convertPrice==='function'?window.convertPrice(2000000):2000000),
         desc: 'Ta Go voit les autres influenceuses à Dubaï. Elle te met la pression pour que vous fassiez un voyage VIP.',
         choices: [
             { text: 'Payer le voyage VIP (💰 -1.5 Million)', action: () => { 
-                game.player.cash -= 1500000; game.player.life.gfAffection += 30; game.player.buzz += 10; notify('Photos à Dubaï ! Les fans adorent (+10 Buzz, +30 Affection)', 'success'); 
+                game.player.cash -= (typeof window.convertPrice==='function'?window.convertPrice(1500000):1500000); game.player.life.gfAffection += 30; game.player.buzz += 10; notify('Photos à Dubaï ! Les fans adorent (+10 Buzz, +30 Affection)', 'success'); 
             }},
             { text: 'Proposer Assinie à la place (💰 -200,000 F)', action: () => { 
-                game.player.cash -= 200000; game.player.life.gfAffection += 5; notify('Elle a boudé un peu mais le week-end était cool (+5 Affection).', 'info'); 
+                game.player.cash -= (typeof window.convertPrice==='function'?window.convertPrice(200000):200000); game.player.life.gfAffection += 5; notify('Elle a boudé un peu mais le week-end était cool (+5 Affection).', 'info'); 
             }},
             { text: 'Refuser net (💔 -30 Affection)', action: () => { 
                 game.player.life.gfAffection -= 30; notify('Grosse dispute... Elle te traite de radin.', 'error'); 
@@ -3702,11 +3708,11 @@ const LIFE_EVENTS = [
         desc: 'L\'écran du téléphone de ta Go s\'est cassé. Ses copines ont le dernier iPhone et elle te fait des sous-entendus.',
         choices: [
             { text: 'Acheter le dernier iPhone (💰 -800,000 F)', action: () => { 
-                if(game.player.cash < 800000) { notify('Carte refusée devant le vendeur... La honte !', 'error'); game.player.life.gfAffection -= 20; return; }
-                game.player.cash -= 800000; game.player.life.gfAffection += 30; notify('Elle a pleuré de joie ! (+30 Affection)', 'success'); 
+                if(game.player.cash < (typeof window.convertPrice==='function'?window.convertPrice(800000):800000)) { notify('Carte refusée devant le vendeur... La honte !', 'error'); game.player.life.gfAffection -= 20; return; }
+                game.player.cash -= (typeof window.convertPrice==='function'?window.convertPrice(800000):800000); game.player.life.gfAffection += 30; notify('Elle a pleuré de joie ! (+30 Affection)', 'success'); 
             }},
             { text: 'Payer la réparation à Adjamé (💰 -25,000 F)', action: () => { 
-                game.player.cash -= 25000; notify('L\'écran marche, mais elle n\'est pas impressionnée.', 'info'); 
+                game.player.cash -= (typeof window.convertPrice==='function'?window.convertPrice(25000):25000); notify('L\'écran marche, mais elle n\'est pas impressionnée.', 'info'); 
             }},
             { text: 'Lui dire de travailler pour se l\'acheter (💔 -25 Affection)', action: () => { 
                 game.player.life.gfAffection -= 25; notify('Gros clash. Elle te traite de misérable.', 'error'); 
@@ -3721,8 +3727,8 @@ const LIFE_EVENTS = [
         desc: 'La mère de ta go vient "inspecter" ta vie d\'artiste. Elle n\'aime pas trop les rappeurs.',
         choices: [
             { text: 'La loger dans un bel hôtel (💰 -250,000 F)', action: () => { 
-                if(game.player.cash < 250000) { notify('Pas d\'argent, elle dort au salon. Elle te déteste.', 'error'); game.player.life.gfAffection -= 20; return; }
-                game.player.cash -= 250000; game.player.life.gfAffection += 25; notify('Elle est traitée comme une reine. Ta go est très fière de toi !', 'success'); 
+                if(game.player.cash < (typeof window.convertPrice==='function'?window.convertPrice(250000):250000)) { notify('Pas d\'argent, elle dort au salon. Elle te déteste.', 'error'); game.player.life.gfAffection -= 20; return; }
+                game.player.cash -= (typeof window.convertPrice==='function'?window.convertPrice(250000):250000); game.player.life.gfAffection += 25; notify('Elle est traitée comme une reine. Ta go est très fière de toi !', 'success'); 
             }},
             { text: 'L\'accueillir chez toi (⚡ -30)', action: () => { 
                 game.player.energy -= 30; notify('Tu as dû faire le ménage et cuisiner. Épuisant, mais ça passe (-30⚡).', 'warning'); 
@@ -3736,14 +3742,14 @@ const LIFE_EVENTS = [
         id: 'gf_business_salon',
         icon: '💅',
         title: 'Le Projet Onglerie',
-        condition: () => game.player.life.status === 'en couple' && (game.player.level || 1) >= 3 && game.player.cash >= 1000000,
+        condition: () => game.player.life.status === 'en couple' && (game.player.level || 1) >= 3 && game.player.cash >= (typeof window.convertPrice==='function'?window.convertPrice(1000000):1000000),
         desc: 'Ta go ne veut plus dépendre de toi. Elle te demande 1.5 Million pour ouvrir un salon de coiffure et onglerie VIP.',
         choices: [
             { text: 'Financer son business (💰 -1.5M)', action: () => { 
-                game.player.cash -= 1500000; game.player.life.gfAffection = 100; notify('Elle te proclame meilleur chéri du monde ! (+Affection Max)', 'success'); 
+                game.player.cash -= (typeof window.convertPrice==='function'?window.convertPrice(1500000):1500000); game.player.life.gfAffection = 100; notify('Elle te proclame meilleur chéri du monde ! (+Affection Max)', 'success'); 
             }},
             { text: 'Lui donner juste 300.000 F (💰 -300k)', action: () => { 
-                game.player.cash -= 300000; notify('Elle a pris l\'argent, mais elle boude.', 'info'); 
+                game.player.cash -= (typeof window.convertPrice==='function'?window.convertPrice(300000):300000); notify('Elle a pris l\'argent, mais elle boude.', 'info'); 
             }},
             { text: 'Refuser, investir dans ta musique (💔 -30 Affection)', action: () => { 
                 game.player.life.gfAffection -= 30; notify('Grosse dispute. Elle dit que tu ne la soutiens pas.', 'error'); 
@@ -3758,8 +3764,8 @@ const LIFE_EVENTS = [
         desc: 'Une "petite" gérée après un showcase menace d\'envoyer des vocaux compromettants à un blogueur si tu ne paies pas.',
         choices: [
             { text: 'Payer pour étouffer l\'affaire (💰 -1 Million)', action: () => { 
-                if(game.player.cash < 1000000) { notify('Tu n\'as pas l\'argent... Le vocal a fuité !', 'error'); game.player.buzz -= 10; game.player.life.gfAffection -= 40; return; }
-                game.player.cash -= 1000000; notify('Ton secret est sauf, mais ton compte a saigné.', 'warning'); 
+                if(game.player.cash < (typeof window.convertPrice==='function'?window.convertPrice(1000000):1000000)) { notify('Tu n\'as pas l\'argent... Le vocal a fuité !', 'error'); game.player.buzz -= 10; game.player.life.gfAffection -= 40; return; }
+                game.player.cash -= (typeof window.convertPrice==='function'?window.convertPrice(1000000):1000000); notify('Ton secret est sauf, mais ton compte a saigné.', 'warning'); 
             }},
             { text: 'L\'ignorer, c\'est du bluff ! (📉 Risque de Bad Buzz)', action: () => { 
                 if (Math.random() > 0.5) {
@@ -3778,8 +3784,8 @@ const LIFE_EVENTS = [
         desc: 'Une page gossip a publié une photo de toi très proche d\'une fan en boîte. Ta femme est en furie !',
         choices: [
             { text: 'Acheter un sac de luxe (💰 -3 Millions)', action: () => { 
-                if(game.player.cash < 3000000) { notify('Tu ne peux pas assumer... La rupture est proche !', 'error'); game.player.life.gfAffection -= 40; return; }
-                game.player.cash -= 3000000; game.player.life.gfAffection += 10; notify('Le sac a calmé la tempête... pour l\'instant.', 'info'); 
+                if(game.player.cash < (typeof window.convertPrice==='function'?window.convertPrice(3000000):3000000)) { notify('Tu ne peux pas assumer... La rupture est proche !', 'error'); game.player.life.gfAffection -= 40; return; }
+                game.player.cash -= (typeof window.convertPrice==='function'?window.convertPrice(3000000):3000000); game.player.life.gfAffection += 10; notify('Le sac a calmé la tempête... pour l\'instant.', 'info'); 
             }},
             { text: 'Faire un démenti public (⚡ -30, 📉 -5 Buzz)', action: () => { 
                 game.player.energy -= 30; game.player.buzz -= 5; game.player.life.gfAffection -= 10; notify('Tu as justifié ça, tu perds en street cred.', 'warning'); 
@@ -3789,11 +3795,11 @@ const LIFE_EVENTS = [
     {
         id: 'gf_marriage',
         icon: `<svg width="48" height="48" viewBox="0 0 24 24" fill="#FFD700" class='mx-auto'><path d="M19 3H5L2 9l10 12L22 9l-3-6zm-8.5 12.5L4.21 9.5 6.5 5h11l2.29 4.5L10.5 15.5z"/></svg>`, title: 'Demande en Mariage ?',
-        condition: () => game.player.life.status === 'en couple' && game.player.life.gfAffection >= 80 && game.player.cash >= 2000000 && (game.player.level || 1) >= 5,
+        condition: () => game.player.life.status === 'en couple' && game.player.life.gfAffection >= 80 && game.player.cash >= (typeof window.convertPrice==='function'?window.convertPrice(2000000):2000000) && (game.player.level || 1) >= 5,
         desc: 'Votre relation est au top. La famille met la pression pour la dot et le mariage (Coût : 2 Millions).',
         choices: [
             { text: 'Faire la demande (💰 -2 Millions)', action: () => { 
-                game.player.cash -= 2000000; game.player.life.status = 'marié'; game.player.buzz += 30; game.player.life.gfAffection = 100;
+                game.player.cash -= (typeof window.convertPrice==='function'?window.convertPrice(2000000):2000000); game.player.life.status = 'marié'; game.player.buzz += 30; game.player.life.gfAffection = 100;
                 notify('Félicitations ! Les réseaux sont en feu 🔥 (+30 Buzz !)', 'success'); 
             }},
             { text: 'Pas encore prêt (💔 -30 Affection)', action: () => { 
@@ -3827,8 +3833,8 @@ const LIFE_EVENTS = [
         desc: 'Ta mère t\'appelle. Ton petit frère a été renvoyé de l\'école parce que la scolarité n\'est pas payée (50,000 F).',
         choices: [
             { text: 'Payer la scolarité (💰 -50,000 F)', action: () => { 
-                if(game.player.cash < 50000) { notify('Tu n\'as pas l\'argent... Ta mère pleure.', 'error'); game.player.life.parentsAffection -= 20; return; }
-                game.player.cash -= 50000; game.player.life.parentsAffection += 20; game.player.buzz += 2; notify('La famille d\'abord ! Ton frère retourne en classe.', 'success'); 
+                if(game.player.cash < (typeof window.convertPrice==='function'?window.convertPrice(50000):50000)) { notify('Tu n\'as pas l\'argent... Ta mère pleure.', 'error'); game.player.life.parentsAffection -= 20; return; }
+                game.player.cash -= (typeof window.convertPrice==='function'?window.convertPrice(50000):50000); game.player.life.parentsAffection += 20; game.player.buzz += 2; notify('La famille d\'abord ! Ton frère retourne en classe.', 'success'); 
             }},
             { text: 'Ignorer l\'appel (💔 -20 Affection)', action: () => { 
                 game.player.life.parentsAffection -= 20; game.player.energy -= 10; notify('Mauvaise conscience (-10⚡).', 'error'); 
@@ -3843,11 +3849,11 @@ const LIFE_EVENTS = [
         desc: 'Ta grande sœur fait le baptême de son fils ce week-end. Elle s\'attend à ce que le parrain (toi) assure la boisson.',
         choices: [
             { text: 'Acheter la boisson (💰 -100,000 F)', action: () => { 
-                if(game.player.cash < 100000) { notify('Tu as fui la cérémonie...', 'error'); game.player.life.parentsAffection -= 15; return; }
-                game.player.cash -= 100000; game.player.life.parentsAffection += 15; notify('La fête était belle, tonton a assuré !', 'success'); 
+                if(game.player.cash < (typeof window.convertPrice==='function'?window.convertPrice(100000):100000)) { notify('Tu as fui la cérémonie...', 'error'); game.player.life.parentsAffection -= 15; return; }
+                game.player.cash -= (typeof window.convertPrice==='function'?window.convertPrice(100000):100000); game.player.life.parentsAffection += 15; notify('La fête était belle, tonton a assuré !', 'success'); 
             }},
             { text: 'Faire un petit dépôt Mobile Money (💰 -20,000 F)', action: () => { 
-                game.player.cash -= 20000; notify('C\'est mieux que rien, mais elle espérait plus.', 'info'); 
+                game.player.cash -= (typeof window.convertPrice==='function'?window.convertPrice(20000):20000); notify('C\'est mieux que rien, mais elle espérait plus.', 'info'); 
             }},
             { text: 'Dire que tu es en studio (💔 -15 Affection)', action: () => { 
                 game.player.life.parentsAffection -= 15; notify('La famille te trouve distant depuis que tu chantes.', 'error'); 
@@ -3862,8 +3868,8 @@ const LIFE_EVENTS = [
         desc: 'Ton père a fait un malaise. Il doit être admis dans une bonne clinique de la place.',
         choices: [
             { text: 'Tout prendre en charge (💰 -500,000 F)', action: () => { 
-                if(game.player.cash < 500000) { notify('Pas assez d\'argent, il va au CHU public.', 'error'); game.player.life.parentsAffection -= 20; return; }
-                game.player.cash -= 500000; game.player.life.parentsAffection += 30; notify('Ton père va mieux. La famille te bénit (+30 Affection).', 'success'); 
+                if(game.player.cash < (typeof window.convertPrice==='function'?window.convertPrice(500000):500000)) { notify('Pas assez d\'argent, il va au CHU public.', 'error'); game.player.life.parentsAffection -= 20; return; }
+                game.player.cash -= (typeof window.convertPrice==='function'?window.convertPrice(500000):500000); game.player.life.parentsAffection += 30; notify('Ton père va mieux. La famille te bénit (+30 Affection).', 'success'); 
             }},
             { text: 'Dire de gérer au CHU public (💔 -30 Affection)', action: () => { 
                 game.player.life.parentsAffection -= 30; game.player.buzz -= 5; notify('La famille est choquée par ton comportement de star radine.', 'error'); 
@@ -3881,7 +3887,7 @@ const LIFE_EVENTS = [
                 game.player.fans = Math.max(0, game.player.fans - 10000); game.player.life.parentsAffection += 20; notify('Il a insulté un promoteur ! (-10k Fans) Mais la tante est ravie.', 'error'); 
             }},
             { text: 'Le payer pour qu\'il parte (💰 -150,000 F)', action: () => { 
-                game.player.cash -= 150000; notify('Tu as acheté la paix familiale.', 'success'); 
+                game.player.cash -= (typeof window.convertPrice==='function'?window.convertPrice(150000):150000); notify('Tu as acheté la paix familiale.', 'success'); 
             }},
             { text: 'Refuser catégoriquement (💔 -20 Affection)', action: () => { 
                 game.player.life.parentsAffection -= 20; notify('Ta tante te traite d\'ingrat au quartier.', 'warning'); 
@@ -3896,8 +3902,8 @@ const LIFE_EVENTS = [
         desc: 'Ton grand frère a trouvé un réseau pour aller à "Mbengue" (Paris). Il manque 800.000 F pour le dossier.',
         choices: [
             { text: 'Payer pour l\'aider (💰 -800,000 F)', action: () => { 
-                if(game.player.cash < 800000) { notify('Tu n\'as pas l\'argent.', 'error'); return; }
-                game.player.cash -= 800000; game.player.life.parentsAffection += 20; notify('Il est parti. Toute la famille prie pour ta réussite.', 'success'); 
+                if(game.player.cash < (typeof window.convertPrice==='function'?window.convertPrice(800000):800000)) { notify('Tu n\'as pas l\'argent.', 'error'); return; }
+                game.player.cash -= (typeof window.convertPrice==='function'?window.convertPrice(800000):800000); game.player.life.parentsAffection += 20; notify('Il est parti. Toute la famille prie pour ta réussite.', 'success'); 
             }},
             { text: 'Refuser, trop risqué', action: () => { 
                 notify('Tu as préféré garder ton argent. L\'ambiance est bizarre à la maison.', 'warning'); 
@@ -3908,13 +3914,13 @@ const LIFE_EVENTS = [
         id: 'family_business',
         icon: '🐔',
         title: 'Le "Projet" de tonton',
-        condition: () => (game.player.level || 1) >= 4 && game.player.cash >= 3000000,
+        condition: () => (game.player.level || 1) >= 4 && game.player.cash >= (typeof window.convertPrice==='function'?window.convertPrice(3000000):3000000),
         desc: 'Ton oncle te présente un "business infaillible" de ferme de poulets et te demande d\'investir 2 Millions.',
         choices: [
             { text: 'Investir (💰 -2 Millions)', action: () => { 
-                game.player.cash -= 2000000; 
+                game.player.cash -= (typeof window.convertPrice==='function'?window.convertPrice(2000000):2000000); 
                 if(Math.random() > 0.5) {
-                    game.player.cash += 3500000; game.player.life.parentsAffection += 10; notify('Incroyable ! Tonton a remboursé avec bénéfices ! (+1.5M)', 'success');
+                    game.player.cash += (typeof window.convertPrice==='function'?window.convertPrice(3500000):3500000); game.player.life.parentsAffection += 10; notify('Incroyable ! Tonton a remboursé avec bénéfices ! (+1.5M)', 'success');
                 } else {
                     game.player.life.parentsAffection += 5; notify('Les poulets sont malades... Argent perdu. Mais la famille te remercie.', 'error');
                 }
@@ -3932,11 +3938,11 @@ const LIFE_EVENTS = [
         desc: 'Un grand-oncle est décédé. Au village, on attend que "l\'enfant prodige de la capitale" gère les dépenses.',
         choices: [
             { text: 'Faire un don de boss (💰 -2 Millions)', action: () => { 
-                if(game.player.cash < 2000000) { notify('Carte refusée devant les anciens... Honte suprême.', 'error'); game.player.life.parentsAffection -= 30; return; }
-                game.player.cash -= 2000000; game.player.life.parentsAffection += 40; game.player.buzz += 5; notify('Les griots chantent ton nom ! (+40 Affection)', 'success'); 
+                if(game.player.cash < (typeof window.convertPrice==='function'?window.convertPrice(2000000):2000000)) { notify('Carte refusée devant les anciens... Honte suprême.', 'error'); game.player.life.parentsAffection -= 30; return; }
+                game.player.cash -= (typeof window.convertPrice==='function'?window.convertPrice(2000000):2000000); game.player.life.parentsAffection += 40; game.player.buzz += 5; notify('Les griots chantent ton nom ! (+40 Affection)', 'success'); 
             }},
             { text: 'Participer normalement (💰 -300,000 F)', action: () => { 
-                game.player.cash -= 300000; notify('Tu as fait le minimum syndical. Ça murmure un peu.', 'info'); 
+                game.player.cash -= (typeof window.convertPrice==='function'?window.convertPrice(300000):300000); notify('Tu as fait le minimum syndical. Ça murmure un peu.', 'info'); 
             }},
             { text: 'Ne rien envoyer (💔 -40 Affection)', action: () => { 
                 game.player.life.parentsAffection -= 40; game.player.fans -= 5000; notify('La famille est scandalisée. (-40 Affection, -5k Fans)', 'error'); 
@@ -3947,11 +3953,11 @@ const LIFE_EVENTS = [
         id: 'parents_house_high',
         icon: '🏡',
         title: 'Sortir les parents du Ghetto',
-        condition: () => (game.player.level || 1) >= 7 && game.player.cash > 25000000 && game.player.life.parentsAffection > 50,
+        condition: () => (game.player.level || 1) >= 7 && game.player.cash > (typeof window.convertPrice==='function'?window.convertPrice(25000000):25000000) && game.player.life.parentsAffection > 50,
         desc: 'Tu es millionnaire, mais tes parents vivent toujours au quartier. Les paparazzis commencent à en parler.',
         choices: [
             { text: 'Acheter la Villa (💰 -25 Millions)', action: () => { 
-                game.player.cash -= 25000000; game.player.life.parentsAffection = 100; game.player.fans += 50000; game.player.buzz += 15;
+                game.player.cash -= (typeof window.convertPrice==='function'?window.convertPrice(25000000):25000000); game.player.life.parentsAffection = 100; game.player.fans += 50000; game.player.buzz += 15;
                 notify('Un vrai digne fils ! Les médias saluent ton geste (+50k Fans, +15 Buzz).', 'success'); 
             }},
             { text: 'Plus tard... (💔 -20 Affection)', action: () => { 
@@ -3963,15 +3969,15 @@ const LIFE_EVENTS = [
         id: 'family_village',
         icon: '🛖',
         title: 'L\'Appel du Village',
-        condition: () => (game.player.level || 1) >= 6 && game.player.cash >= 10000000,
+        condition: () => (game.player.level || 1) >= 6 && game.player.cash >= (typeof window.convertPrice==='function'?window.convertPrice(10000000):10000000),
         desc: 'Le chef de ton village te demande de financer la construction d\'un centre de santé rural.',
         choices: [
             { text: 'Financer le projet (💰 -5 Millions)', action: () => { 
-                game.player.cash -= 5000000; game.player.life.parentsAffection = 100; game.player.fans += 25000; game.player.buzz += 10;
+                game.player.cash -= (typeof window.convertPrice==='function'?window.convertPrice(5000000):5000000); game.player.life.parentsAffection = 100; game.player.fans += 25000; game.player.buzz += 10;
                 notify('Bénédictions ! Tu es un héros national ! (+25k Fans, +10 Buzz)', 'success'); 
             }},
             { text: 'Don symbolique (💰 -500,000 F)', action: () => { 
-                game.player.cash -= 500000; notify('Ils ont dit merci, sans plus.', 'info'); 
+                game.player.cash -= (typeof window.convertPrice==='function'?window.convertPrice(500000):500000); notify('Ils ont dit merci, sans plus.', 'info'); 
             }},
             { text: 'Ignorer (💔 -30 Affection)', action: () => { 
                 game.player.life.parentsAffection -= 30; notify('Les anciens t\'ont maudit. Mauvaise conscience.', 'error'); 
@@ -3991,8 +3997,8 @@ const LIFE_EVENTS = [
         desc: 'Une page TikTok experte en horlogerie t\'accuse de porter une fausse Rolex dans ton dernier clip.',
         choices: [
             { text: 'Acheter une VRAIE montre en urgence (💰 -5 Millions)', action: () => { 
-                if(game.player.cash < 5000000) { notify('Tu n\'as pas l\'argent... Le bad buzz est confirmé !', 'error'); game.player.buzz -= 10; game.player.fans -= 5000; return; }
-                game.player.cash -= 5000000; game.player.buzz += 15; notify('Tu as posté la facture et humilié le blogueur ! (+15 Buzz)', 'success'); 
+                if(game.player.cash < (typeof window.convertPrice==='function'?window.convertPrice(5000000):5000000)) { notify('Tu n\'as pas l\'argent... Le bad buzz est confirmé !', 'error'); game.player.buzz -= 10; game.player.fans -= 5000; return; }
+                game.player.cash -= (typeof window.convertPrice==='function'?window.convertPrice(5000000):5000000); game.player.buzz += 15; notify('Tu as posté la facture et humilié le blogueur ! (+15 Buzz)', 'success'); 
             }},
             { text: 'Faire une vidéo d\'insultes (⚡ -15, 🔥 +5 Buzz)', action: () => { 
                 game.player.energy -= 15; game.player.buzz += 5; notify('Tu as fait du bruit, mais les doutes persistent.', 'warning'); 
@@ -4006,19 +4012,19 @@ const LIFE_EVENTS = [
         id: 'lifestyle_land_scam',
         icon: '🏗️',
         title: 'Le Terrain à Bingerville',
-        condition: () => (game.player.level || 1) >= 5 && game.player.cash > 10000000,
+        condition: () => (game.player.level || 1) >= 5 && game.player.cash > (typeof window.convertPrice==='function'?window.convertPrice(10000000):10000000),
         desc: 'Un démarcheur te propose un terrain très bien situé à Bingerville pour 5 Millions. Une occasion en or !',
         choices: [
             { text: 'Acheter sans réfléchir (💰 -5 Millions)', action: () => { 
-                game.player.cash -= 5000000;
+                game.player.cash -= (typeof window.convertPrice==='function'?window.convertPrice(5000000):5000000);
                 if(Math.random() > 0.5) {
-                    game.player.cash += 8000000; notify('Excellente affaire ! Tu as revendu le terrain avec 3M de bénéfice !', 'success');
+                    game.player.cash += (typeof window.convertPrice==='function'?window.convertPrice(8000000):8000000); notify('Excellente affaire ! Tu as revendu le terrain avec 3M de bénéfice !', 'success');
                 } else {
                     game.player.energy -= 30; notify('ARNAQUE ! Le terrain appartenait à l\'État. Tu as tout perdu (-30⚡).', 'error');
                 }
             }},
             { text: 'Payer un Notaire pour vérifier (💰 -500,000 F)', action: () => { 
-                game.player.cash -= 500000; notify('Le notaire a découvert que c\'était une arnaque. Tu as sauvé tes millions !', 'success'); 
+                game.player.cash -= (typeof window.convertPrice==='function'?window.convertPrice(500000):500000); notify('Le notaire a découvert que c\'était une arnaque. Tu as sauvé tes millions !', 'success'); 
             }},
             { text: 'Ignorer l\'offre', action: () => { 
                 notify('Trop risqué, tu passes ton tour.', 'info'); 
@@ -4033,8 +4039,8 @@ const LIFE_EVENTS = [
         desc: 'Un ancien du quartier qui te protégeait vient au studio. Il demande "un petit jeton" pour régler un problème.',
         choices: [
             { text: 'Lui donner l\'argent (💰 -200,000 F)', action: () => { 
-                if(game.player.cash < 200000) { notify('Tu as bégayé devant lui... La honte au quartier.', 'error'); return; }
-                game.player.cash -= 200000; game.player.buzz += 5; notify('Le quartier valide ton respect pour les anciens (+5 Buzz).', 'success'); 
+                if(game.player.cash < (typeof window.convertPrice==='function'?window.convertPrice(200000):200000)) { notify('Tu as bégayé devant lui... La honte au quartier.', 'error'); return; }
+                game.player.cash -= (typeof window.convertPrice==='function'?window.convertPrice(200000):200000); game.player.buzz += 5; notify('Le quartier valide ton respect pour les anciens (+5 Buzz).', 'success'); 
             }},
             { text: 'Esquiver en mentant (📉 -5 Buzz)', action: () => { 
                 game.player.buzz = Math.max(0, game.player.buzz - 5); notify('Le vieux père te traite de faux type (-5 Buzz).', 'error'); 
@@ -4051,7 +4057,7 @@ const LIFE_EVENTS = [
                 game.player.fans = Math.max(0, game.player.fans - 10000); game.player.buzz -= 10; notify('Le son est catastrophique. Les gens se moquent de toi sur Twitter.', 'error'); 
             }},
             { text: 'Corrompre l\'ingé son (💰 -100,000 F)', action: () => { 
-                game.player.cash -= 100000; notify('L\'ingé a "accidentellement" supprimé le projet. Tu es sauvé !', 'success'); 
+                game.player.cash -= (typeof window.convertPrice==='function'?window.convertPrice(100000):100000); notify('L\'ingé a "accidentellement" supprimé le projet. Tu es sauvé !', 'success'); 
             }},
             { text: 'Refuser net (⚡ -30)', action: () => { 
                 game.player.energy -= 30; notify('Il a voulu te frapper au studio. Tu as dû fuir par derrière (-30⚡).', 'warning'); 
@@ -4086,8 +4092,8 @@ const LIFE_EVENTS = [
         desc: 'Ton meilleur ami s\'est fait arrêter pour une bagarre au maquis. Il a besoin qu\'on paie sa caution.',
         choices: [
             { text: 'Payer la caution (💰 -100,000 F)', action: () => { 
-                if(game.player.cash < 100000) { notify('Tu as laissé ton gars tomber...', 'error'); return; }
-                game.player.cash -= 100000; game.player.energy -= 10; notify('Tu l\'as sorti de là, mais ça t\'a pris la nuit (-10⚡).', 'info'); 
+                if(game.player.cash < (typeof window.convertPrice==='function'?window.convertPrice(100000):100000)) { notify('Tu as laissé ton gars tomber...', 'error'); return; }
+                game.player.cash -= (typeof window.convertPrice==='function'?window.convertPrice(100000):100000); game.player.energy -= 10; notify('Tu l\'as sorti de là, mais ça t\'a pris la nuit (-10⚡).', 'info'); 
             }},
             { text: 'Le laisser assumer (⚡ +20)', action: () => { 
                 game.player.energy += 20; notify('Tu dois te concentrer sur ta musique ! (+20⚡ pour le focus)', 'success'); 
@@ -4103,8 +4109,8 @@ const LIFE_EVENTS = [
         desc: 'Tu rentres du studio à 3h du matin. La BAC t\'arrête : "Ah, la star, il faut gèrer le thé de la nuit !"',
         choices: [
             { text: 'Donner un billet (💰 -10,000 F)', action: () => { 
-                if(game.player.cash < 10000) return;
-                game.player.cash -= 10000; notify('Ils t\'ont laissé passer : "Bonne route le sang !"', 'success'); 
+                if(game.player.cash < (typeof window.convertPrice==='function'?window.convertPrice(10000):10000)) return;
+                game.player.cash -= (typeof window.convertPrice==='function'?window.convertPrice(10000):10000); notify('Ils t\'ont laissé passer : "Bonne route le sang !"', 'success'); 
             }},
             { text: 'Faire la star et refuser (⚡ -20)', action: () => { 
                 game.player.energy -= 20; notify('Ils ont fouillé ta voiture pendant 1h. Tu rentres épuisé (-20⚡).', 'warning'); 
@@ -4120,8 +4126,8 @@ const LIFE_EVENTS = [
         desc: 'Un gars te présente un féticheur puissant. Il promet de faire exploser ton buzz contre 500.000 F.',
         choices: [
             { text: 'Tenter le coup (💰 -500,000 F)', action: () => { 
-                if(game.player.cash < 500000) { notify('Le génie réclame l\'argent complet !', 'error'); return; }
-                game.player.cash -= 500000;
+                if(game.player.cash < (typeof window.convertPrice==='function'?window.convertPrice(500000):500000)) { notify('Le génie réclame l\'argent complet !', 'error'); return; }
+                game.player.cash -= (typeof window.convertPrice==='function'?window.convertPrice(500000):500000);
                 if(Math.random() > 0.4) {
                     game.player.buzz += 20; game.player.fans += 10000; notify('INCROYABLE ! Ton son devient viral sur TikTok ! (+20 Buzz, +10k Fans)', 'success');
                 } else {
@@ -4141,8 +4147,8 @@ const LIFE_EVENTS = [
         desc: 'Un célèbre pasteur de TikTok fait une "prophétie" sur ta chute imminente si tu ne fais pas une offrande d\'1 Million.',
         choices: [
             { text: 'Payer la "semence" par peur (💰 -1 Million)', action: () => { 
-                if(game.player.cash < 1000000) { notify('Tu trembles, l\'angoisse te ronge...', 'error'); game.player.energy -= 30; return; }
-                game.player.cash -= 1000000; notify('Le pasteur a prié pour toi en live. Ton esprit est apaisé.', 'info'); 
+                if(game.player.cash < (typeof window.convertPrice==='function'?window.convertPrice(1000000):1000000)) { notify('Tu trembles, l\'angoisse te ronge...', 'error'); game.player.energy -= 30; return; }
+                game.player.cash -= (typeof window.convertPrice==='function'?window.convertPrice(1000000):1000000); notify('Le pasteur a prié pour toi en live. Ton esprit est apaisé.', 'info'); 
             }},
             { text: 'Le clasher dans un freestyle (🔥 +15 Buzz)', action: () => { 
                 game.player.buzz += 15; notify('Le clash fait fureur sur Internet ! Tu gagnes du Buzz.', 'success'); 
@@ -4392,9 +4398,10 @@ function processNextWeek() {
     const MAX_CHANCE_EVENEMENT  = 0.35; // plafond à 35%
     const CHANCE_EVENEMENT = Math.min(MAX_CHANCE_EVENEMENT, BASE_CHANCE_EVENEMENT + (game.player.level - 1) * LEVEL_BONUS_CHANCE);
     
-    if (Math.random() < CHANCE_EVENEMENT && typeof RANDOM_EVENTS !== 'undefined' && RANDOM_EVENTS.length > 0) {
+    const _eventsPool = window.RANDOM_EVENTS || RANDOM_EVENTS;
+    if (Math.random() < CHANCE_EVENEMENT && typeof _eventsPool !== 'undefined' && _eventsPool.length > 0) {
         // FILTRE STRICT : on ne tire que les events dont le reqLevel est atteint
-        const eligibleEvents = RANDOM_EVENTS.filter(e => {
+        const eligibleEvents = _eventsPool.filter(e => {
             const req = e.reqLevel || 1;
             return game.player.level >= req;
         });
@@ -4455,8 +4462,9 @@ function processNextWeek() {
     const LIFE_LEVEL_BONUS = 0.03;
     const CHANCE_LIFE_EVENT = Math.min(0.20, BASE_LIFE_CHANCE + (game.player.level - 1) * LIFE_LEVEL_BONUS);
 
-    if (Math.random() < CHANCE_LIFE_EVENT && typeof LIFE_EVENTS !== 'undefined') {
-        const validEvents = LIFE_EVENTS.filter(event => {
+    const _lifePool = window.LIFE_EVENTS || LIFE_EVENTS;
+    if (Math.random() < CHANCE_LIFE_EVENT && typeof _lifePool !== 'undefined') {
+        const validEvents = _lifePool.filter(event => {
             // 1. La condition narrative (statut, affection, etc.) doit être remplie
             if (!event.condition()) return false;
             // 2. Palier de fans minimal selon l'importance de l'event
@@ -4679,7 +4687,7 @@ function offerContract(contract, type) {
     
     // Contenu spécifique selon le type de contrat
     let gainHtml = type === 'label' ? 
-        `<div class="text-[#00E676] font-black text-2xl">+ ${contract.bonusCash.toLocaleString()} ${((window.CURRENCY && window.CURRENCY.symbol) ? window.CURRENCY.symbol : 'F')}</div>
+        `<div class="text-[#00E676] font-black text-2xl">+ ${(typeof window.convertPrice === 'function' ? window.convertPrice(contract.bonusCash) : contract.bonusCash).toLocaleString()} ${((window.CURRENCY && window.CURRENCY.symbol) ? window.CURRENCY.symbol : 'F')}</div>
          <div class="text-zinc-500 text-[10px] uppercase font-bold mt-1">Avance à la signature</div>
          <div class="mt-4 pt-4 border-t border-white/5 text-[10px] text-zinc-400">
             Redevance : <span class="text-[#FF5252]">${contract.cut * 100}%</span> sur tes revenus
@@ -4727,8 +4735,9 @@ function handleContract(accepted) {
     if (accepted) {
         if (type === 'label') {
             game.player.label = data;
-            game.player.cash += data.bonusCash;
-            addNews(`🚨 SIGNATURE : Tu rejoins l'écurie ${data.name} ! Avance de ${data.bonusCash.toLocaleString()} ${((window.CURRENCY && window.CURRENCY.symbol) ? window.CURRENCY.symbol : 'F')}.`, "success");
+            const _bonusConverted = typeof window.convertPrice === 'function' ? window.convertPrice(data.bonusCash) : data.bonusCash;
+            game.player.cash += _bonusConverted;
+            addNews(`🚨 SIGNATURE : Tu rejoins l'écurie ${data.name} ! Avance de ${_bonusConverted.toLocaleString()} ${((window.CURRENCY && window.CURRENCY.symbol) ? window.CURRENCY.symbol : 'F')}.`, "success");
         } else if (type === 'sponsor') {
             game.player.sponsors.push(data);
             addNews(`🤝 SPONSOR : ${data.name} devient ton partenaire officiel.`, "success");
