@@ -665,6 +665,18 @@ window.PACK_DATA = {
 window.PACK_DATA.IMPRO_STYLES = ['drill', 'trap_ego', 'afro_love', 'ambiance', 'conscient', 'afrobeat'];
 
 // ─────────────────────────────────────────────
+// THEME_LABELS FR — labels affichés dans le <select> studio
+// ─────────────────────────────────────────────
+window.PACK_DATA.THEME_LABELS = {
+    'drill':     'Drill Parisienne (Sombre & 93)',
+    'trap_ego':  'Trap Ego Trip (Argent & Flex)',
+    'afro_love': 'Afro Love (Romantique Parisien)',
+    'ambiance':  'Club Parisien (Fête & VIP)',
+    'conscient': 'Rap Conscient (Message Profond)',
+    'afrobeat':  'Afrobeat (Groove Continental)',
+};
+
+// ─────────────────────────────────────────────
 // RANDOM_EVENTS FR (38 événements version Paris)
 // Les montants sont en euros (devise active du pack)
 // ─────────────────────────────────────────────
