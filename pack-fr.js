@@ -439,3 +439,409 @@ window.PACK_DATA = {
         }
     }
 };
+
+// ─────────────────────────────────────────────────────────────────────────────
+// PACK FR — DONNÉES ÉTENDUES
+// Injectées via pack-loader dans window.RANDOM_EVENTS, window.LIFE_EVENTS,
+// window.IMPRO_STYLES et window.LYRICS_DATA
+// ─────────────────────────────────────────────────────────────────────────────
+
+// ─────────────────────────────────────────────
+// IMPRO_STYLES FR (styles disponibles pour l'impro rapide)
+// ─────────────────────────────────────────────
+window.PACK_DATA.IMPRO_STYLES = ['drill', 'trap_ego', 'afro_love', 'ambiance', 'conscient', 'afrobeat'];
+
+// ─────────────────────────────────────────────
+// RANDOM_EVENTS FR (38 événements version Paris)
+// Les montants sont en euros (devise active du pack)
+// ─────────────────────────────────────────────
+window.PACK_DATA.RANDOM_EVENTS = [
+    // POSITIFS
+    { title: "Playlist Spotify France", desc: "Ton son vient d'être ajouté à la playlist 'Rap Caviar France'. Le directeur artistique t'a repéré.", effect: { fans: 8000, buzz: 5, xp: 20 }, type: 'positive', reqLevel: 2 },
+    { title: "Feature YouTube", desc: "Une chaîne YouTube avec 500k abonnés a fait une vidéo sur toi.", effect: { fans: 5000, buzz: 8, xp: 15 }, type: 'positive', reqLevel: 2 },
+    { title: "TikTok Viral", desc: "Un ado a posté un son qui use ton beat sans savoir que c'était toi. Ça fait 1M de vues.", effect: { fans: 12000, buzz: 10 }, type: 'positive', reqLevel: 1 },
+    { title: "Pub dans un épisode de série Netflix", desc: "Ton son est utilisé dans une série Netflix française. Royalties + exposition massive.", effect: { cash: 1500, fans: 20000, buzz: 5 }, type: 'positive', reqLevel: 4 },
+    { title: "Concert vendu en 10 minutes", desc: "Tes billets pour la prochaine salle partent en 10 minutes. Revente au double sur Viagogo.", effect: { fans: 3000, buzz: 8, cash: 800 }, type: 'positive', reqLevel: 3 },
+    { title: "Article Booska-P", desc: "Booska-P t'a mis en 'artiste à suivre'. La scène indie te découvre.", effect: { fans: 2500, buzz: 5, xp: 15 }, type: 'positive', reqLevel: 2 },
+    { title: "Freestyle OFive", desc: "OFive publie ton freestyle surprise. Les puristes du rap FR sont dingues.", effect: { fans: 4000, buzz: 12, xp: 30 }, type: 'positive', reqLevel: 3 },
+    { title: "Coup de coeur France Inter", desc: "Un journaliste France Inter a parlé de ton album dans son émission. Les bobos t'adorent maintenant.", effect: { fans: 6000, buzz: 3, xp: 20 }, type: 'positive', reqLevel: 4 },
+    { title: "Collab avec une marque streetwear", desc: "Une marque streetwear parisienne veut que tu designs une capsule exclusive.", effect: { cash: 3000, fans: 5000, buzz: 5 }, type: 'positive', reqLevel: 4 },
+    { title: "Prime Streaming", desc: "Ton son passe la barre des 1M de streams sur Deezer. Prime reversée.", effect: { cash: 2300, xp: 20 }, type: 'positive', reqLevel: 3 },
+    { title: "Battle de freestyle gagnée", desc: "Tu as humilié un rappeur réputé en battle dans une cave à Belleville. Respect maximal.", effect: { buzz: 15, fans: 1500, xp: 25 }, type: 'positive', reqLevel: 2 },
+    { title: "Remix d'un artiste signé", desc: "Un artiste signé sur un gros label te demande pour remixer son son. Porte ouverte.", effect: { fans: 8000, buzz: 6, xp: 30 }, type: 'positive', reqLevel: 4 },
+    { title: "Placement musical au cinéma", desc: "Ton son est dans le générique d'un film français en salle.", effect: { cash: 1800, fans: 10000, buzz: 4 }, type: 'positive', reqLevel: 5 },
+
+    // NÉGATIFS
+    { title: "Plagiat accusé", desc: "Un beatmaker prétend que ta prod lui a volé son instru. Twitter est en feu.", effect: { buzz: -8, fans: -2000, xp: -10 }, type: 'negative', reqLevel: 2 },
+    { title: "Interview ratée sur RFM", desc: "Tu étais tellement stressé en interview radio que tu as dit 'euh' 47 fois.", effect: { buzz: -5, fans: -500, energy: -20 }, type: 'negative', reqLevel: 2 },
+    { title: "Clash perdu sur Twitter", desc: "Un rappeur inconnu t'a détruit en 3 tweets. Les screenshots circulent partout.", effect: { buzz: -10, fans: -1500 }, type: 'negative', reqLevel: 1 },
+    { title: "Contrôle fiscal", desc: "Les impôts ont vu ton dernier clip Ferrari. Redressement fiscal.", effect: { cash: -3000, xp: -10 }, type: 'negative', reqLevel: 4 },
+    { title: "Faux manager arnaque", desc: "Ton manager a signé un contrat de distribution catastrophique sans te consulter.", effect: { cash: -1500, fans: -3000 }, type: 'negative', reqLevel: 3 },
+    { title: "Live Instagram catastrophique", desc: "Ton live à 3h du matin en mauvais état a été enregistré et monte sur les groupes rap.", effect: { buzz: -8, fans: -1000, energy: -25 }, type: 'negative', reqLevel: 2 },
+    { title: "Distribution bloquée", desc: "Ton distributeur a bloqué ton EP à cause d'un sample non clearé. 3 semaines perdues.", effect: { cash: -1200, xp: -15, energy: -30 }, type: 'negative', reqLevel: 3 },
+    { title: "Ghostwriter exposé", desc: "Ton ghostwriter a vendu la mèche en interview. La scène consciente te boycotte.", effect: { buzz: -12, fans: -4000 }, type: 'negative', reqLevel: 4 },
+    { title: "Dispute publique avec un beatmaker", desc: "Tu as publié un DM privé avec ton beatmaker. Il te coupe l'accès à tous ses sons.", effect: { buzz: -6, xp: -20 }, type: 'negative', reqLevel: 2 },
+
+    // NEUTRES / MIXTES
+    { title: "Documentaire Vice France", desc: "Vice veut faire un mini-docu sur ta vie. Exposition + mais vie privée exposée.", effect: { fans: 7000, buzz: 5, energy: -20 }, type: 'neutral', reqLevel: 4 },
+    { title: "Polémique Twitter", desc: "Un de tes anciens tweets ressort. Le contexte était différent mais les gens ne lisent pas.", effect: { buzz: 8, fans: -3000 }, type: 'neutral', reqLevel: 2 },
+    { title: "Feature gratuite demandée", desc: "Un ami d'enfance veut un feat gratuit. Si tu acceptes, la street valide. Si tu refuses, 'il a changé'.", effect: { fans: 2000, energy: -30 }, type: 'neutral', reqLevel: 2 },
+    { title: "Festival à la dernière minute", desc: "Un artiste s'est désisté pour un festival. Tu passes dans 48h. Pas le temps de préparer.", effect: { fans: 5000, buzz: 8, energy: -40 }, type: 'neutral', reqLevel: 3 },
+    { title: "Nouveau son qui divise", desc: "Tu as changé ton style. Tes anciens fans sont perdus, de nouveaux arrivent.", effect: { fans: 6000, buzz: -5 }, type: 'neutral', reqLevel: 3 },
+    { title: "Beef involontaire", desc: "Un artiste a cru que ta chanson parlait de lui. Il a répondu publiquement. Buzz assuré.", effect: { buzz: 12, fans: 3000, energy: -20 }, type: 'neutral', reqLevel: 2 },
+    { title: "Droits cession label", desc: "Ton ancien label sort un EP de tes vieilles démos sans te prévenir. Hors de contrôle.", effect: { cash: 900, fans: 4000, buzz: -3 }, type: 'neutral', reqLevel: 5 },
+];
+
+// ─────────────────────────────────────────────
+// LIFE_EVENTS FR (événements de vie version Paris)
+// Montants en euros, situations parisiennes
+// ─────────────────────────────────────────────
+window.PACK_DATA.LIFE_EVENTS = [
+
+    // ── PETITE AMIE & AMOUR ──
+
+    {
+        id: 'gf_paris_low',
+        icon: '🍝',
+        title: 'Soirée avec ta Go',
+        condition: () => window.game && game.player.life.status === 'en couple' && (game.player.level || 1) < 4,
+        desc: 'Ta meuf se plaint que tu passes ta vie en studio. Elle veut un vrai dîner au restaurant, pas un kebab à emporter.',
+        choices: [
+            { text: 'La sortir dans un resto sympa (💰 -45€)', action: () => {
+                const cost = typeof window.convertPrice === 'function' ? window.convertPrice(30000) : 45;
+                if(game.player.cash < cost) { notify('Fonds insuffisants, elle est déçue !', 'error'); game.player.life.gfAffection -= 15; return; }
+                game.player.cash -= cost; game.player.life.gfAffection += 20; game.player.energy += 10; notify('Belle soirée ! (+20 Affection, +10⚡)', 'success');
+            }},
+            { text: 'Dire que t\'as du boulot (💔 -20 Affection)', action: () => {
+                game.player.life.gfAffection -= 20; game.player.xp = (game.player.xp || 0) + 20; notify('Elle boude, mais tu as avancé sur ton projet (+20 XP).', 'info');
+            }}
+        ]
+    },
+    {
+        id: 'gf_weekend_mid',
+        icon: '✈️',
+        title: 'Pression des Réseaux',
+        condition: () => window.game && game.player.life.status === 'en couple' && (game.player.level || 1) >= 4 && (game.player.level || 1) <= 6 && game.player.cash > (typeof window.convertPrice === 'function' ? window.convertPrice(2000000) : 3000),
+        desc: 'Ta go voit les autres influenceuses à Amsterdam et Barcelone. Elle veut un city trip.',
+        choices: [
+            { text: 'Partir à Barcelone (💰 -2 300€)', action: () => {
+                const cost = typeof window.convertPrice === 'function' ? window.convertPrice(1500000) : 2300;
+                game.player.cash -= cost; game.player.life.gfAffection += 30; game.player.buzz += 10; notify('Photos à Barcelone ! Les followers adorent (+10 Buzz, +30 Affection)', 'success');
+            }},
+            { text: 'Proposer un week-end en Normandie (💰 -300€)', action: () => {
+                const cost = typeof window.convertPrice === 'function' ? window.convertPrice(200000) : 300;
+                game.player.cash -= cost; game.player.life.gfAffection += 5; notify('Elle a boudé mais le week-end était chill (+5 Affection).', 'info');
+            }},
+            { text: 'Refuser net (💔 -30 Affection)', action: () => {
+                game.player.life.gfAffection -= 30; notify('Grosse dispute... Elle te traite de radin.', 'error');
+            }}
+        ]
+    },
+    {
+        id: 'gf_phone_fr',
+        icon: '📱',
+        title: 'Le Téléphone Cassé',
+        condition: () => window.game && game.player.life.status === 'en couple' && (game.player.level || 1) <= 4,
+        desc: 'L\'écran du téléphone de ta meuf est mort. Ses amies ont le dernier iPhone, elle sous-entend que t\'as les moyens.',
+        choices: [
+            { text: 'Acheter le dernier iPhone (💰 -1 220€)', action: () => {
+                const cost = typeof window.convertPrice === 'function' ? window.convertPrice(800000) : 1220;
+                if(game.player.cash < cost) { notify('Carte refusée au Apple Store... La honte !', 'error'); game.player.life.gfAffection -= 20; return; }
+                game.player.cash -= cost; game.player.life.gfAffection += 30; notify('Elle a failli pleurer ! (+30 Affection)', 'success');
+            }},
+            { text: 'Payer la réparation dans une boutique (💰 -38€)', action: () => {
+                const cost = typeof window.convertPrice === 'function' ? window.convertPrice(25000) : 38;
+                game.player.cash -= cost; notify('L\'écran marche, mais elle est pas impressionnée.', 'info');
+            }},
+            { text: 'Lui dire de travailler pour ça (💔 -25 Affection)', action: () => {
+                game.player.life.gfAffection -= 25; notify('Clash. Elle te traite de pingre.', 'error');
+            }}
+        ]
+    },
+    {
+        id: 'gf_business_fr',
+        icon: '💅',
+        title: 'Le Projet Salon',
+        condition: () => window.game && game.player.life.status === 'en couple' && (game.player.level || 1) >= 3 && game.player.cash >= (typeof window.convertPrice === 'function' ? window.convertPrice(1000000) : 1500),
+        desc: 'Ta meuf veut ouvrir son propre salon de beauté à Paris 11. Elle te demande 2 300€ pour lancer l\'affaire.',
+        choices: [
+            { text: 'Financer son projet (💰 -2 300€)', action: () => {
+                const cost = typeof window.convertPrice === 'function' ? window.convertPrice(1500000) : 2300;
+                game.player.cash -= cost; game.player.life.gfAffection = 100; notify('Elle te proclame meilleur mec du monde ! (+Affection Max)', 'success');
+            }},
+            { text: 'Lui avancer 450€ (💰 -450€)', action: () => {
+                const cost = typeof window.convertPrice === 'function' ? window.convertPrice(300000) : 450;
+                game.player.cash -= cost; notify('Elle a pris l\'argent mais elle est déçue du montant.', 'info');
+            }},
+            { text: 'Refuser, investir dans ta musique (💔 -30 Affection)', action: () => {
+                game.player.life.gfAffection -= 30; notify('Grosse dispute. Elle dit que tu ne penses qu\'à toi.', 'error');
+            }}
+        ]
+    },
+    {
+        id: 'gf_vocal_fr',
+        icon: '🤫',
+        title: 'Le Chantage',
+        condition: () => window.game && game.player.life.status === 'en couple' && (game.player.level || 1) >= 5 && game.player.buzz > 50,
+        desc: 'Une fille rencontrée en backstage menace de balancer des messages compromettants à un compte Twitter si tu ne paies pas.',
+        choices: [
+            { text: 'Payer pour étouffer l\'affaire (💰 -1 520€)', action: () => {
+                const cost = typeof window.convertPrice === 'function' ? window.convertPrice(1000000) : 1520;
+                if(game.player.cash < cost) { notify('Tu as pas l\'argent... Les screenshots sont sortis !', 'error'); game.player.buzz -= 10; game.player.life.gfAffection -= 40; return; }
+                game.player.cash -= cost; notify('Ton secret est sauf, mais ton compte a saigné.', 'warning');
+            }},
+            { text: 'L\'ignorer, c\'est du bluff ! (📉 Risque)', action: () => {
+                if (Math.random() > 0.5) {
+                    game.player.buzz -= 15; game.player.life.gfAffection -= 50; notify('ALERTE ! Les screenshots sont sur Twitter ! (-15 Buzz)', 'error');
+                } else {
+                    game.player.energy += 10; notify('Elle a rien posté. Coup de bluff raté de sa part !', 'success');
+                }
+            }}
+        ]
+    },
+    {
+        id: 'gf_scandal_fr',
+        icon: '📸',
+        title: 'Scandale sur les Réseaux',
+        condition: () => window.game && game.player.life.status === 'en couple' && (game.player.level || 1) >= 5 && game.player.buzz > 40,
+        desc: 'Un compte gossip a posté une photo de toi trop proche d\'une admiratrice dans un club parisien. Ta meuf est en furie.',
+        choices: [
+            { text: 'Acheter un sac de luxe pour calmer (💰 -4 560€)', action: () => {
+                const cost = typeof window.convertPrice === 'function' ? window.convertPrice(3000000) : 4560;
+                if(game.player.cash < cost) { notify('T\'as pas les moyens... La rupture se profile !', 'error'); game.player.life.gfAffection -= 40; return; }
+                game.player.cash -= cost; game.player.life.gfAffection += 10; notify('Le sac a calmé la tempête... pour l\'instant.', 'info');
+            }},
+            { text: 'Faire un démenti public (⚡ -30, 📉 -5 Buzz)', action: () => {
+                game.player.energy -= 30; game.player.buzz -= 5; game.player.life.gfAffection -= 10; notify('T\'as justifié, tu perds en street cred.', 'warning');
+            }}
+        ]
+    },
+    {
+        id: 'gf_marriage_fr',
+        icon: '💍',
+        title: 'Demande en Mariage ?',
+        condition: () => window.game && game.player.life.status === 'en couple' && game.player.life.gfAffection >= 80 && game.player.cash >= (typeof window.convertPrice === 'function' ? window.convertPrice(2000000) : 3000) && (game.player.level || 1) >= 5,
+        desc: 'Votre relation est solide. Sa famille et les amis mettent la pression. La bague Cartier, c\'est maintenant ou jamais.',
+        choices: [
+            { text: 'Faire la demande avec la bague (💰 -3 040€)', action: () => {
+                const cost = typeof window.convertPrice === 'function' ? window.convertPrice(2000000) : 3040;
+                game.player.cash -= cost; game.player.life.status = 'marié'; game.player.buzz += 30; game.player.life.gfAffection = 100;
+                notify('Félicitations ! Instagram est en feu 🔥 (+30 Buzz !)', 'success');
+            }},
+            { text: 'Pas encore prêt (💔 -30 Affection)', action: () => {
+                game.player.life.gfAffection -= 30; notify('Elle est très déçue... L\'ambiance est glaciale.', 'error');
+            }}
+        ]
+    },
+    {
+        id: 'gf_breakup_fr',
+        icon: '💔',
+        title: 'C\'est fini...',
+        condition: () => window.game && (game.player.life.status === 'en couple' || game.player.life.status === 'marié') && game.player.life.gfAffection <= 15,
+        desc: 'Tu l\'as trop négligée entre le studio, les concerts et les after. Elle est partie.',
+        choices: [
+            { text: 'Transformer la douleur en musique (⚡ -50)', action: () => {
+                game.player.energy -= 50; game.player.life.status = 'célibataire'; game.player.buzz += 20; game.player.fans += 5000;
+                notify('Célibataire. Mais ton son de rupture cartonne (+20 Buzz, +5k Fans) !', 'success');
+            }}
+        ]
+    },
+
+    // ── FAMILLE ──
+
+    {
+        id: 'parents_fr_low',
+        icon: '🏫',
+        title: 'Coup de fil de la famille',
+        condition: () => window.game && (game.player.level || 1) < 4,
+        desc: 'Ta mère appelle. Ton petit frère doit régler ses frais de fac et la famille galère ce mois-ci.',
+        choices: [
+            { text: 'Envoyer l\'argent (💰 -75€)', action: () => {
+                const cost = typeof window.convertPrice === 'function' ? window.convertPrice(50000) : 75;
+                if(game.player.cash < cost) { notify('T\'as pas assez... Ta mère est déçue.', 'error'); game.player.life.parentsAffection -= 20; return; }
+                game.player.cash -= cost; game.player.life.parentsAffection += 20; game.player.buzz += 2; notify('La famille d\'abord ! Ton frère s\'en sort.', 'success');
+            }},
+            { text: 'Ignorer l\'appel (💔 -20 Affection)', action: () => {
+                game.player.life.parentsAffection -= 20; game.player.energy -= 10; notify('Mauvaise conscience (-10⚡).', 'error');
+            }}
+        ]
+    },
+    {
+        id: 'family_event_fr',
+        icon: '🥂',
+        title: 'Mariage de cousine',
+        condition: () => window.game && (game.player.level || 1) >= 2 && (game.player.level || 1) <= 5,
+        desc: 'Ta cousine se marie à Créteil. La famille attend que tu assures en tant que "star de la famille".',
+        choices: [
+            { text: 'Payer le DJ et les bouteilles (💰 -150€)', action: () => {
+                const cost = typeof window.convertPrice === 'function' ? window.convertPrice(100000) : 150;
+                if(game.player.cash < cost) { notify('T\'as séché le mariage... La famille parle.', 'error'); game.player.life.parentsAffection -= 15; return; }
+                game.player.cash -= cost; game.player.life.parentsAffection += 15; notify('La fête était belle, tu as assuré !', 'success');
+            }},
+            { text: 'Faire un virement symbolique (💰 -30€)', action: () => {
+                const cost = typeof window.convertPrice === 'function' ? window.convertPrice(20000) : 30;
+                game.player.cash -= cost; notify('C\'est mieux que rien, mais on espérait plus de toi.', 'info');
+            }},
+            { text: 'Dire que t\'as un concert (💔 -15 Affection)', action: () => {
+                game.player.life.parentsAffection -= 15; notify('La famille trouve que tu t\'éloignes depuis que tu rappas.', 'error');
+            }}
+        ]
+    },
+    {
+        id: 'parents_health_fr',
+        icon: '🏥',
+        title: 'Urgence médicale',
+        condition: () => window.game && (game.player.level || 1) >= 4 && (game.player.level || 1) <= 6,
+        desc: 'Ton père a un problème de santé. La mutuelle ne couvre pas tout et il reste 760€ à ta charge.',
+        choices: [
+            { text: 'Tout payer sans hésiter (💰 -760€)', action: () => {
+                const cost = typeof window.convertPrice === 'function' ? window.convertPrice(500000) : 760;
+                if(game.player.cash < cost) { notify('T\'as pas assez... Situation compliquée.', 'error'); game.player.life.parentsAffection -= 20; return; }
+                game.player.cash -= cost; game.player.life.parentsAffection += 30; notify('Ton père va mieux. La famille est fière de toi (+30 Affection).', 'success');
+            }},
+            { text: 'Dire de gérer avec la sécu (💔 -30 Affection)', action: () => {
+                game.player.life.parentsAffection -= 30; game.player.buzz -= 5; notify('La famille est déçue de ton comportement de "star".', 'error');
+            }}
+        ]
+    },
+    {
+        id: 'family_cousin_fr',
+        icon: '🕺',
+        title: 'Le Cousin qui veut gérer',
+        condition: () => window.game && (game.player.level || 1) >= 3,
+        desc: 'Ta tante envoie son fils depuis Lyon : il veut devenir ton manager. Il ne connaît absolument rien au rap.',
+        choices: [
+            { text: 'L\'embaucher (📉 -10k Fans)', action: () => {
+                game.player.fans = Math.max(0, game.player.fans - 10000); game.player.life.parentsAffection += 20; notify('Il a insulté un bookeur en direct ! (-10k Fans) Mais la tante est ravie.', 'error');
+            }},
+            { text: 'Le payer pour qu\'il reparte (💰 -230€)', action: () => {
+                const cost = typeof window.convertPrice === 'function' ? window.convertPrice(150000) : 230;
+                game.player.cash -= cost; notify('T\'as acheté la paix familiale.', 'success');
+            }},
+            { text: 'Refuser catégoriquement (💔 -20 Affection)', action: () => {
+                game.player.life.parentsAffection -= 20; notify('Ta tante te traite d\'ingrat sur WhatsApp familial.', 'warning');
+            }}
+        ]
+    },
+    {
+        id: 'family_business_fr',
+        icon: '🍔',
+        title: 'Le "Projet" de l\'Oncle',
+        condition: () => window.game && (game.player.level || 1) >= 4 && game.player.cash >= (typeof window.convertPrice === 'function' ? window.convertPrice(3000000) : 4500),
+        desc: 'Ton oncle te présente une "opportunité en or" : ouvrir un burger artisanal à Vitry. Il te demande 3 040€.',
+        choices: [
+            { text: 'Investir (💰 -3 040€)', action: () => {
+                const cost = typeof window.convertPrice === 'function' ? window.convertPrice(2000000) : 3040;
+                game.player.cash -= cost;
+                if(Math.random() > 0.5) {
+                    const gain = typeof window.convertPrice === 'function' ? window.convertPrice(3500000) : 5300;
+                    game.player.cash += gain; game.player.life.parentsAffection += 10; notify('Incroyable ! Le burger cartonne ! Remboursé + bénéfices !', 'success');
+                } else {
+                    game.player.life.parentsAffection += 5; notify('La concession a planté... Argent perdu. Tonton dit merci quand même.', 'error');
+                }
+            }},
+            { text: 'Refuser diplomatiquement', action: () => {
+                notify('Ton compte est sauf, mais l\'oncle marmonne dans son coin.', 'info');
+            }}
+        ]
+    },
+    {
+        id: 'family_parents_house_fr',
+        icon: '🏡',
+        title: 'Sortir les Parents de la Banlieue',
+        condition: () => window.game && (game.player.level || 1) >= 7 && game.player.cash > (typeof window.convertPrice === 'function' ? window.convertPrice(25000000) : 38000) && game.player.life.parentsAffection > 50,
+        desc: 'Tu es riche, mais tes parents vivent toujours dans le même F3 en banlieue. Les journalistes commencent à noter l\'ironie.',
+        choices: [
+            { text: 'Leur acheter un appart à Paris (💰 -38 000€)', action: () => {
+                const cost = typeof window.convertPrice === 'function' ? window.convertPrice(25000000) : 38000;
+                game.player.cash -= cost; game.player.life.parentsAffection = 100; game.player.fans += 50000; game.player.buzz += 15;
+                notify('Les médias saluent ton geste ! Fils modèle (+50k Fans, +15 Buzz).', 'success');
+            }},
+            { text: 'Plus tard... (💔 -20 Affection)', action: () => {
+                game.player.life.parentsAffection -= 20; game.player.buzz -= 10; notify('Bad buzz : les gens disent que t\'as oublié d\'où tu viens (-10 Buzz).', 'error');
+            }}
+        ]
+    },
+
+    // ── SHOWBIZ & RUE ──
+
+    {
+        id: 'lifestyle_faux_certif_fr',
+        icon: '⌚',
+        title: 'La Brigade Anti-Fake',
+        condition: () => window.game && (game.player.level || 1) >= 4 && game.player.buzz >= 30,
+        desc: 'Un compte TikTok expert en authentification accuse ta montre d\'être une contrefaçon du marché Saint-Michel.',
+        choices: [
+            { text: 'Acheter une vraie montre en urgence (💰 -7 600€)', action: () => {
+                const cost = typeof window.convertPrice === 'function' ? window.convertPrice(5000000) : 7600;
+                if(game.player.cash < cost) { notify('T\'as pas les moyens... Le bad buzz est confirmé !', 'error'); game.player.buzz -= 10; game.player.fans -= 5000; return; }
+                game.player.cash -= cost; game.player.buzz += 15; notify('T\'as posté la facture et humilié le compte ! (+15 Buzz)', 'success');
+            }},
+            { text: 'Faire une vidéo d\'insultes (⚡ -15, 🔥 +5 Buzz)', action: () => {
+                game.player.energy -= 15; game.player.buzz += 5; notify('T\'as fait du bruit, les doutes persistent.', 'warning');
+            }},
+            { text: 'Avouer et assumer (💖 +10k Fans, 📉 -5 Buzz)', action: () => {
+                game.player.fans += 10000; game.player.buzz -= 5; notify('T\'as perdu du bling-bling mais gagné en authenticité.', 'info');
+            }}
+        ]
+    },
+    {
+        id: 'street_feat_fr',
+        icon: '🎙️',
+        title: 'Le Feat Forcé',
+        condition: () => window.game && (game.player.level || 1) >= 3,
+        desc: 'Un gros dur de ta cité sort un son catastrophique et exige que tu fasses un feat avec lui.',
+        choices: [
+            { text: 'Accepter par peur (📉 -10k Fans, -10 Buzz)', action: () => {
+                game.player.fans = Math.max(0, game.player.fans - 10000); game.player.buzz -= 10; notify('Le son est nul. Les forums rap te démontent.', 'error');
+            }},
+            { text: 'Corrompre l\'ingé son (💰 -150€)', action: () => {
+                const cost = typeof window.convertPrice === 'function' ? window.convertPrice(100000) : 150;
+                game.player.cash -= cost; notify('L\'ingé a "perdu" le projet. Tu es sauvé !', 'success');
+            }},
+            { text: 'Refuser net (⚡ -30)', action: () => {
+                game.player.energy -= 30; notify('Il est venu au studio causer des problèmes. T\'as dû gérer (-30⚡).', 'warning');
+            }}
+        ]
+    },
+    {
+        id: 'showbiz_media_fr',
+        icon: '🎤',
+        title: 'Interview Médias',
+        condition: () => window.game && (game.player.level || 1) >= 3 && game.player.fans >= 5000,
+        desc: 'Mouv\' te propose une interview en live. Bonne exposition mais risque de dérapage.',
+        choices: [
+            { text: 'Accepter et préparer (⚡ -20)', action: () => {
+                game.player.energy -= 20;
+                if(Math.random() > 0.3) {
+                    game.player.fans += 8000; game.player.buzz += 8; notify('Interview parfaite ! Les auditeurs adorent (+8k Fans, +8 Buzz).', 'success');
+                } else {
+                    game.player.buzz -= 5; notify('T\'as dit un truc ambigu, Twitter s\'enflamme (-5 Buzz).', 'error');
+                }
+            }},
+            { text: 'Refuser, trop tôt', action: () => {
+                notify('T\'as préféré attendre. Ça se respecte.', 'info');
+            }}
+        ]
+    },
+    {
+        id: 'showbiz_pastor_fr',
+        icon: '🙏',
+        title: 'Le Coach de Vie TikTok',
+        condition: () => window.game && (game.player.level || 1) >= 4 && game.player.buzz > 30,
+        desc: 'Un influenceur "développement personnel" prédit ta chute si tu ne rejoins pas sa formation à 1 520€.',
+        choices: [
+            { text: 'Payer par FOMO (💰 -1 520€)', action: () => {
+                const cost = typeof window.convertPrice === 'function' ? window.convertPrice(1000000) : 1520;
+                if(game.player.cash < cost) { notify('T\'as pas les moyens... L\'angoisse reste.', 'error'); game.player.energy -= 30; return; }
+                game.player.cash -= cost; notify('Le module 7 t\'a appris à "vibrer haut". Discutable.', 'info');
+            }},
+            { text: 'Le clasher en freestyle (🔥 +15 Buzz)', action: () => {
+                game.player.buzz += 15; notify('Le clash fait fureur ! Les gens valident ton authenticité.', 'success');
+            }},
+            { text: 'L\'ignorer (⚡ -10)', action: () => {
+                game.player.energy -= 10; notify('Ses followers viennent spammer tes comms (-10⚡ de charge mentale).', 'warning');
+            }}
+        ]
+    },
+];
