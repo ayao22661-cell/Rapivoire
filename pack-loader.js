@@ -453,6 +453,14 @@ function applyPackData(data) {
         }
     }
 
+    // 11. Application des Beats / Instrus traduits du Pack
+    if (data.BEATS_POOL) {
+        window.BEATS_POOL = data.BEATS_POOL;
+        if (typeof renderStudioBeats === 'function') {
+            renderStudioBeats();
+        }
+    }
+
     console.log(`[BUZZKING] Pack "${data.packName}" chargé ✓`);
 }
 
@@ -664,6 +672,15 @@ function launchGame() {
 
     if (typeof init === 'function') {
         init();
+    }
+    // --- CONVERSION DU CASH DE DÉPART (CFA -> EUR) ---
+    if (typeof game !== 'undefined' && game.world && game.world.week === 1 && game.world.actionsLeft === 4) {
+        if (window.CURRENCY && window.CURRENCY.rate) {
+            if (game.player.cash > 5000) { // Si c'est la somme par défaut en CFA (10000)
+                game.player.cash = Math.floor(game.player.cash * window.CURRENCY.rate);
+                if (typeof updateUI === 'function') updateUI();
+            }
+        }
     }
 
     // Appliquer les actions en attente si ACTIONS_POOL n'était pas dispo au moment du pack load
