@@ -822,10 +822,16 @@ input:focus, select:focus {
                 </div>
             </div>
             
-            <button onclick="openMenu('perks')" class="bg-black/50 backdrop-blur-sm border border-white/10 px-3 py-1.5 rounded-xl flex items-center gap-1.5 hover:bg-white/10 transition-colors active:scale-95">
-                <span class="text-[10px] font-bold text-white uppercase tracking-wider">Talents</span>
-                <span id="stat-xp-points" class="bg-[#7c4dff] text-white text-[9px] font-black px-1.5 py-0.5 rounded">0</span>
-            </button>
+<div class="flex items-center gap-2">
+                <button onclick="openRelations()" class="bg-black/50 backdrop-blur-sm border border-white/10 px-3 py-1.5 rounded-xl flex items-center gap-1.5 hover:bg-white/10 transition-colors active:scale-95">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="#FF5252"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                    <span class="text-[10px] font-bold text-white uppercase tracking-wider" id="rel-btn-label">Relations</span>
+                </button>
+                <button onclick="openMenu('perks')" class="bg-black/50 backdrop-blur-sm border border-white/10 px-3 py-1.5 rounded-xl flex items-center gap-1.5 hover:bg-white/10 transition-colors active:scale-95">
+                    <span class="text-[10px] font-bold text-white uppercase tracking-wider" class="perks-btn-label">Talents</span>
+                    <span id="stat-xp-points" class="bg-[#7c4dff] text-white text-[9px] font-black px-1.5 py-0.5 rounded">0</span>
+                </button>
+            </div>
         </div>
     </section>
 
@@ -1077,6 +1083,16 @@ input:focus, select:focus {
                         <div class="text-[8px] font-bold text-zinc-500 uppercase tracking-widest">F Sponsors</div>
                     </div>
                 </div>
+            </div>
+
+            <!-- RÉSEAUX SOCIAUX -->
+            <div class="bg-[#15161D] rounded-2xl p-4 border border-white/5 relative overflow-hidden">
+                <div class="absolute -top-6 -left-6 w-24 h-24 bg-[#7C4DFF]/8 rounded-full blur-2xl pointer-events-none"></div>
+                <div class="flex items-center gap-2 mb-3 relative z-10">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="#7C4DFF"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+                    <span class="text-[10px] font-black text-white/60 uppercase tracking-widest" id="socials-section-title">Réseaux Sociaux</span>
+                </div>
+                <div id="socials-grid" class="grid grid-cols-2 gap-2 relative z-10"></div>
             </div>
 
             <div class="bg-[#15161D] rounded-3xl p-5 border border-white/5 shadow-xl relative overflow-hidden">
@@ -2191,20 +2207,32 @@ const RANDOM_EVENTS = [
 // ETAT DU JEU (STATE)
 // ==========================================
 let game = {
-    version: "2.0",
+    version: "2.1",
     player: {
         name: "Artiste",
         cash: 1500,
         energy: 100,
         energyMax: 100,
-        buzz: 5,     // Pourcentage 0-100
+        buzz: 5,
         fans: 0,
         xp: 0,
         level: 1,
         perkPoints: 0,
         streams: 0,
-        skills: { flow: 0, lyrics: 0, charisme: 0, biz: 0 }, // Index dans PERKS_TREE
-        inventory: { items: [], songs: [], released: [] }
+        skills: { flow: 0, lyrics: 0, charisme: 0, biz: 0 },
+        inventory: { items: [], songs: [], released: [] },
+        relations: {
+            partner: { status: 'célibataire', affection: 50, name: '' },
+            family:  { affection: 60 },
+            manager: { status: 'none', affection: 50, name: '' },
+            crew:    { affection: 50 }
+        },
+        socials: {
+            tiktok:    { followers: 0, weeklyGain: 0 },
+            instagram: { followers: 0, weeklyGain: 0 },
+            youtube:   { followers: 0, weeklyGain: 0 },
+            local:     { followers: 0, weeklyGain: 0 }
+        }
     },
     world: {
         week: 1,
@@ -2283,14 +2311,28 @@ function loadGame() {
 
             // 2. Deep Merge (Fusion intelligente) : on garde la structure par défaut de la nouvelle version
             // tout en injectant la progression du joueur.
+            const defRel = game.player.relations;
+            const defSoc = game.player.socials;
             game = {
-                ...game, // Charge la structure de base (sécurité pour les nouvelles variables)
-                ...parsed, // Écrase avec les données sauvegardées
+                ...game,
+                ...parsed,
                 player: {
                     ...game.player,
                     ...parsed.player,
                     skills: { ...game.player.skills, ...(parsed.player.skills || {}) },
-                    inventory: { ...game.player.inventory, ...(parsed.player.inventory || {}) }
+                    inventory: { ...game.player.inventory, ...(parsed.player.inventory || {}) },
+                    relations: {
+                        partner: { ...defRel.partner, ...((parsed.player.relations||{}).partner||{}) },
+                        family:  { ...defRel.family,  ...((parsed.player.relations||{}).family||{}) },
+                        manager: { ...defRel.manager, ...((parsed.player.relations||{}).manager||{}) },
+                        crew:    { ...defRel.crew,    ...((parsed.player.relations||{}).crew||{}) }
+                    },
+                    socials: {
+                        tiktok:    { ...defSoc.tiktok,    ...((parsed.player.socials||{}).tiktok||{}) },
+                        instagram: { ...defSoc.instagram, ...((parsed.player.socials||{}).instagram||{}) },
+                        youtube:   { ...defSoc.youtube,   ...((parsed.player.socials||{}).youtube||{}) },
+                        local:     { ...defSoc.local,     ...((parsed.player.socials||{}).local||{}) }
+                    }
                 },
                 world: { ...game.world, ...(parsed.world || {}) },
                 stats: { ...game.stats, ...(parsed.stats || {}) }
@@ -2431,7 +2473,7 @@ function openMenu(id) {
         if(id === 'actions') renderActions();
         if(id === 'studio') renderStudioBeats();
         if(id === 'songs') renderSongsList();
-        if(id === 'biz') { renderShop(); renderConcerts(); }
+        if(id === 'biz') { renderShop(); renderConcerts(); renderSocials(); }
         if(id === 'perks') renderPerks();
         // Trigger slide-in after paint
         requestAnimationFrame(() => {
@@ -3663,327 +3705,6 @@ function executeFinalClash(target) {
 // ==========================================
 
 const LIFE_EVENTS = [
-    // ==========================================
-    // --- ÉVÉNEMENTS PETITE AMIE (GO) & AMOUR ---
-    // ==========================================
-
-    {
-        id: 'gf_resto_low',
-        icon: `<svg width="48" height="48" viewBox="0 0 24 24" fill="#FF9100" class='mx-auto'><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>`, title: 'Soirée avec ta Go',
-        condition: () => game.player.life.status === 'en couple' && (game.player.level || 1) < 4,
-        desc: 'Ta petite amie se plaint que tu passes trop de temps au studio. Elle veut aller manger dans un bon resto à Bietry.',
-        choices: [
-            { text: 'L\'emmener (💰 -30,000 F)', action: () => { 
-                if(game.player.cash < (typeof window.convertPrice==='function'?window.convertPrice(30000):30000)) { notify('Fonds insuffisants, elle est fâchée !', 'error'); game.player.life.gfAffection -= 15; return; }
-                game.player.cash -= (typeof window.convertPrice==='function'?window.convertPrice(30000):30000); game.player.life.gfAffection += 20; game.player.energy += 10; notify('Super soirée ! (+20 Affection, +10⚡)', 'success'); 
-            }},
-            { text: 'Dire que tu dois bosser (💔 -20 Affection)', action: () => { 
-                game.player.life.gfAffection -= 20; game.player.xp = (game.player.xp || 0) + 20; notify('Elle te fait la tête, mais tu as pu bosser (+20 XP).', 'info'); 
-            }}
-        ]
-    },
-    {
-        id: 'gf_dubai_mid',
-        icon: '✈️',
-        title: 'Pression des Réseaux',
-        condition: () => game.player.life.status === 'en couple' && (game.player.level || 1) >= 4 && (game.player.level || 1) <= 6 && game.player.cash > (typeof window.convertPrice==='function'?window.convertPrice(2000000):2000000),
-        desc: 'Ta Go voit les autres influenceuses à Dubaï. Elle te met la pression pour que vous fassiez un voyage VIP.',
-        choices: [
-            { text: 'Payer le voyage VIP (💰 -1.5 Million)', action: () => { 
-                game.player.cash -= (typeof window.convertPrice==='function'?window.convertPrice(1500000):1500000); game.player.life.gfAffection += 30; game.player.buzz += 10; notify('Photos à Dubaï ! Les fans adorent (+10 Buzz, +30 Affection)', 'success'); 
-            }},
-            { text: 'Proposer Assinie à la place (💰 -200,000 F)', action: () => { 
-                game.player.cash -= (typeof window.convertPrice==='function'?window.convertPrice(200000):200000); game.player.life.gfAffection += 5; notify('Elle a boudé un peu mais le week-end était cool (+5 Affection).', 'info'); 
-            }},
-            { text: 'Refuser net (💔 -30 Affection)', action: () => { 
-                game.player.life.gfAffection -= 30; notify('Grosse dispute... Elle te traite de radin.', 'error'); 
-            }}
-        ]
-    },
-    {
-        id: 'gf_phone',
-        icon: '📱',
-        title: 'Le Téléphone Cassé',
-        condition: () => game.player.life.status === 'en couple' && (game.player.level || 1) <= 4,
-        desc: 'L\'écran du téléphone de ta Go s\'est cassé. Ses copines ont le dernier iPhone et elle te fait des sous-entendus.',
-        choices: [
-            { text: 'Acheter le dernier iPhone (💰 -800,000 F)', action: () => { 
-                if(game.player.cash < (typeof window.convertPrice==='function'?window.convertPrice(800000):800000)) { notify('Carte refusée devant le vendeur... La honte !', 'error'); game.player.life.gfAffection -= 20; return; }
-                game.player.cash -= (typeof window.convertPrice==='function'?window.convertPrice(800000):800000); game.player.life.gfAffection += 30; notify('Elle a pleuré de joie ! (+30 Affection)', 'success'); 
-            }},
-            { text: 'Payer la réparation à Adjamé (💰 -25,000 F)', action: () => { 
-                game.player.cash -= (typeof window.convertPrice==='function'?window.convertPrice(25000):25000); notify('L\'écran marche, mais elle n\'est pas impressionnée.', 'info'); 
-            }},
-            { text: 'Lui dire de travailler pour se l\'acheter (💔 -25 Affection)', action: () => { 
-                game.player.life.gfAffection -= 25; notify('Gros clash. Elle te traite de misérable.', 'error'); 
-            }}
-        ]
-    },
-    {
-        id: 'gf_mother_in_law',
-        icon: '👵🏾',
-        title: 'La Belle-Mère débarque',
-        condition: () => game.player.life.status === 'en couple' && (game.player.level || 1) >= 3,
-        desc: 'La mère de ta go vient "inspecter" ta vie d\'artiste. Elle n\'aime pas trop les rappeurs.',
-        choices: [
-            { text: 'La loger dans un bel hôtel (💰 -250,000 F)', action: () => { 
-                if(game.player.cash < (typeof window.convertPrice==='function'?window.convertPrice(250000):250000)) { notify('Pas d\'argent, elle dort au salon. Elle te déteste.', 'error'); game.player.life.gfAffection -= 20; return; }
-                game.player.cash -= (typeof window.convertPrice==='function'?window.convertPrice(250000):250000); game.player.life.gfAffection += 25; notify('Elle est traitée comme une reine. Ta go est très fière de toi !', 'success'); 
-            }},
-            { text: 'L\'accueillir chez toi (⚡ -30)', action: () => { 
-                game.player.energy -= 30; notify('Tu as dû faire le ménage et cuisiner. Épuisant, mais ça passe (-30⚡).', 'warning'); 
-            }},
-            { text: 'Fuir au studio (💔 -30 Affection)', action: () => { 
-                game.player.life.gfAffection -= 30; notify('Ta belle-mère est vexée. Ta go te fait la guerre.', 'error'); 
-            }}
-        ]
-    },
-    {
-        id: 'gf_business_salon',
-        icon: '💅',
-        title: 'Le Projet Onglerie',
-        condition: () => game.player.life.status === 'en couple' && (game.player.level || 1) >= 3 && game.player.cash >= (typeof window.convertPrice==='function'?window.convertPrice(1000000):1000000),
-        desc: 'Ta go ne veut plus dépendre de toi. Elle te demande 1.5 Million pour ouvrir un salon de coiffure et onglerie VIP.',
-        choices: [
-            { text: 'Financer son business (💰 -1.5M)', action: () => { 
-                game.player.cash -= (typeof window.convertPrice==='function'?window.convertPrice(1500000):1500000); game.player.life.gfAffection = 100; notify('Elle te proclame meilleur chéri du monde ! (+Affection Max)', 'success'); 
-            }},
-            { text: 'Lui donner juste 300.000 F (💰 -300k)', action: () => { 
-                game.player.cash -= (typeof window.convertPrice==='function'?window.convertPrice(300000):300000); notify('Elle a pris l\'argent, mais elle boude.', 'info'); 
-            }},
-            { text: 'Refuser, investir dans ta musique (💔 -30 Affection)', action: () => { 
-                game.player.life.gfAffection -= 30; notify('Grosse dispute. Elle dit que tu ne la soutiens pas.', 'error'); 
-            }}
-        ]
-    },
-    {
-        id: 'gf_tchiza_drama',
-        icon: '🤫',
-        title: 'Le Chantage de la Tchiza',
-        condition: () => game.player.life.status === 'en couple' && (game.player.level || 1) >= 5 && game.player.buzz > 50,
-        desc: 'Une "petite" gérée après un showcase menace d\'envoyer des vocaux compromettants à un blogueur si tu ne paies pas.',
-        choices: [
-            { text: 'Payer pour étouffer l\'affaire (💰 -1 Million)', action: () => { 
-                if(game.player.cash < (typeof window.convertPrice==='function'?window.convertPrice(1000000):1000000)) { notify('Tu n\'as pas l\'argent... Le vocal a fuité !', 'error'); game.player.buzz -= 10; game.player.life.gfAffection -= 40; return; }
-                game.player.cash -= (typeof window.convertPrice==='function'?window.convertPrice(1000000):1000000); notify('Ton secret est sauf, mais ton compte a saigné.', 'warning'); 
-            }},
-            { text: 'L\'ignorer, c\'est du bluff ! (📉 Risque de Bad Buzz)', action: () => { 
-                if (Math.random() > 0.5) {
-                    game.player.buzz -= 15; game.player.life.gfAffection -= 50; notify('ALERTE ! Le vocal est sur Facebook ! (-15 Buzz, -50 Affection)', 'error');
-                } else {
-                    game.player.energy += 10; notify('Elle n\'a rien posté au final. Coup de pression évité !', 'success');
-                }
-            }}
-        ]
-    },
-    {
-        id: 'gf_scandal',
-        icon: '📸',
-        title: 'Scandale sur les Réseaux',
-        condition: () => game.player.life.status === 'en couple' && (game.player.level || 1) >= 5 && game.player.buzz > 40,
-        desc: 'Une page gossip a publié une photo de toi très proche d\'une fan en boîte. Ta femme est en furie !',
-        choices: [
-            { text: 'Acheter un sac de luxe (💰 -3 Millions)', action: () => { 
-                if(game.player.cash < (typeof window.convertPrice==='function'?window.convertPrice(3000000):3000000)) { notify('Tu ne peux pas assumer... La rupture est proche !', 'error'); game.player.life.gfAffection -= 40; return; }
-                game.player.cash -= (typeof window.convertPrice==='function'?window.convertPrice(3000000):3000000); game.player.life.gfAffection += 10; notify('Le sac a calmé la tempête... pour l\'instant.', 'info'); 
-            }},
-            { text: 'Faire un démenti public (⚡ -30, 📉 -5 Buzz)', action: () => { 
-                game.player.energy -= 30; game.player.buzz -= 5; game.player.life.gfAffection -= 10; notify('Tu as justifié ça, tu perds en street cred.', 'warning'); 
-            }}
-        ]
-    },
-    {
-        id: 'gf_marriage',
-        icon: `<svg width="48" height="48" viewBox="0 0 24 24" fill="#FFD700" class='mx-auto'><path d="M19 3H5L2 9l10 12L22 9l-3-6zm-8.5 12.5L4.21 9.5 6.5 5h11l2.29 4.5L10.5 15.5z"/></svg>`, title: 'Demande en Mariage ?',
-        condition: () => game.player.life.status === 'en couple' && game.player.life.gfAffection >= 80 && game.player.cash >= (typeof window.convertPrice==='function'?window.convertPrice(2000000):2000000) && (game.player.level || 1) >= 5,
-        desc: 'Votre relation est au top. La famille met la pression pour la dot et le mariage (Coût : 2 Millions).',
-        choices: [
-            { text: 'Faire la demande (💰 -2 Millions)', action: () => { 
-                game.player.cash -= (typeof window.convertPrice==='function'?window.convertPrice(2000000):2000000); game.player.life.status = 'marié'; game.player.buzz += 30; game.player.life.gfAffection = 100;
-                notify('Félicitations ! Les réseaux sont en feu 🔥 (+30 Buzz !)', 'success'); 
-            }},
-            { text: 'Pas encore prêt (💔 -30 Affection)', action: () => { 
-                game.player.life.gfAffection -= 30; notify('Elle est très déçue... L\'ambiance est glaciale.', 'error'); 
-            }}
-        ]
-    },
-    {
-        id: 'gf_breakup',
-        icon: '💔',
-        title: 'C\'est fini...',
-        condition: () => (game.player.life.status === 'en couple' || game.player.life.status === 'marié') && game.player.life.gfAffection <= 15,
-        desc: 'Tu l\'as trop négligée. Elle a fait ses valises et t\'a quitté.',
-        choices: [
-            { text: 'Transformer la douleur en musique (⚡ -50)', action: () => { 
-                game.player.energy -= 50; game.player.life.status = 'célibataire'; game.player.buzz += 20; game.player.fans += 5000;
-                notify('Célibataire. Mais ton son triste a fait un énorme buzz (+20 Buzz, +5k Fans) !', 'success'); 
-            }}
-        ]
-    },
-
-    // ==========================================
-    // --- ÉVÉNEMENTS PARENTS, FAMILLE & VILLAGE ---
-    // ==========================================
-
-    {
-        id: 'parents_money_low',
-        icon: '🏫',
-        title: 'Problème au quartier',
-        condition: () => (game.player.level || 1) < 4,
-        desc: 'Ta mère t\'appelle. Ton petit frère a été renvoyé de l\'école parce que la scolarité n\'est pas payée (50,000 F).',
-        choices: [
-            { text: 'Payer la scolarité (💰 -50,000 F)', action: () => { 
-                if(game.player.cash < (typeof window.convertPrice==='function'?window.convertPrice(50000):50000)) { notify('Tu n\'as pas l\'argent... Ta mère pleure.', 'error'); game.player.life.parentsAffection -= 20; return; }
-                game.player.cash -= (typeof window.convertPrice==='function'?window.convertPrice(50000):50000); game.player.life.parentsAffection += 20; game.player.buzz += 2; notify('La famille d\'abord ! Ton frère retourne en classe.', 'success'); 
-            }},
-            { text: 'Ignorer l\'appel (💔 -20 Affection)', action: () => { 
-                game.player.life.parentsAffection -= 20; game.player.energy -= 10; notify('Mauvaise conscience (-10⚡).', 'error'); 
-            }}
-        ]
-    },
-    {
-        id: 'family_baptism',
-        icon: '👶🏾',
-        title: 'Le Baptême du Neveu',
-        condition: () => (game.player.level || 1) >= 2 && (game.player.level || 1) <= 5,
-        desc: 'Ta grande sœur fait le baptême de son fils ce week-end. Elle s\'attend à ce que le parrain (toi) assure la boisson.',
-        choices: [
-            { text: 'Acheter la boisson (💰 -100,000 F)', action: () => { 
-                if(game.player.cash < (typeof window.convertPrice==='function'?window.convertPrice(100000):100000)) { notify('Tu as fui la cérémonie...', 'error'); game.player.life.parentsAffection -= 15; return; }
-                game.player.cash -= (typeof window.convertPrice==='function'?window.convertPrice(100000):100000); game.player.life.parentsAffection += 15; notify('La fête était belle, tonton a assuré !', 'success'); 
-            }},
-            { text: 'Faire un petit dépôt Mobile Money (💰 -20,000 F)', action: () => { 
-                game.player.cash -= (typeof window.convertPrice==='function'?window.convertPrice(20000):20000); notify('C\'est mieux que rien, mais elle espérait plus.', 'info'); 
-            }},
-            { text: 'Dire que tu es en studio (💔 -15 Affection)', action: () => { 
-                game.player.life.parentsAffection -= 15; notify('La famille te trouve distant depuis que tu chantes.', 'error'); 
-            }}
-        ]
-    },
-    {
-        id: 'parents_health_mid',
-        icon: '🏥',
-        title: 'Urgence Médicale',
-        condition: () => (game.player.level || 1) >= 4 && (game.player.level || 1) <= 6,
-        desc: 'Ton père a fait un malaise. Il doit être admis dans une bonne clinique de la place.',
-        choices: [
-            { text: 'Tout prendre en charge (💰 -500,000 F)', action: () => { 
-                if(game.player.cash < (typeof window.convertPrice==='function'?window.convertPrice(500000):500000)) { notify('Pas assez d\'argent, il va au CHU public.', 'error'); game.player.life.parentsAffection -= 20; return; }
-                game.player.cash -= (typeof window.convertPrice==='function'?window.convertPrice(500000):500000); game.player.life.parentsAffection += 30; notify('Ton père va mieux. La famille te bénit (+30 Affection).', 'success'); 
-            }},
-            { text: 'Dire de gérer au CHU public (💔 -30 Affection)', action: () => { 
-                game.player.life.parentsAffection -= 30; game.player.buzz -= 5; notify('La famille est choquée par ton comportement de star radine.', 'error'); 
-            }}
-        ]
-    },
-    {
-        id: 'family_cousin',
-        icon: '🕺🏾',
-        title: 'Le Cousin Encombrant',
-        condition: () => (game.player.level || 1) >= 3,
-        desc: 'Ta tante t\'envoie son fils pour qu\'il devienne ton manager. Il ne connaît absolument rien à la musique.',
-        choices: [
-            { text: 'L\'embaucher (📉 -10k Fans)', action: () => { 
-                game.player.fans = Math.max(0, game.player.fans - 10000); game.player.life.parentsAffection += 20; notify('Il a insulté un promoteur ! (-10k Fans) Mais la tante est ravie.', 'error'); 
-            }},
-            { text: 'Le payer pour qu\'il parte (💰 -150,000 F)', action: () => { 
-                game.player.cash -= (typeof window.convertPrice==='function'?window.convertPrice(150000):150000); notify('Tu as acheté la paix familiale.', 'success'); 
-            }},
-            { text: 'Refuser catégoriquement (💔 -20 Affection)', action: () => { 
-                game.player.life.parentsAffection -= 20; notify('Ta tante te traite d\'ingrat au quartier.', 'warning'); 
-            }}
-        ]
-    },
-    {
-        id: 'family_visa',
-        icon: '✈️',
-        title: 'Le Rêve Européen',
-        condition: () => (game.player.level || 1) >= 3,
-        desc: 'Ton grand frère a trouvé un réseau pour aller à "Mbengue" (Paris). Il manque 800.000 F pour le dossier.',
-        choices: [
-            { text: 'Payer pour l\'aider (💰 -800,000 F)', action: () => { 
-                if(game.player.cash < (typeof window.convertPrice==='function'?window.convertPrice(800000):800000)) { notify('Tu n\'as pas l\'argent.', 'error'); return; }
-                game.player.cash -= (typeof window.convertPrice==='function'?window.convertPrice(800000):800000); game.player.life.parentsAffection += 20; notify('Il est parti. Toute la famille prie pour ta réussite.', 'success'); 
-            }},
-            { text: 'Refuser, trop risqué', action: () => { 
-                notify('Tu as préféré garder ton argent. L\'ambiance est bizarre à la maison.', 'warning'); 
-            }}
-        ]
-    },
-    {
-        id: 'family_business',
-        icon: '🐔',
-        title: 'Le "Projet" de tonton',
-        condition: () => (game.player.level || 1) >= 4 && game.player.cash >= (typeof window.convertPrice==='function'?window.convertPrice(3000000):3000000),
-        desc: 'Ton oncle te présente un "business infaillible" de ferme de poulets et te demande d\'investir 2 Millions.',
-        choices: [
-            { text: 'Investir (💰 -2 Millions)', action: () => { 
-                game.player.cash -= (typeof window.convertPrice==='function'?window.convertPrice(2000000):2000000); 
-                if(Math.random() > 0.5) {
-                    game.player.cash += (typeof window.convertPrice==='function'?window.convertPrice(3500000):3500000); game.player.life.parentsAffection += 10; notify('Incroyable ! Tonton a remboursé avec bénéfices ! (+1.5M)', 'success');
-                } else {
-                    game.player.life.parentsAffection += 5; notify('Les poulets sont malades... Argent perdu. Mais la famille te remercie.', 'error');
-                }
-            }},
-            { text: 'Refuser diplomatiquement', action: () => { 
-                notify('Ton compte en banque est sauf, mais tonton critique ta radinerie.', 'info'); 
-            }}
-        ]
-    },
-    {
-        id: 'family_funerals',
-        icon: '🕊️',
-        title: 'Funérailles grandioses',
-        condition: () => (game.player.level || 1) >= 4,
-        desc: 'Un grand-oncle est décédé. Au village, on attend que "l\'enfant prodige de la capitale" gère les dépenses.',
-        choices: [
-            { text: 'Faire un don de boss (💰 -2 Millions)', action: () => { 
-                if(game.player.cash < (typeof window.convertPrice==='function'?window.convertPrice(2000000):2000000)) { notify('Carte refusée devant les anciens... Honte suprême.', 'error'); game.player.life.parentsAffection -= 30; return; }
-                game.player.cash -= (typeof window.convertPrice==='function'?window.convertPrice(2000000):2000000); game.player.life.parentsAffection += 40; game.player.buzz += 5; notify('Les griots chantent ton nom ! (+40 Affection)', 'success'); 
-            }},
-            { text: 'Participer normalement (💰 -300,000 F)', action: () => { 
-                game.player.cash -= (typeof window.convertPrice==='function'?window.convertPrice(300000):300000); notify('Tu as fait le minimum syndical. Ça murmure un peu.', 'info'); 
-            }},
-            { text: 'Ne rien envoyer (💔 -40 Affection)', action: () => { 
-                game.player.life.parentsAffection -= 40; game.player.fans -= 5000; notify('La famille est scandalisée. (-40 Affection, -5k Fans)', 'error'); 
-            }}
-        ]
-    },
-    {
-        id: 'parents_house_high',
-        icon: '🏡',
-        title: 'Sortir les parents du Ghetto',
-        condition: () => (game.player.level || 1) >= 7 && game.player.cash > (typeof window.convertPrice==='function'?window.convertPrice(25000000):25000000) && game.player.life.parentsAffection > 50,
-        desc: 'Tu es millionnaire, mais tes parents vivent toujours au quartier. Les paparazzis commencent à en parler.',
-        choices: [
-            { text: 'Acheter la Villa (💰 -25 Millions)', action: () => { 
-                game.player.cash -= (typeof window.convertPrice==='function'?window.convertPrice(25000000):25000000); game.player.life.parentsAffection = 100; game.player.fans += 50000; game.player.buzz += 15;
-                notify('Un vrai digne fils ! Les médias saluent ton geste (+50k Fans, +15 Buzz).', 'success'); 
-            }},
-            { text: 'Plus tard... (💔 -20 Affection)', action: () => { 
-                game.player.life.parentsAffection -= 20; game.player.buzz -= 10; notify('Bad buzz ! Les gens disent que tu as abandonné ta famille (-10 Buzz).', 'error'); 
-            }}
-        ]
-    },
-    {
-        id: 'family_village',
-        icon: '🛖',
-        title: 'L\'Appel du Village',
-        condition: () => (game.player.level || 1) >= 6 && game.player.cash >= (typeof window.convertPrice==='function'?window.convertPrice(10000000):10000000),
-        desc: 'Le chef de ton village te demande de financer la construction d\'un centre de santé rural.',
-        choices: [
-            { text: 'Financer le projet (💰 -5 Millions)', action: () => { 
-                game.player.cash -= (typeof window.convertPrice==='function'?window.convertPrice(5000000):5000000); game.player.life.parentsAffection = 100; game.player.fans += 25000; game.player.buzz += 10;
-                notify('Bénédictions ! Tu es un héros national ! (+25k Fans, +10 Buzz)', 'success'); 
-            }},
-            { text: 'Don symbolique (💰 -500,000 F)', action: () => { 
-                game.player.cash -= (typeof window.convertPrice==='function'?window.convertPrice(500000):500000); notify('Ils ont dit merci, sans plus.', 'info'); 
-            }},
-            { text: 'Ignorer (💔 -30 Affection)', action: () => { 
-                game.player.life.parentsAffection -= 30; notify('Les anciens t\'ont maudit. Mauvaise conscience.', 'error'); 
-            }}
-        ]
-    },
 
     // ==========================================
     // --- ÉVÉNEMENTS LIFESTYLE, SHOWBIZ & RUE ---
@@ -4207,12 +3928,14 @@ function showLifeEventModal(event) {
 
 window.handleLifeChoice = function(index) {
     const choice = window.currentLifeChoices[index];
-    choice.action(); 
-    
-    // On s'assure que l'affection reste entre 0 et 100
-    game.player.life.gfAffection = Math.max(0, Math.min(100, game.player.life.gfAffection));
-    game.player.life.parentsAffection = Math.max(0, Math.min(100, game.player.life.parentsAffection));
-
+    choice.action();
+    // Clamp affections
+    if (game.player.relations) {
+        if (game.player.relations.partner) game.player.relations.partner.affection = Math.max(0, Math.min(100, game.player.relations.partner.affection || 50));
+        if (game.player.relations.family)  game.player.relations.family.affection  = Math.max(0, Math.min(100, game.player.relations.family.affection  || 60));
+        if (game.player.relations.manager) game.player.relations.manager.affection = Math.max(0, Math.min(100, game.player.relations.manager.affection || 50));
+        if (game.player.relations.crew)    game.player.relations.crew.affection    = Math.max(0, Math.min(100, game.player.relations.crew.affection    || 50));
+    }
     document.getElementById('life-event-modal').remove();
     updateUI();
 }
@@ -4452,9 +4175,52 @@ function processNextWeek() {
     // --- 8.5 ÉVÉNEMENTS DE VIE (PARENTS / GO) ---
     // ==========================================
     
-    if (!game.player.life) {
-        game.player.life = { status: 'célibataire', gfAffection: 50, parentsAffection: 50 };
+    // Compat anciennes saves : migrer game.player.life -> game.player.relations
+    if (game.player.life) {
+        if (!game.player.relations) game.player.relations = {};
+        if (!game.player.relations.partner) game.player.relations.partner = { status: 'célibataire', affection: 50, name: '' };
+        if (!game.player.relations.family)  game.player.relations.family  = { affection: 60 };
+        if (!game.player.relations.manager) game.player.relations.manager = { status: 'none', affection: 50, name: '' };
+        if (!game.player.relations.crew)    game.player.relations.crew    = { affection: 50 };
+        // Migration des anciennes valeurs
+        if (game.player.life.status)          game.player.relations.partner.status    = game.player.life.status;
+        if (game.player.life.gfAffection)     game.player.relations.partner.affection = game.player.life.gfAffection;
+        if (game.player.life.parentsAffection) game.player.relations.family.affection  = game.player.life.parentsAffection;
+        delete game.player.life;
     }
+    if (!game.player.relations) {
+        game.player.relations = {
+            partner: { status: 'célibataire', affection: 50, name: '' },
+            family:  { affection: 60 },
+            manager: { status: 'none', affection: 50, name: '' },
+            crew:    { affection: 50 }
+        };
+    }
+    if (!game.player.socials) {
+        game.player.socials = {
+            tiktok:    { followers: 0, weeklyGain: 0 },
+            instagram: { followers: 0, weeklyGain: 0 },
+            youtube:   { followers: 0, weeklyGain: 0 },
+            local:     { followers: 0, weeklyGain: 0 }
+        };
+    }
+
+    // --- MISE À JOUR DES RÉSEAUX SOCIAUX ---
+    // Chaque réseau = % des fans + bonus actions spécifiques (via weeklyGain)
+    const _nets = window.SOCIAL_NETWORKS || [
+        { key: 'tiktok',    fanRatio: 0.55 },
+        { key: 'instagram', fanRatio: 0.30 },
+        { key: 'youtube',   fanRatio: 0.10 },
+        { key: 'local',     fanRatio: 0.05 }
+    ];
+    _nets.forEach(net => {
+        if (!game.player.socials[net.key]) game.player.socials[net.key] = { followers: 0, weeklyGain: 0 };
+        const base = Math.floor(game.player.fans * net.fanRatio);
+        const bonus = game.player.socials[net.key].weeklyGain || 0;
+        game.player.socials[net.key].followers = base + bonus;
+        game.player.socials[net.key].weeklyGain = 0; // reset après application
+    });
+    if (typeof renderSocials === 'function') renderSocials();
 
     // Probabilité progressive — pas d'events de vie avant d'avoir prouvé sa valeur
     // Niveau 1 : 5% | Niveau 3 : 11% | Niveau 5 : 17% (max 20%)
@@ -4541,6 +4307,235 @@ function processNextWeek() {
             addNews(`💡 CONSEIL : ${tip}`, "info");
         }, 800);
     }
+}
+
+
+// ==========================================
+// PANNEAU RELATIONS
+// ==========================================
+
+window.RELATIONS_CONFIG = null; // Injecté par pack-loader
+
+function getRelationsConfig() {
+    return window.RELATIONS_CONFIG || [
+        {
+            key: 'partner',
+            icon: '<path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>',
+            color: '#FF5252',
+            labelKey: 'relPartner',
+            label: 'Partenaire',
+            statusKey: 'relPartnerStatus',
+            actions: [
+                { labelKey: 'relPartnerSortir',   label: 'Sortir ensemble',   cost: 30000,  affGain: 15, energy: 0 },
+                { labelKey: 'relPartnerCadeau',   label: 'Offrir un cadeau',  cost: 100000, affGain: 25, energy: 0 },
+                { labelKey: 'relPartnerStudio',   label: 'Faire venir au studio', cost: 0, affGain: 10, energy: 10 }
+            ]
+        },
+        {
+            key: 'family',
+            icon: '<path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>',
+            color: '#FF9100',
+            labelKey: 'relFamily',
+            label: 'Famille',
+            actions: [
+                { labelKey: 'relFamilyAppel',    label: 'Appeler la famille',  cost: 0,      affGain: 10, energy: 5 },
+                { labelKey: 'relFamilyEnvoyer',  label: 'Envoyer de l'argent', cost: 50000, affGain: 20, energy: 0 },
+                { labelKey: 'relFamilyVisite',   label: 'Visite au quartier',   cost: 0,     affGain: 15, energy: 20 }
+            ]
+        },
+        {
+            key: 'manager',
+            icon: '<path d="M20 7H4c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V9c0-1.1-.9-2-2-2zm-9 3c1.84 0 3.33 1.49 3.33 3.33 0 1.84-1.49 3.33-3.33 3.33-1.84 0-3.33-1.49-3.33-3.33C7.67 11.49 9.16 10 11 10zm6.67 10H4.33v-.83c0-1.48 2.78-2.5 6.67-2.5s6.67 1.02 6.67 2.5V20z"/>',
+            color: '#2979FF',
+            labelKey: 'relManager',
+            label: 'Manager',
+            actions: [
+                { labelKey: 'relManagerMeeting', label: 'Réunion stratégie',    cost: 0,      affGain: 10, energy: 10 },
+                { labelKey: 'relManagerBonus',   label: 'Payer un bonus',       cost: 200000, affGain: 25, energy: 0 },
+                { labelKey: 'relManagerDiner',   label: 'Dîner d'affaires',    cost: 75000,  affGain: 15, energy: 0 }
+            ]
+        },
+        {
+            key: 'crew',
+            icon: '<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/>',
+            color: '#00E676',
+            labelKey: 'relCrew',
+            label: 'Crew',
+            actions: [
+                { labelKey: 'relCrewSession',  label: 'Session studio ensemble', cost: 0,     affGain: 15, energy: 15 },
+                { labelKey: 'relCrewSortie',   label: 'Sortie entre potes',     cost: 20000, affGain: 12, energy: 0 },
+                { labelKey: 'relCrewCadeau',   label: 'Offrir des cadeaux',     cost: 80000, affGain: 20, energy: 0 }
+            ]
+        }
+    ];
+}
+
+function openRelations() {
+    if (!game.player.relations) {
+        game.player.relations = {
+            partner: { status: 'célibataire', affection: 50, name: '' },
+            family:  { affection: 60 },
+            manager: { status: 'none', affection: 50, name: '' },
+            crew:    { affection: 50 }
+        };
+    }
+    renderRelations();
+    const overlay = document.getElementById('relations-overlay');
+    overlay.style.display = 'flex';
+    overlay.classList.remove('hidden');
+    const panel = document.getElementById('relations-panel');
+    panel.style.transform = 'translateY(100%)';
+    panel.style.transition = 'transform 0.35s cubic-bezier(0.32,0.72,0,1)';
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+        panel.style.transform = 'translateY(0)';
+    }));
+}
+
+function closeRelations() {
+    const overlay = document.getElementById('relations-overlay');
+    const panel = document.getElementById('relations-panel');
+    panel.style.transform = 'translateY(100%)';
+    setTimeout(() => { overlay.style.display = 'none'; }, 320);
+}
+
+function renderRelations() {
+    const ui = window.UI_STRINGS || {};
+    const title = document.getElementById('rel-panel-title');
+    const sub = document.getElementById('rel-panel-sub');
+    if (title) title.textContent = ui.relPanelTitle || 'Relations';
+    if (sub)   sub.textContent   = ui.relPanelSub   || 'Entretiens tes liens';
+
+    const container = document.getElementById('relations-list');
+    container.innerHTML = '';
+    const configs = getRelationsConfig();
+    const rels = game.player.relations;
+    const currSym = (window.CURRENCY && window.CURRENCY.symbol) ? window.CURRENCY.symbol : 'F';
+
+    configs.forEach(cfg => {
+        const rel = rels[cfg.key] || { affection: 50 };
+        const aff = Math.max(0, Math.min(100, rel.affection || 50));
+        const fillColor = aff >= 70 ? '#00E676' : aff >= 40 ? '#FF9100' : '#FF5252';
+        const label = (ui[cfg.labelKey]) || cfg.label;
+        const statusText = cfg.key === 'partner' ? (rel.name ? rel.name : (ui[cfg.statusKey] || rel.status || 'Célibataire'))
+                         : cfg.key === 'manager' ? (rel.name ? rel.name : (ui.relManagerNone || 'Pas de manager'))
+                         : '';
+
+        let actionsHtml = '';
+        cfg.actions.forEach((act, i) => {
+            const actLabel = (ui[act.labelKey]) || act.label;
+            const costConverted = act.cost > 0 ? (typeof window.convertPrice === 'function' ? window.convertPrice(act.cost) : act.cost) : 0;
+            const canDo = game.world.actionsLeft > 0 && (costConverted === 0 || game.player.cash >= costConverted) && (act.energy === 0 || game.player.energy >= act.energy);
+            const costLabel = costConverted > 0 ? `-${costConverted.toLocaleString()} ${currSym}` : act.energy > 0 ? `-${act.energy}⚡` : '';
+            actionsHtml += `
+                <button onclick="doRelationAction('${cfg.key}',${i})" 
+                    class="w-full text-left px-3 py-2 rounded-xl text-[11px] font-bold transition-all active:scale-95 ${canDo ? 'bg-white/8 hover:bg-white/12 text-white' : 'bg-white/4 text-zinc-600 cursor-not-allowed'}"
+                    ${!canDo ? 'disabled' : ''}>
+                    <span class="flex justify-between items-center">
+                        <span>${actLabel}</span>
+                        <span class="text-[9px] font-black ${costConverted > 0 ? 'text-[#FF9100]' : 'text-zinc-500'}">${costLabel}</span>
+                    </span>
+                </button>`;
+        });
+
+        const card = document.createElement('div');
+        card.className = 'bg-[#15161D] rounded-2xl p-4 border border-white/5';
+        card.innerHTML = `
+            <div class="flex items-center gap-3 mb-3">
+                <div class="w-9 h-9 rounded-xl flex items-center justify-center" style="background:${cfg.color}18;border:1px solid ${cfg.color}30;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="${cfg.color}">${cfg.icon}</svg>
+                </div>
+                <div class="flex-1">
+                    <div class="font-black text-sm text-white leading-tight">${label}${statusText ? ' <span class="text-[9px] font-normal text-zinc-500 normal-case">— '+statusText+'</span>' : ''}</div>
+                    <div class="flex items-center gap-2 mt-1">
+                        <div class="flex-1 h-1.5 bg-white/10 rounded-full overflow-hidden">
+                            <div class="h-full rounded-full transition-all duration-500" style="width:${aff}%;background:${fillColor};"></div>
+                        </div>
+                        <span class="text-[9px] font-black" style="color:${fillColor};">${aff}%</span>
+                    </div>
+                </div>
+            </div>
+            <div class="space-y-1.5">${actionsHtml}</div>
+        `;
+        container.appendChild(card);
+    });
+}
+
+window.doRelationAction = function(relKey, actionIdx) {
+    const configs = getRelationsConfig();
+    const cfg = configs.find(c => c.key === relKey);
+    if (!cfg) return;
+    const act = cfg.actions[actionIdx];
+    if (!act) return;
+
+    const costConverted = act.cost > 0 ? (typeof window.convertPrice === 'function' ? window.convertPrice(act.cost) : act.cost) : 0;
+    const currSym = (window.CURRENCY && window.CURRENCY.symbol) ? window.CURRENCY.symbol : 'F';
+
+    if (game.world.actionsLeft <= 0) { notify((window.UI_STRINGS && window.UI_STRINGS.notifNoActionsWeek) || "Plus d'actions !"); return; }
+    if (costConverted > 0 && game.player.cash < costConverted) { notify((window.UI_STRINGS && window.UI_STRINGS.notifNoMoney) || "Fonds insuffisants !"); return; }
+    if (act.energy > 0 && game.player.energy < act.energy) { notify("Pas assez d'énergie !"); return; }
+
+    if (costConverted > 0) game.player.cash -= costConverted;
+    if (act.energy > 0)    game.player.energy = Math.max(0, game.player.energy - act.energy);
+
+    if (!game.player.relations[relKey]) game.player.relations[relKey] = { affection: 50 };
+    game.player.relations[relKey].affection = Math.min(100, (game.player.relations[relKey].affection || 50) + act.affGain);
+
+    game.world.actionsLeft--;
+    addXP(5);
+
+    const actLabel = (window.UI_STRINGS && window.UI_STRINGS[act.labelKey]) || act.label;
+    notify(`✅ ${actLabel} (+${act.affGain} Affection)`);
+    updateUI();
+    renderRelations();
+
+    if (game.world.actionsLeft === 0) {
+        closeRelations();
+        document.getElementById('btn-next-week').classList.add('animate-pulse');
+        notify((window.UI_STRINGS && window.UI_STRINGS.notifNoActions) || "Plus d'actions. Termine la semaine !", 3000);
+    }
+};
+
+// ==========================================
+// SECTION RÉSEAUX SOCIAUX (Business)
+// ==========================================
+
+function renderSocials() {
+    const grid = document.getElementById('socials-grid');
+    if (!grid) return;
+    grid.innerHTML = '';
+
+    const ui = window.UI_STRINGS || {};
+    const nets = window.SOCIAL_NETWORKS || [
+        { key: 'tiktok',    label: 'TikTok',     color: '#FF5252', icon: 'M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.44a8.22 8.22 0 004.82 1.56V6.56a4.85 4.85 0 01-1.05-.13z', viewBox: '0 0 24 24' },
+        { key: 'instagram', label: 'Instagram',  color: '#7C4DFF', icon: 'M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162S8.597 18.163 12 18.163s6.162-2.759 6.162-6.162S15.403 5.838 12 5.838zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z', viewBox: '0 0 24 24' },
+        { key: 'youtube',   label: 'YouTube',    color: '#FF9100', icon: 'M21.543 6.498C22 8.28 22 12 22 12s0 3.72-.457 5.502c-.254.985-.997 1.76-1.938 2.022C17.896 20 12 20 12 20s-5.893 0-7.605-.476c-.945-.266-1.687-1.04-1.938-2.022C2 15.72 2 12 2 12s0-3.72.457-5.502c.254-.985.997-1.76 1.938-2.022C6.107 4 12 4 12 4s5.896 0 7.605.476c.945.266 1.687 1.04 1.938 2.022zM10 15.5l6-3.5-6-3.5v7z', viewBox: '0 0 24 24' },
+        { key: 'local',     label: 'Facebook',   color: '#2979FF', icon: 'M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z', viewBox: '0 0 24 24' }
+    ];
+
+    if (!game.player.socials) return;
+
+    nets.forEach(net => {
+        const s = game.player.socials[net.key];
+        if (!s) return;
+        const followers = s.followers || 0;
+        const label = (ui['social_' + net.key]) || net.label;
+        let formatted = followers >= 1000000 ? (followers/1000000).toFixed(1) + 'M'
+                      : followers >= 1000 ? (followers/1000).toFixed(1) + 'k'
+                      : followers.toString();
+
+        const card = document.createElement('div');
+        card.className = 'bg-black/30 rounded-xl p-3 border border-white/5 flex items-center gap-2.5';
+        card.innerHTML = `
+            <div class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style="background:${net.color}15;border:1px solid ${net.color}25;">
+                <svg width="14" height="14" viewBox="${net.viewBox || '0 0 24 24'}" fill="${net.color}"><path d="${net.icon}"/></svg>
+            </div>
+            <div class="min-w-0">
+                <div class="text-[9px] font-black text-zinc-500 uppercase tracking-wider leading-none">${label}</div>
+                <div class="text-sm font-black text-white leading-tight mt-0.5">${formatted}</div>
+            </div>
+        `;
+        grid.appendChild(card);
+    });
 }
 
 function triggerRandomEvent() {
@@ -5667,6 +5662,27 @@ if (_origNotify) {
 
 console.log('[BUZZKING 2026] Mobile engine loaded ✓ — haptic, counters, rewards, HUD bars');
 </script>
+
+    <!-- ============================================
+         PANNEAU RELATIONS (overlay)
+         ============================================ -->
+    <div id="relations-overlay" class="fixed inset-0 z-[800] bg-black/70 backdrop-blur-sm hidden items-end justify-center" style="display:none;">
+        <div id="relations-panel" class="w-full max-w-[480px] bg-[#09090E] rounded-t-3xl border-t border-white/10 shadow-2xl" style="max-height:90vh;overflow-y:auto;padding-bottom:calc(80px + env(safe-area-inset-bottom,20px));">
+            <!-- Header -->
+            <div class="sticky top-0 z-10 flex justify-between items-center px-5 py-4 bg-[#09090E]/95 backdrop-blur-md border-b border-white/8">
+                <div>
+                    <h2 class="text-base font-black uppercase tracking-wider text-white" id="rel-panel-title">Relations</h2>
+                    <p class="text-[9px] text-zinc-500 font-bold uppercase tracking-widest mt-0.5" id="rel-panel-sub">Entretiens tes liens</p>
+                </div>
+                <button onclick="closeRelations()" class="w-9 h-9 bg-white/8 border border-white/10 rounded-full flex items-center justify-center active:scale-90 transition-transform">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="#A1A1AA"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+                </button>
+            </div>
+            <!-- Cards relations — rendues par JS -->
+            <div id="relations-list" class="px-4 pt-4 space-y-3"></div>
+        </div>
+    </div>
+
 </body>
 
 </html>
