@@ -443,8 +443,53 @@ function applyPackData(data) {
     // 9. Devise
     if (data.CURRENCY) window.CURRENCY = data.CURRENCY;
 
+    // 10. Cibles de clash localisées
+    if (data.CLASH_TARGETS) {
+        window.CLASH_TARGETS = data.CLASH_TARGETS;
+        if (typeof window._patchClashTargets === 'function') {
+            window._patchClashTargets();
+        } else {
+            window._PENDING_CLASH_PATCH = true;
+        }
+    }
+
     console.log(`[BUZZKING] Pack "${data.packName}" chargé ✓`);
 }
+
+// ─────────────────────────────────────────────
+// PATCH CLASH — remplace les cibles CI par celles du pack actif
+// ─────────────────────────────────────────────
+window._patchClashTargets = function() {
+    if (!window.CLASH_TARGETS || !window.launchTargetedClash) return;
+    window.launchTargetedClash = function() {
+        if (game.world.actionsLeft <= 0) return notify(window.UI_STRINGS?.notifNoActionsWeek || "Plus d'actions cette semaine !");
+        if (game.player.energy < 30) return notify(window.UI_STRINGS?.notifTooTired30 || "Pas assez d'énergie (30 requis) !");
+
+        const allTargets = window.CLASH_TARGETS;
+        const available = allTargets.filter(t => t.req <= game.player.level);
+        const container = document.getElementById('clash-list');
+        container.innerHTML = '';
+
+        available.forEach((target) => {
+            const card = document.createElement('div');
+            card.className = `p-4 rounded-xl bg-white/5 border-l-4 ${target.color} flex justify-between items-center cursor-pointer hover:bg-white/10 transition-all active:scale-95`;
+            card.onclick = () => executeFinalClash(target);
+            card.innerHTML = `
+                <div>
+                    <div class="text-white font-bold">${target.name}</div>
+                    <div class="text-[10px] text-zinc-500 uppercase">${target.desc}</div>
+                </div>
+                <div class="text-right">
+                    <div class="text-sm font-black text-red-500">${'⚡'.repeat(target.power)}</div>
+                </div>
+            `;
+            container.appendChild(card);
+        });
+
+        document.getElementById('clash-overlay').classList.remove('hidden');
+    };
+    console.log('[BUZZKING] Clash targets patched ✓');
+};
 
 // ─────────────────────────────────────────────
 // APPLIQUER LES TRADUCTIONS UI DANS LE DOM
@@ -634,6 +679,12 @@ function launchGame() {
             });
             window._PENDING_ACTIONS_LOCAL = null;
             if (typeof renderActions === 'function') renderActions();
+        }
+
+        // Appliquer le patch clash si en attente
+        if (window._PENDING_CLASH_PATCH && window.CLASH_TARGETS) {
+            window._patchClashTargets();
+            window._PENDING_CLASH_PATCH = false;
         }
     }, 100);
 }
