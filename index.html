@@ -2545,14 +2545,15 @@ function renderActions() {
     
     ACTIONS_POOL.forEach(act => {
         const isLocked = game.player.level < act.reqLevel;
-        const canAfford = game.player.energy >= act.energy && game.player.cash >= Math.abs(act.cash < 0 ? act.cash : 0);
+        const actCashDisp = (act.cash !== 0 && typeof window.convertPrice === 'function') ? (act.cash < 0 ? -window.convertPrice(Math.abs(act.cash)) : window.convertPrice(act.cash)) : act.cash;
+        const canAfford = game.player.energy >= act.energy && game.player.cash >= Math.abs(actCashDisp < 0 ? actCashDisp : 0);
         
         const div = document.createElement('div');
         div.className = `pill-button flex-col !items-start p-4 h-auto mb-3 ${isLocked ? 'bg-zinc-800 disabled' : act.color}`;
         
         let costHtml = `<span class="text-[10px] bg-black/40 px-2 py-1 rounded text-white shadow-inner flex items-center gap-1"><svg width="10" height="10" viewBox="0 0 24 24" fill="#2979FF"><path d="M7 2v11h3v9l7-12h-4l4-8z"/></svg>-${act.energy}</span>`;
-        if(act.cash < 0) costHtml += ` <span class="text-[10px] bg-red-500/80 px-2 py-1 rounded text-white ml-1 flex items-center gap-1"><svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>${act.cash}F</span>`;
-        if(act.cash > 0) costHtml += ` <span class="text-[10px] bg-green-500/80 px-2 py-1 rounded text-white ml-1 flex items-center gap-1"><svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>+${act.cash}F</span>`;
+        if(act.cash < 0) { const dispCash = typeof window.convertPrice === 'function' ? window.convertPrice(Math.abs(act.cash)) : Math.abs(act.cash); const cashSym = ((window.CURRENCY && window.CURRENCY.symbol) ? window.CURRENCY.symbol : 'F'); costHtml += ` <span class="text-[10px] bg-red-500/80 px-2 py-1 rounded text-white ml-1 flex items-center gap-1"><svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>-${dispCash.toLocaleString()} ${cashSym}</span>`; }
+        if(act.cash > 0) { const dispCash = typeof window.convertPrice === 'function' ? window.convertPrice(act.cash) : act.cash; const cashSym = ((window.CURRENCY && window.CURRENCY.symbol) ? window.CURRENCY.symbol : 'F'); costHtml += ` <span class="text-[10px] bg-green-500/80 px-2 py-1 rounded text-white ml-1 flex items-center gap-1"><svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>+${dispCash.toLocaleString()} ${cashSym}</span>`; }
 
         div.innerHTML = `
             <div class="flex justify-between w-full font-black items-center">
@@ -2609,7 +2610,9 @@ function performAction(act) {
     // Apply costs
     game.player.energy -= act.energy;
     game.player.energy = Math.min(game.player.energyMax, game.player.energy);
-    game.player.cash += act.cash;
+    // Convertir le cash de l'action selon la devise active du pack
+    const actCashConverted = (act.cash !== 0 && typeof window.convertPrice === 'function') ? (act.cash < 0 ? -window.convertPrice(Math.abs(act.cash)) : window.convertPrice(act.cash)) : act.cash;
+    game.player.cash += actCashConverted;
     
     // Apply rewards with multipliers
     const fanMult = getMultiplier('fans_multiplier');
@@ -3091,7 +3094,8 @@ function renderShop() {
     
     SHOP_ITEMS.forEach(item => {
         const owned = game.player.inventory.items.includes(item.id);
-        const canAfford = game.player.cash >= item.price;
+        const displayPrice = typeof window.convertPrice === 'function' ? window.convertPrice(item.price) : item.price;
+        const canAfford = game.player.cash >= displayPrice;
         
         // --- GESTION DE LA CONDITION ET RÉPARATION ---
         let condition = 100;
@@ -3105,7 +3109,7 @@ function renderShop() {
             
             // Calcul du coût de réparation (jusqu'à 30% du prix d'achat)
             const missingCondition = 100 - condition;
-            repairCost = Math.floor(item.price * 0.30 * (missingCondition / 100));
+            repairCost = Math.floor(displayPrice * 0.30 * (missingCondition / 100));
             canAffordRepair = game.player.cash >= repairCost;
         }
         // ---------------------------------------------
@@ -3149,9 +3153,9 @@ function renderShop() {
             htmlContent += `
                 <span class="px-3 py-1 rounded-lg text-xs font-bold ${canAfford ? 'bg-[#00E676]/10 text-[#00E676]' : 'bg-white/5 text-[#A1A1AA]'} flex items-center gap-1">
                     <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>
-                    ${item.price.toLocaleString()} F
+                    ${displayPrice.toLocaleString()} ${((window.CURRENCY && window.CURRENCY.symbol) ? window.CURRENCY.symbol : 'F')}
                 </span>
-                <button onclick="buyItem('${item.id}', ${item.price})" 
+                <button onclick="buyItem('${item.id}', ${displayPrice})" 
                         class="pill-button px-4 py-2 text-xs w-auto ${canAfford ? 'btn-primary text-black' : 'btn-secondary opacity-50'}" 
                         ${!canAfford ? 'disabled' : ''}>
                     ${canAfford ? 'ACHETER' : 'TROP CHER'}
@@ -3162,9 +3166,9 @@ function renderShop() {
             htmlContent += `
                 <span class="px-3 py-1 rounded-lg text-xs font-bold ${canAffordRepair ? 'bg-[#FF9100]/10 text-[#FF9100]' : 'bg-[#FF5252]/10 text-[#FF5252]'} flex items-center gap-1">
                     <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M22.7 19l-9.1-9.1c.9-2.3.4-5-1.5-6.9-2-2-5-2.4-7.4-1.3L9 6 6 9 1.6 4.7C.4 7.1.9 10.1 2.9 12.1c1.9 1.9 4.6 2.4 6.9 1.5l9.1 9.1c.4.4 1 .4 1.4 0l2.3-2.3c.5-.4.5-1.1.1-1.4z"/></svg>
-                    ${repairCost.toLocaleString()} F
+                    ${repairCost.toLocaleString()} ${((window.CURRENCY && window.CURRENCY.symbol) ? window.CURRENCY.symbol : 'F')}
                 </span>
-                <button onclick="repairItem('${item.id}', ${item.price})" 
+                <button onclick="repairItem('${item.id}', ${displayPrice})" 
                         class="pill-button px-4 py-2 text-xs w-auto font-bold transition-colors ${canAffordRepair ? 'bg-[#FF9100] hover:bg-[#FF9100]/80 text-black' : 'bg-white/5 text-[#A1A1AA] opacity-50'}" 
                         ${!canAffordRepair ? 'disabled' : ''}>
                     ${canAffordRepair ? 'RÉPARER' : 'TROP CHER'}
@@ -3190,11 +3194,13 @@ function renderShop() {
 }
 
 function buyItem(id, price) {
-    if(game.player.inventory.items.includes(id)) { notify("Déjà possédé."); return; }
-    if(game.player.cash < price) { notify("Fonds insuffisants !"); return; }
+    // price est déjà converti dans la devise active (passé depuis renderShop)
+    const finalPrice = (price !== undefined && price !== null) ? price : (typeof window.convertPrice === 'function' ? window.convertPrice((SHOP_ITEMS.find(i=>i.id===id)||{}).price||0) : 0);
+    if(game.player.inventory.items.includes(id)) { notify(uiStr('notifAlreadyOwned',"Déjà possédé.")); return; }
+    if(game.player.cash < finalPrice) { notify(uiStr('notifNoMoney',"Fonds insuffisants !")); return; }
     
     // Paiement et ajout à l'inventaire
-    game.player.cash -= price;
+    game.player.cash -= finalPrice;
     game.player.inventory.items.push(id);
     
     // --- NOUVEAU : Initialisation de la condition de l'objet à 100% ---
@@ -3245,7 +3251,7 @@ function buyItem(id, price) {
     game.player.cash -= repairCost;
     game.player.itemConditions[id] = 100;
     
-    notify(`🔧 ${item.name} réparé(e) pour ${repairCost.toLocaleString()} F !`);
+    notify(`🔧 ${item.name} réparé(e) pour ${repairCost.toLocaleString()} ${((window.CURRENCY && window.CURRENCY.symbol) ? window.CURRENCY.symbol : 'F')} !`);
     
     renderShop(); // Rafraîchit l'affichage
     updateUI();
@@ -3396,7 +3402,7 @@ function bookConcert(id, cost) {
         modalTitle, 
         modalDesc,
         [
-            { icon: '💰', val: `+${revenue.toLocaleString()} F` }, 
+            { icon: '💰', val: `+${revenue.toLocaleString()} ${((window.CURRENCY && window.CURRENCY.symbol) ? window.CURRENCY.symbol : 'F')}` }, 
             { icon: '🔥', val: `${buzzGain > 0 ? '+' : ''}${buzzGain} Buzz` }
         ],
         modalIcon === 'down' ? 'alert' : 'fire'
@@ -4673,12 +4679,12 @@ function offerContract(contract, type) {
     
     // Contenu spécifique selon le type de contrat
     let gainHtml = type === 'label' ? 
-        `<div class="text-[#00E676] font-black text-2xl">+ ${contract.bonusCash.toLocaleString()} F</div>
+        `<div class="text-[#00E676] font-black text-2xl">+ ${contract.bonusCash.toLocaleString()} ${((window.CURRENCY && window.CURRENCY.symbol) ? window.CURRENCY.symbol : 'F')}</div>
          <div class="text-zinc-500 text-[10px] uppercase font-bold mt-1">Avance à la signature</div>
          <div class="mt-4 pt-4 border-t border-white/5 text-[10px] text-zinc-400">
             Redevance : <span class="text-[#FF5252]">${contract.cut * 100}%</span> sur tes revenus
          </div>` :
-        `<div class="text-[#00E676] font-black text-2xl">+ ${contract.weekly.toLocaleString()} F</div>
+        `<div class="text-[#00E676] font-black text-2xl">+ ${contract.weekly.toLocaleString()} ${((window.CURRENCY && window.CURRENCY.symbol) ? window.CURRENCY.symbol : 'F')}</div>
          <div class="text-zinc-500 text-[10px] uppercase font-bold mt-1">Revenu hebdomadaire</div>`;
 
     overlay.innerHTML = `
