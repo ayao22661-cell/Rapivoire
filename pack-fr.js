@@ -71,7 +71,7 @@ window.PACK_DATA = {
         studioBeatChoice: 'Choix de l\'Instru (Beat)',
         studioLyricsTheme: 'Thème des Lyrics',
         studioEnergyCost: '-50 Énergie',
-        studioAlbumCost: '760 000€ • 90 NRJ',
+        studioAlbumCost: '3 040€ • 90 NRJ',
         menuDiscTitle: 'Discographie',
         menuDiscSubtitle: 'Gère tes sorties et streams',
         discInStock: 'En Stock',
@@ -143,7 +143,7 @@ window.PACK_DATA = {
         notifSongReleased: 'Son publié ! +',
         notifSongReleasedFans: ' Fans',
         notifNoMoneyBeat: 'Pas assez d\'argent pour cette instru !',
-        notifNoMoneyAlbum: 'Fonds insuffisants ! Il te faut 760 000€.',
+        notifNoMoneyAlbum: 'Fonds insuffisants ! Il te faut 3 040€.',
         notifNoEnergyAlbum: 'Pas assez d\'énergie ! Il te faut 90⚡. Repose-toi.',
         notifAlbumReleased: 'ALBUM SORTI : ',
         notifAlbumAvailable: ' est disponible !',
@@ -286,6 +286,19 @@ window.PACK_DATA = {
         { id: 'c_stade_fr',    name: 'Stade de France',             cost: 7600000, reqFans: 2000000, reqSongs: 30, reqLevel: 7, capacity: 80000, ticketPrice: 120,  rewardXP: 15000 },
         { id: 'c_wembley',     name: 'Wembley Stadium (Londres)',   cost: 15200000,reqFans: 5000000, reqSongs: 35, reqLevel: 8, capacity: 90000, ticketPrice: 150,  rewardXP: 25000 },
         { id: 'c_msg',         name: 'Madison Square Garden (NYC)', cost: 22800000,reqFans:10000000, reqSongs: 40, reqLevel:10, capacity: 20000, ticketPrice: 200,  rewardXP: 40000 },
+    ],
+    // ─────────────────────────────────────────
+    // BEATS (Instru) - Tarifs convertis en Euros
+    // ─────────────────────────────────────────
+    BEATS_POOL: [
+        { id: 'b_free',   name: "Type Beat YouTube",       price: 15,   qualityMin: 10, qualityMax: 30, desc: "Éclaté au sol, mais c'est pas cher." },
+        { id: 'b_cheap',  name: "Beatmaker Soundcloud",    price: 30,   qualityMin: 20, qualityMax: 45, desc: "Un gars de ta ville qui débute. Basique." },
+        { id: 'b_mid1',   name: "Instru Drill Sombre",     price: 90,   qualityMin: 35, qualityMax: 60, desc: "Basses saturées, parfait pour la rue." },
+        { id: 'b_mid2',   name: "Instru Afro Trap",        price: 150,  qualityMin: 45, qualityMax: 70, desc: "Ambiance estivale, pour faire danser." },
+        { id: 'b_mid3',   name: "Instru Jersey Drill",     price: 230,  qualityMin: 50, qualityMax: 75, desc: "Le rythme qui buzz sur TikTok." },
+        { id: 'b_pro1',   name: "Prod Studio Indé",        price: 300,  qualityMin: 60, qualityMax: 85, desc: "Qualité pro, mixage propre." },
+        { id: 'b_pro2',   name: "Prod Hitmaker Local",     price: 750,  qualityMin: 70, qualityMax: 95, desc: "Beatmaker connu, certifié Or." },
+        { id: 'b_master', name: "Prod Multi-Platine",      price: 1520, qualityMin: 85, qualityMax: 100, desc: "Le top du top. Hit garanti." }
     ],
 
     // ─────────────────────────────────────────
