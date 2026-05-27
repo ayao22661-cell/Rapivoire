@@ -730,5 +730,23 @@ window.addEventListener('packLoaded', () => {
 // ─────────────────────────────────────────────
 // AUTO-DÉMARRAGE
 // ─────────────────────────────────────────────
+
+// ─────────────────────────────────────────────
+// HELPER — Convertit un prix XOF vers la devise active du pack
+// Utilisé partout où un prix en CFA doit s'afficher converti.
+// ─────────────────────────────────────────────
+window.convertPrice = function(xofPrice) {
+    if (window.CURRENCY && window.CURRENCY.rate && window.CURRENCY.rate !== 1) {
+        return Math.floor(xofPrice * window.CURRENCY.rate);
+    }
+    return xofPrice;
+};
+
+window.formatPrice = function(xofPrice) {
+    const converted = window.convertPrice(xofPrice);
+    const sym = (window.CURRENCY && window.CURRENCY.symbol) ? window.CURRENCY.symbol : 'F';
+    return converted.toLocaleString() + ' ' + sym;
+};
+
 window._packLoaderReady = true;
 console.log('[BUZZKING] Pack Loader v2.0 ready ✓');
