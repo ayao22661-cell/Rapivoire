@@ -359,68 +359,213 @@ window.PACK_DATA = {
     // BEATS (Instru) - Tarifs convertis en Euros
     // ─────────────────────────────────────────
     BEATS_POOL: [
-        { id: 'b_free',   name: "Type Beat YouTube",       price: 15,   qualityMin: 10, qualityMax: 30, desc: "Éclaté au sol, mais c'est pas cher." },
-        { id: 'b_cheap',  name: "Beatmaker Soundcloud",    price: 30,   qualityMin: 20, qualityMax: 45, desc: "Un gars de ta ville qui débute. Basique." },
-        { id: 'b_mid1',   name: "Instru Drill Sombre",     price: 90,   qualityMin: 35, qualityMax: 60, desc: "Basses saturées, parfait pour la rue." },
-        { id: 'b_mid2',   name: "Instru Afro Trap",        price: 150,  qualityMin: 45, qualityMax: 70, desc: "Ambiance estivale, pour faire danser." },
-        { id: 'b_mid3',   name: "Instru Jersey Drill",     price: 230,  qualityMin: 50, qualityMax: 75, desc: "Le rythme qui buzz sur TikTok." },
-        { id: 'b_pro1',   name: "Prod Studio Indé",        price: 300,  qualityMin: 60, qualityMax: 85, desc: "Qualité pro, mixage propre." },
-        { id: 'b_pro2',   name: "Prod Hitmaker Local",     price: 750,  qualityMin: 70, qualityMax: 95, desc: "Beatmaker connu, certifié Or." },
-        { id: 'b_master', name: "Prod Multi-Platine",      price: 1520, qualityMin: 85, qualityMax: 100, desc: "Le top du top. Hit garanti." }
+        { 
+            id: 'b_free1', name: "Type Beat Drill UK", price: 0, 
+            qualityMin: 15, qualityMax: 45, 
+            desc: "Instru gratuite trouvée sur YouTube. Qualité moyenne, attention aux droits d'auteur." 
+        },
+        { 
+            id: 'b_free2', name: "Maquette FL Studio", price: 0, 
+            qualityMin: 10, qualityMax: 40, 
+            desc: "Un petit du tieks a fait ça sur son vieux PC. Ça sature un peu au niveau des basses." 
+        },
+        { 
+            id: 'b_cheap1', name: "Trap Sombre (Basic Lease)", price: 10000, 
+            qualityMin: 30, qualityMax: 55, 
+            desc: "Achetée sur BeatStars. Parfait pour kicker sec et montrer que tu as du flow." 
+        },
+        { 
+            id: 'b_mid1', name: "Prod Drill (Style Flem)", price: 25000, 
+            qualityMin: 35, qualityMax: 65, 
+            desc: "Un beatmaker a imité le style du 667. Bonne vibe sombre et technique." 
+        },
+        { 
+            id: 'b_mid2', name: "Instru Afro Trap / Zumba", price: 40000, 
+            qualityMin: 45, qualityMax: 70, 
+            desc: "Mélange d'Afro et de Trap. Parfait pour l'été et pour ambiancer." 
+        },
+        { 
+            id: 'b_mid3', name: "Instru Jersey Drill", price: 60000, 
+            qualityMin: 50, qualityMax: 75, 
+            desc: "Le rythme qui buzz sur TikTok en ce moment. Idéal pour exploser les stats." 
+        },
+        { 
+            id: 'b_pro1', name: "Instru Club Premium", price: 100000, 
+            qualityMin: 60, qualityMax: 85, 
+            desc: "Très bien mixé. Le top pour ambiancer les chichas et les boîtes parisiennes." 
+        },
+        { 
+            id: 'b_pro2', name: "Cloud Rap Planant", price: 150000, 
+            qualityMin: 65, qualityMax: 90, 
+            desc: "Une prod taillée pour faire de la mélancolie avec plein d'autotune." 
+        },
+        { 
+            id: 'b_pro3', name: "Drill FR Officielle", price: 200000, 
+            qualityMin: 70, qualityMax: 92, 
+            desc: "Lourde, agressive et professionnelle. Pour s'imposer comme le boss du bendo." 
+        },
+        { 
+            id: 'b_lux1', name: "Prod Exclusive (Studio Pro)", price: 350000, 
+            qualityMin: 80, qualityMax: 95, 
+            desc: "Mixé et masterisé par les meilleurs ingés son de Paname. Hit assuré." 
+        },
+        { 
+            id: 'b_lux2', name: "Masterpiece by Hitmaker", price: 500000, 
+            qualityMin: 85, qualityMax: 100, 
+            desc: "Composée par un producteur certifié Diamant. Du pur génie musical." 
+        },
+        { 
+            id: 'b_lux3', name: "Collab Américaine", price: 800000, 
+            qualityMin: 95, qualityMax: 100, 
+            desc: "L'instrumentale ultime venue d'Atlanta. Réservée aux boss de l'industrie !" 
+        }
     ],
 
-    // ─────────────────────────────────────────
-    // ACTIONS LOCALISÉES (remplacement actions CI)
-    // ─────────────────────────────────────────
     ACTIONS_LOCAL: [
-        {
-            id: 'rest', title: '🛋️ Chiller en dalle', reqLevel: 1,
-            desc: 'Se poser dans le hall pour récupérer. Rend 25 énergie mais le buzz chute.',
-            energy: -25, cash: 0, buzz: -10, fans: 0, xp: 5,
-            color: 'bg-[#15161D] border border-[#FF5252]/30 text-white'
+        { 
+            id: "rest", title: "🛋️ Chiller au bendo", reqLevel: 1,
+            desc: "Se poser au quartier pour récupérer. Rend 25 d'énergie mais fait chuter ton Buzz.", 
+            energy: -25, cash: 0, buzz: -10, fans: 0, xp: 5, 
+            color: "bg-[#15161D] border border-[#FF5252]/30 text-white" 
         },
-        {
-            id: 'freestyle', title: '🎤 Freestyle en cave', reqLevel: 1,
-            desc: 'Poser des barres avec les potes du quartier.',
-            energy: 15, cash: 0, buzz: 2, fans: 15, xp: 15,
-            color: 'bg-orange-grad'
+        { 
+            id: 'clash_cible', title: "Clash Ciblé", reqLevel: 1,
+            desc: "Choisis un rappeur à éteindre sur les réseaux (30 Énergie).", 
+            energy: 30, cash: 0, buzz: 0, fans: 0, xp: 0, 
+            color: 'bg-red-600 text-white border-none'
         },
-        {
-            id: 'n1_gbaka', title: '🚇 Freestyle dans le métro', reqLevel: 1,
-            desc: 'Rapper dans le RER entre Châtelet et Saint-Denis.',
-            energy: 20, cash: 23, buzz: 2, fans: 5, xp: 10,
-            color: 'bg-green-grad'
+        { 
+            id: 'freestyle', title: "Freestyle au City Stade", reqLevel: 1,
+            desc: "Poser un 16 mesures avec les petits de la tess.", 
+            energy: 15, cash: 0, buzz: 2, fans: 15, xp: 15, 
+            color: 'bg-orange-grad' 
         },
-        {
-            id: 'gombo', title: '📦 Petit Boulot (Livreur Uber)', reqLevel: 1,
-            desc: 'Faire des livraisons à vélo pour payer le studio.',
-            energy: 25, cash: 53, buzz: -1, fans: 0, xp: 5,
-            color: 'bg-green-grad'
+        { 
+            id: 'n1_gbaka', title: "Freestyle Ligne 4", reqLevel: 1,
+            desc: "Rapper dans le métro parisien en espérant percer.", 
+            energy: 20, cash: 1500, buzz: 2, fans: 5, xp: 10, 
+            color: 'bg-green-grad' 
         },
-        {
-            id: 'n1_tiktok', title: '📱 Challenge TikTok', reqLevel: 1,
-            desc: 'Essayer de lancer la nouvelle tendance virale.',
-            energy: 15, cash: 0, buzz: 8, fans: 25, xp: 10,
-            color: 'bg-pink-grad'
+        { 
+            id: 'gombo', title: "Livreur Uber Eats", reqLevel: 1,
+            desc: "Livrer des tacos en scooter pour payer l'heure de studio.", 
+            energy: 25, cash: 3500, buzz: -1, fans: 0, xp: 5, 
+            color: 'bg-green-grad' 
         },
-        {
-            id: 'n1_clash_rue', title: '⚔️ Clash de Quartier', reqLevel: 1,
-            desc: 'Défier le meilleur rappeur de ta commune.',
-            energy: 25, cash: 0, buzz: 15, fans: -2, xp: 20,
-            color: 'bg-danger text-white border-none'
+        { 
+            id: 'n1_tiktok', title: "Challenge TikTok", reqLevel: 1,
+            desc: "Essayer de lancer la nouvelle trend Jersey Drill.", 
+            energy: 15, cash: 0, buzz: 8, fans: 25, xp: 10, 
+            color: 'bg-pink-grad' 
         },
-        {
-            id: 'cypher', title: '🔥 Cypher Instagram', reqLevel: 2,
-            desc: 'Organiser un cypher avec d\'autres rappeurs locaux.',
-            energy: 30, cash: 0, buzz: 20, fans: 80, xp: 30,
-            color: 'bg-orange-grad'
+        { 
+            id: 'n1_clash_rue', title: "Clash de Quartier", reqLevel: 1,
+            desc: "Défier le meilleur kickeur de ton arrondissement.", 
+            energy: 25, cash: 0, buzz: 15, fans: -2, xp: 20, 
+            color: 'bg-danger text-white border-none' 
         },
-        {
-            id: 'open_mic', title: '🎙️ Open Mic à La Cigale', reqLevel: 2,
-            desc: 'Participer à une soirée open mic dans une salle parisienne.',
-            energy: 35, cash: 0, buzz: 15, fans: 120, xp: 40,
-            color: 'bg-purple-grad'
+        { 
+            id: 'fb_live', title: "Live Instagram", reqLevel: 2,
+            desc: "Faire un live Insta pour interagir avec tes premiers abonnés.", 
+            energy: 30, cash: 0, buzz: 3, fans: 15, xp: 8, 
+            color: 'bg-blue-grad' 
         },
+        { 
+            id: 'n2_live', title: "Gros Direct Twitch", reqLevel: 2,
+            desc: "Régler tes comptes en direct devant des milliers de viewers.", 
+            energy: 45, cash: 0, buzz: 15, fans: 20, xp: 15, 
+            color: 'bg-blue-grad' 
+        },
+        { 
+            id: 'promo_boomplay', title: "Playlist 'Rap FR'", reqLevel: 2,
+            desc: "Payer un curateur pour entrer dans une grosse playlist indépendante.", 
+            energy: 20, cash: -15000, buzz: 5, fans: 60, xp: 15, 
+            color: 'bg-blue-grad' 
+        },
+        { 
+            id: 'n2_clash_arr', title: "Faux Drama Twitter", reqLevel: 2,
+            desc: "Créer un buzz monté de toutes pièces avec un autre rappeur.", 
+            energy: 40, cash: 0, buzz: 25, fans: -25, xp: 15, 
+            color: 'bg-danger text-white border-none' 
+        },
+        { 
+            id: 'n2_show_bar', title: "Showcase en Chicha", reqLevel: 2,
+            desc: "Mettre le feu dans une grosse chicha en banlieue.", 
+            energy: 60, cash: 15000, buzz: 5, fans: 30, xp: 30, 
+            color: 'bg-teal-grad' 
+        },
+        { 
+            id: 'radio', title: "Planète Rap (Skyrock)", reqLevel: 3,
+            desc: "Acheter ta place pour faire un freestyle en direct à la radio.", 
+            energy: 30, cash: -25000, buzz: 10, fans: 80, xp: 15, 
+            color: 'bg-purple-grad' 
+        },
+        { 
+            id: 'promo_youtube', title: "Sponsor YouTube", reqLevel: 3,
+            desc: "Ton clip s'affiche en pub avant ceux de Booba ou Jul.", 
+            energy: 20, cash: -40000, buzz: 15, fans: 150, xp: 30, 
+            color: 'bg-red-500 text-white' 
+        },
+        { 
+            id: 'n3_tv', title: "Interview Booska-P", reqLevel: 3,
+            desc: "Aller t'expliquer en direct devant la caméra de Booska-P.", 
+            energy: 45, cash: 0, buzz: 35, fans: -30, xp: 40, 
+            color: 'bg-blue-grad' 
+        },
+        { 
+            id: 'n3_diss', title: "Octogone (Diss Track)", reqLevel: 3,
+            desc: "Détruire la carrière d'un rival avec un son sanglant.", 
+            energy: 50, cash: -15000, buzz: 40, fans: 30, xp: 45, 
+            color: 'bg-danger text-white border-none' 
+        },
+        { 
+            id: 'n3_clip', title: "Clip de Luxe à Marbella", reqLevel: 3,
+            desc: "Louer villa, yacht et grosses gamos pour frimer dans le clip.", 
+            energy: 70, cash: -150000, buzz: 25, fans: 300, xp: 70, 
+            color: 'bg-teal-grad' 
+        },
+        { 
+            id: 'promo_spotify', title: "Curateur Spotify", reqLevel: 4,
+            desc: "Viser la couverture de la playlist 'PVNCHLNRS'.", 
+            energy: 30, cash: -150000, buzz: 15, fans: 500, xp: 60, 
+            color: 'bg-green-grad' 
+        },
+        { 
+            id: 'clash', title: "Clasher un Influenceur", reqLevel: 4,
+            desc: "Gros buzz sur TikTok, mais tu perds tes vrais fans rap.", 
+            energy: 35, cash: 0, buzz: 30, fans: -150, xp: 10, 
+            color: 'bg-pink-grad' 
+        },
+        { 
+            id: 'n4_feat_fr', title: "Feat International (US/UK)", reqLevel: 4,
+            desc: "Payer une star américaine ou anglaise pour s'exporter.", 
+            energy: 80, cash: -500000, buzz: 60, fans: 1000, xp: 100, 
+            color: 'bg-blue-grad' 
+        },
+        { 
+            id: 'n4_boycott', title: "Caprice de Star", reqLevel: 4,
+            desc: "Faire un scandale et refuser de monter sur scène aux Ardentes.", 
+            energy: 20, cash: 0, buzz: 80, fans: -350, xp: 30, 
+            color: 'bg-pink-grad' 
+        },
+        { 
+            id: 'showcase', title: "Showcase sur les Champs", reqLevel: 5,
+            desc: "Chanter sur playback à 3h du matin dans une boîte hype.", 
+            energy: 75, cash: 75000, buzz: 5, fans: 150, xp: 25, 
+            color: 'bg-teal-grad' 
+        },
+        { 
+            id: 'n5_label', title: "Créer ton Label", reqLevel: 5,
+            desc: "Devenir producteur, fonder ton empire et signer des talents.", 
+            energy: 90, cash: -2000000, buzz: 100, fans: 1500, xp: 300, 
+            color: 'bg-purple-grad' 
+        },
+        { 
+            id: 'n5_clash_etat', title: "Clash le Gouvernement", reqLevel: 5,
+            desc: "Critiquer le système politique (Buzz énorme, mais risqué).", 
+            energy: 80, cash: -100000, buzz: 200, fans: -1500, xp: 150, 
+            color: 'bg-danger text-white border-none' 
+        }
     ],
 
     // ─────────────────────────────────────────
