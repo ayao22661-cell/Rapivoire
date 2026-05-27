@@ -461,6 +461,21 @@ function applyPackData(data) {
         }
     }
 
+    // 12. Événements aléatoires localisés
+    if (data.RANDOM_EVENTS) {
+        window.RANDOM_EVENTS = data.RANDOM_EVENTS;
+    }
+
+    // 13. Événements de vie localisés
+    if (data.LIFE_EVENTS) {
+        window.LIFE_EVENTS = data.LIFE_EVENTS;
+    }
+
+    // 14. Styles d'impro localisés
+    if (data.IMPRO_STYLES) {
+        window.IMPRO_STYLES = data.IMPRO_STYLES;
+    }
+
     console.log(`[BUZZKING] Pack "${data.packName}" chargé ✓`);
 }
 
