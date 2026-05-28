@@ -4052,8 +4052,7 @@ function processNextWeek() {
                 const pNewStreams = Math.floor(baseVolume * p.weight * (0.8 + Math.random() * 0.4));
                 song.platformStreams[pKey] += pNewStreams;
                 totalStreamsThisWeek += pNewStreams;
-                const payConverted = typeof window.convertPrice === 'function' ? window.convertPrice(p.pay) : p.pay;
-                incomeThisWeek += (pNewStreams * payConverted);
+                incomeThisWeek += (pNewStreams * p.pay);
             });
         }
         song.streams = Object.values(song.platformStreams).reduce((a, b) => a + b, 0);
@@ -4102,7 +4101,8 @@ function processNextWeek() {
 
     // --- 5. REVENUS & LABELS ---
     if(totalStreamsThisWeek > 0) {
-        incomeThisWeek = Math.floor(incomeThisWeek);
+        // incomeThisWeek est en F CFA — on convertit une seule fois vers la devise active
+        incomeThisWeek = Math.floor(incomeThisWeek * ((window.CURRENCY && window.CURRENCY.rate) ? window.CURRENCY.rate : 1));
         if (game.player.label) {
             let labelCut = Math.floor(incomeThisWeek * game.player.label.cut);
             incomeThisWeek -= labelCut;
@@ -4177,7 +4177,7 @@ function processNextWeek() {
             // Au niveau 1, les fans gagnés/perdus sont divisés par 3 max
             const levelScale = Math.min(1, 0.3 + (game.player.level - 1) * 0.14);
 
-            if (event.effect.cash)   game.player.cash   += Math.floor((typeof window.convertPrice === 'function' ? window.convertPrice(event.effect.cash) : event.effect.cash) * (event.effect.cash < 0 ? 1 : levelScale));
+            if (event.effect.cash)   game.player.cash   += Math.floor(event.effect.cash   * (event.effect.cash < 0 ? 1 : levelScale));
             if (event.effect.fans)   game.player.fans   = Math.max(0, game.player.fans + Math.floor(event.effect.fans * levelScale));
             if (event.effect.buzz)   game.player.buzz   += event.effect.buzz;
             if (event.effect.energy) game.player.energy += event.effect.energy;
