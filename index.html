@@ -2448,7 +2448,7 @@ function updateUI() {
     if (studioReleased) studioReleased.textContent = (game.player.inventory.released || []).length;
 
     // Business : revenu streams estimé et sponsors actifs
-    const streamIncome = Math.floor(game.player.streams * 0.004);
+    const streamIncome = Math.floor(game.player.streams * 0.004 * ((window.CURRENCY && window.CURRENCY.rate) ? window.CURRENCY.rate : 1));
     const sponsorIncome = (game.player.contracts || []).reduce((sum, c) => sum + (c.weeklyPay || 0), 0);
     const bizStreams = document.getElementById('biz-stat-streams');
     if (bizStreams) bizStreams.textContent = streamIncome.toLocaleString('fr-FR');
@@ -3349,7 +3349,9 @@ function renderConcerts() {
     const currSymbol = (window.CURRENCY && window.CURRENCY.symbol) ? window.CURRENCY.symbol : 'F';
 
     venues.forEach(venue => {
-        const cost = Math.max(0, Math.floor((venue.cost || 0) * bizDiscount));
+        const rawCost = Math.max(0, Math.floor((venue.cost || 0) * bizDiscount));
+        const cost = typeof window.convertPrice === 'function' ? window.convertPrice(rawCost) : rawCost;
+        const ticketPriceConverted = typeof window.convertPrice === 'function' ? window.convertPrice(venue.ticketPrice) : venue.ticketPrice;
         const canAfford = game.player.cash >= cost;
         const hasFans = game.player.fans >= venue.reqFans;
         const hasSongs = game.player.inventory.released.length >= venue.reqSongs;
@@ -3366,7 +3368,7 @@ function renderConcerts() {
                         Prix: ${cost.toLocaleString()} ${currSymbol}
                     </span>
                 </div>
-                <div class="text-[12px] text-[#A1A1AA] mb-3">Capacité: ${venue.capacity.toLocaleString()} pl. | Ticket: ${venue.ticketPrice}${currSymbol}</div>
+                <div class="text-[12px] text-[#A1A1AA] mb-3">Capacité: ${venue.capacity.toLocaleString()} pl. | Ticket: ${ticketPriceConverted}${currSymbol}</div>
                 
                 <div class="flex flex-wrap gap-2">
                     <span class="px-2 py-1 rounded-md text-xs font-bold ${hasFans ? 'bg-white/10 text-white' : 'bg-white/5 text-[#A1A1AA]'} flex items-center gap-1">
@@ -3399,8 +3401,10 @@ function bookConcert(id, cost) {
     if (!cost || isNaN(cost)) {
         const bizSkill = (game.player.skills && game.player.skills.biz) ? game.player.skills.biz : 0;
         const bizDiscount = (PERKS_TREE.biz && PERKS_TREE.biz.levels[bizSkill]) ? PERKS_TREE.biz.levels[bizSkill] : 1;
-        cost = Math.max(0, Math.floor((venue.cost || 0) * bizDiscount));
+        const rawCost = Math.max(0, Math.floor((venue.cost || 0) * bizDiscount));
+        cost = typeof window.convertPrice === 'function' ? window.convertPrice(rawCost) : rawCost;
     }
+    const ticketPriceConverted = typeof window.convertPrice === 'function' ? window.convertPrice(venue.ticketPrice) : venue.ticketPrice;
 
     // 1. Initialisation et Vérification du Quota Annuel (Max 4 par an)
     if (typeof game.player.concertsThisYear === 'undefined') {
@@ -3430,7 +3434,7 @@ function bookConcert(id, cost) {
     fillRate = Math.min(1.0, fillRate); // On plafonne à 100% max
     
     const ticketsSold = Math.floor(venue.capacity * fillRate);
-    const revenue = ticketsSold * venue.ticketPrice;
+    const revenue = ticketsSold * ticketPriceConverted;
     
     game.player.cash += revenue;
     
@@ -4048,7 +4052,8 @@ function processNextWeek() {
                 const pNewStreams = Math.floor(baseVolume * p.weight * (0.8 + Math.random() * 0.4));
                 song.platformStreams[pKey] += pNewStreams;
                 totalStreamsThisWeek += pNewStreams;
-                incomeThisWeek += (pNewStreams * p.pay);
+                const payConverted = typeof window.convertPrice === 'function' ? window.convertPrice(p.pay) : p.pay;
+                incomeThisWeek += (pNewStreams * payConverted);
             });
         }
         song.streams = Object.values(song.platformStreams).reduce((a, b) => a + b, 0);
@@ -4084,12 +4089,13 @@ function processNextWeek() {
         }
 
         if (nouvelleCertif) {
-            game.player.cash += prime;
+            const primeConverted = typeof window.convertPrice === 'function' ? window.convertPrice(prime) : prime;
+            game.player.cash += primeConverted;
             game.player.fans += fansGain;
             game.player.buzz = Math.min(100, game.player.buzz + buzzGain); 
             if (typeof addNews === "function") {
                 addNews(`🚨 SNEP : "${song.name}" certifié ${nouvelleCertif} !`, "success");
-                addNews(`🎁 Bonus : +${prime.toLocaleString()} ${((window.CURRENCY && window.CURRENCY.symbol) ? window.CURRENCY.symbol : 'F')}, +${fansGain.toLocaleString()} Fans.`, "info");
+                addNews(`🎁 Bonus : +${primeConverted.toLocaleString()} ${((window.CURRENCY && window.CURRENCY.symbol) ? window.CURRENCY.symbol : 'F')}, +${fansGain.toLocaleString()} Fans.`, "info");
             }
         }
     });
@@ -4171,7 +4177,7 @@ function processNextWeek() {
             // Au niveau 1, les fans gagnés/perdus sont divisés par 3 max
             const levelScale = Math.min(1, 0.3 + (game.player.level - 1) * 0.14);
 
-            if (event.effect.cash)   game.player.cash   += Math.floor(event.effect.cash   * (event.effect.cash < 0 ? 1 : levelScale));
+            if (event.effect.cash)   game.player.cash   += Math.floor((typeof window.convertPrice === 'function' ? window.convertPrice(event.effect.cash) : event.effect.cash) * (event.effect.cash < 0 ? 1 : levelScale));
             if (event.effect.fans)   game.player.fans   = Math.max(0, game.player.fans + Math.floor(event.effect.fans * levelScale));
             if (event.effect.buzz)   game.player.buzz   += event.effect.buzz;
             if (event.effect.energy) game.player.energy += event.effect.energy;
@@ -4193,7 +4199,7 @@ function processNextWeek() {
                 const effectsEl = document.getElementById('event-effects');
                 if (effectsEl) {
                     let effectsHtml = "";
-                    if (event.effect.cash)   effectsHtml += `<span class="${event.effect.cash > 0 ? 'text-green-400' : 'text-red-400'}">${event.effect.cash > 0 ? '+' : ''}${event.effect.cash} F</span> `;
+                    if (event.effect.cash)   effectsHtml += `<span class="${event.effect.cash > 0 ? 'text-green-400' : 'text-red-400'}">${event.effect.cash > 0 ? '+' : ''}${event.effect.cash} ${((window.CURRENCY && window.CURRENCY.symbol) ? window.CURRENCY.symbol : 'F')}</span> `;
                     if (event.effect.fans)   effectsHtml += `<span class="${event.effect.fans > 0 ? 'text-green-400' : 'text-red-400'}">${event.effect.fans > 0 ? '+' : ''}${event.effect.fans} Fans</span> `;
                     if (event.effect.buzz)   effectsHtml += `<span class="${event.effect.buzz > 0 ? 'text-green-400' : 'text-red-400'}">${event.effect.buzz > 0 ? '+' : ''}${event.effect.buzz}% Buzz</span> `;
                     if (event.effect.energy) effectsHtml += `<span class="${event.effect.energy > 0 ? 'text-blue-400' : 'text-red-400'}">${event.effect.energy > 0 ? '+' : ''}${event.effect.energy} ⚡</span> `;
