@@ -230,6 +230,108 @@ window.UI_STRINGS = {
     notifAvatarSelected: 'Profil sélectionné !',
     notifNoStyle: 'Aucun style disponible.',
 
+    // ── Dates ──
+    months: ["Jan", "Fév", "Mar", "Avr", "Mai", "Juin", "Juil", "Août", "Sep", "Oct", "Nov", "Déc"],
+
+    // ── Loading bar ──
+    loadingDone: 'Chargement terminé...',
+    loadingBeats: 'Chargement des beats...',
+    loadingConnect: 'Connexion au game...',
+
+    // ── Contrats ──
+    contractLabelTitle: 'Offre de Maison de Disque',
+    contractSponsorTitle: 'Nouveau Sponsor',
+    contractSigningBonus: 'Avance à la signature',
+    contractRoyalties: 'Redevance',
+    contractOnRevenues: 'sur tes revenus',
+    contractWeeklyIncome: 'Revenu hebdomadaire',
+    contractSignBtn: 'SIGNER LE CONTRAT',
+    contractDeclineBtn: 'Rester indépendant',
+
+    // ── Contrats — news dynamiques ──
+    contractSignedNews: 'SIGNATURE',
+    contractJoined: "Tu rejoins l'écurie",
+    contractAdvance: 'Avance de',
+    contractSponsorNews: 'SPONSOR',
+    contractSponsorPartner: 'devient ton partenaire officiel.',
+    contractDeclinedNews: "Tu as refusé l'offre de",
+    contractStayIndependent: 'Tu gardes ton indépendance !',
+
+    // ── Discographie / Catalogue ──
+    discEmptyHere: 'Aucun son ici.',
+    discEmptyStock: 'Aucun son en stock.',
+    discEmptyStockHint: 'Va au Studio pour enregistrer, puis reviens ici pour publier.',
+    discUnreleasedWarning: 'Sons non publiés = 0 stream',
+    songThemeLabel: 'Thème',
+    songQualityLabel: 'Qualité',
+    songAge: 'Ancienneté',
+    weekShort: 'sem.',
+    songReleaseSuccess: 'Gros engouement sur les réseaux.',
+    songReleaseMixed: 'Les critiques sont mitigées...',
+
+    // ── Album ──
+    albumOnlineTitle: 'ALBUM EN LIGNE !',
+    albumOnlineDesc1: 'Ton projet',
+    albumOnlineDesc2: 'est sorti avec une qualité de',
+    albumOnlineDesc3: 'Le public réagit immédiatement !',
+
+    // ── Shop / Lifestyle ──
+    shopOwned: 'ACQUIS',
+    shopConditionLabel: "ÉTAT D'USURE",
+    shopBtnBuy: 'ACHETER',
+    shopBtnTooExpensive: 'TROP CHER',
+    shopBtnRepair: 'RÉPARER',
+    shopOwnedNew: 'POSSÉDÉ (NEUF)',
+
+    // ── Concerts ──
+    concertPriceLabel: 'Prix',
+    concertCapacityLabel: 'Capacité',
+    concertTicketLabel: 'Ticket',
+    concertFansReq: 'Fans req.',
+    concertSongsReq: 'Sons req.',
+    concertPlaces: 'places',
+    concertBtnBook: 'ORGANISER',
+    concertBtnLocked: 'PRÉREQUIS MANQUANTS',
+    concertTitleGreat: 'CONCERT INCROYABLE !',
+    concertDescGreat1: 'Tu as rempli la salle à',
+    concertDescGreat2: 'Le public était en feu !',
+    concertTitleOk: 'CONCERT CORRECT',
+    concertDescOk1: 'La salle était remplie à',
+    concertDescOk2: "L'ambiance était bonne.",
+    concertTitleFlop: 'GROS FLOP...',
+    concertDescFlop1: 'Seulement',
+    concertDescFlop2: 'de la salle remplie',
+    concertDescFlop3: "C'était très vide.",
+
+    // ── Clash ──
+    clashWinNews: 'CLASH',
+    clashWinDesc1: 'Tu as humilié',
+    clashFansStolen: 'Fans volés',
+    clashFailNews: 'ÉCHEC',
+    clashFailDesc2: "t'a remis à ta place.",
+    clashFailDesc: "t'a démoli en public. Ses fans se moquent de toi sur les réseaux.",
+
+    // ── Level up ──
+    levelUpTitle: 'LEVEL UP !',
+    levelUpMsg: 'Tu passes au Niveau',
+    levelUpMsg2: 'La route vers le sommet se durcit. Tu gagnes 2 points de talent.',
+
+    // ── Notifications impro ──
+    notifImproDone: 'Impro terminée',
+
+    // ── News labels ──
+    newsAdvicePrefix: 'CONSEIL',
+    newsEventPrefix: 'ÉVÉNEMENT',
+    newsRevenues: 'Revenus',
+
+    // ── Share card ──
+    shareBtnGenerating: 'Génération...',
+    shareBtnSaved: 'CARTE SAUVEGARDÉE',
+    shareDownloadBtn: 'TÉLÉCHARGER LA CARTE',
+    shareErrorCapture: "Erreur de capture. Fais une capture d'écran manuelle.",
+    shareBtnCopied: 'COPIÉ !',
+    shareCopyBtn: 'COPIER LE TEXTE',
+
     // Bilan de fin de semaine
     weekTitleCalm: 'SEMAINE TRANQUILLE',
     weekTitleGood: 'BON FLOW !',
@@ -677,7 +779,10 @@ function applyUI(ui) {
 
     // ── Clash overlay ──
     setTextQ('#clash-overlay h3', ui.clashTitle);
-    setTextQ('#clash-overlay .text-center.uppercase', ui.clashCost);
+    setText('clash-cost-label', ui.clashCost);
+
+    // ── Contrats ──
+    // (textes injectés dynamiquement via uiStr() dans offerContract())
 
     // ── Bouton Semaine Suivante ──
     setTextQ('#btn-next-week span', ui.btnNextWeek);
