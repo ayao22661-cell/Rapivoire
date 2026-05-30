@@ -1096,6 +1096,301 @@ window.PACK_DATA.LIFE_EVENTS = [
     },
 ];
 
+// ─────────────────────────────────────────
+// SHOP ITEMS (UK — London context, prices in GBP)
+// All prices are in GBP — nativePrices: true
+// ─────────────────────────────────────────
+window.PACK_DATA.SHOP_ITEMS = [
+    {
+        id: 'item_ringlight',
+        name: "Ring Light & Tripod",
+        desc: "Basic setup for your TikTok freestyles. (+1% Fans earned).",
+        price: 60,
+        icon: `<svg width="28" height="28" viewBox="0 0 24 24" fill="#FF9100"><path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zm0 8c-1.65 0-3-1.35-3-3s1.35-3 3-3 3 1.35 3 3-1.35 3-3 3zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"/></svg>`,
+        type: 'fans_multiplier',
+        boost: 0.01
+    },
+    {
+        id: 'item_mic',
+        name: "Semi-Pro Microphone",
+        desc: "No more recording on your phone. Track quality increased (+2%).",
+        price: 150,
+        icon: `<svg width="28" height="28" viewBox="0 0 24 24" fill="#7C4DFF"><path d="M12 15c1.66 0 2.99-1.34 2.99-3L15 6c0-1.66-1.34-3-3-3S9 4.34 9 6v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 15 6.7 12H5c0 3.42 2.72 6.23 6 6.72V22h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z"/></svg>`,
+        type: 'quality_boost',
+        boost: 2
+    },
+    {
+        id: 'item_software',
+        name: "Auto-Tune Pro Licence",
+        desc: "The secret behind every UK hit. Your vocals are perfectly mixed (+3% Quality).",
+        price: 200,
+        icon: `<svg width="28" height="28" viewBox="0 0 24 24" fill="#2979FF"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>`,
+        type: 'quality_boost',
+        boost: 3
+    },
+    {
+        id: 'item_drip',
+        name: "Designer Wardrobe (Drip)",
+        desc: "Trapstar, Off-White, Stone Island. Your image is elevated (+2% Fans earned).",
+        price: 300,
+        icon: `<svg width="28" height="28" viewBox="0 0 24 24" fill="#00E676"><path d="M19.56 5.06L16 3l-4 2-4-2-3.56 2.06C4.17 5.27 4 5.62 4 6v15c0 .55.45 1 1 1h14c.55 0 1-.45 1-1V6c0-.38-.17-.73-.44-.94zM18 20H6V6.56l2-.83V9h2V5.72l2 1 2-1V9h2V5.73l2 .83V20z"/></svg>`,
+        type: 'fans_multiplier',
+        boost: 0.02
+    },
+    {
+        id: 'item_camera',
+        name: "Pro Camera",
+        desc: "For clean covers and quality video shoots. XP multiplied (+2%).",
+        price: 500,
+        icon: `<svg width="28" height="28" viewBox="0 0 24 24" fill="#FF9100"><path d="M12 15.2c-1.76 0-3.2-1.44-3.2-3.2s1.44-3.2 3.2-3.2 3.2 1.44 3.2 3.2-1.44 3.2-3.2 3.2zM9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/></svg>`,
+        type: 'xp_multiplier',
+        boost: 0.02
+    },
+    {
+        id: 'item_sneakers',
+        name: "Limited Edition Trainers",
+        desc: "Nike Air Max, Off-White collab. The collectors validate your style (+2% Fans).",
+        price: 700,
+        icon: `<svg width="28" height="28" viewBox="0 0 24 24" fill="#7C4DFF"><path d="M13.49 5.48c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm-3.6 13.9l-1.37-6.79-2.44 2.63V19H4V14.5l3.67-3.67c.57-.57 1.37-.78 2.15-.57L13 11.87c.86 1.01 2.12 1.63 3.49 1.63h3.51v-2h-3.51c-.74 0-1.43-.28-1.96-.75l-2.76-2.76c-.37-.37-.87-.6-1.4-.6-.27 0-.53.06-.77.17L5 11.19V5H3v14h2v-3.65l2.47-2.66.92 4.59.64 3.72h2L13.49 19z"/></svg>`,
+        type: 'fans_multiplier',
+        boost: 0.02
+    },
+    {
+        id: 'item_smartphone',
+        name: "Latest iPhone Pro",
+        desc: "4K quality for your socials. Extra boost to your reach (+3% Fans).",
+        price: 950,
+        icon: `<svg width="28" height="28" viewBox="0 0 24 24" fill="#2979FF"><path d="M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14z"/></svg>`,
+        type: 'fans_multiplier',
+        boost: 0.03
+    },
+    {
+        id: 'item_chaine',
+        name: "VVS Diamond Chain",
+        desc: "The ultimate symbol of success. Instant spotlight (+10 Buzz).",
+        price: 1500,
+        icon: `<svg width="28" height="28" viewBox="0 0 24 24" fill="#00E676"><path d="M19 3H5L2 9l10 12L22 9l-3-6zm-8.5 12.5L4.21 9.5 6.5 5h11l2.29 4.5L10.5 15.5z"/></svg>`,
+        type: 'buzz_boost',
+        boost: 10
+    },
+    {
+        id: 'item_grillz',
+        name: "Gold Grillz",
+        desc: "Your smile shines in every music video. (+12 Buzz).",
+        price: 1800,
+        icon: `<svg width="28" height="28" viewBox="0 0 24 24" fill="#FFD700"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9v-2h2v2zm0-4H9V8h2v4zm4 4h-2v-2h2v2zm0-4h-2V8h2v4z"/></svg>`,
+        type: 'buzz_boost',
+        boost: 12
+    },
+    {
+        id: 'item_homestudio',
+        name: "Home Studio Setup",
+        desc: "Record from home with a proper audio interface. Quality increased (+5%).",
+        price: 2400,
+        icon: `<svg width="28" height="28" viewBox="0 0 24 24" fill="#7C4DFF"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>`,
+        type: 'quality_boost',
+        boost: 5
+    },
+    {
+        id: 'item_cm',
+        name: "Social Media Manager",
+        desc: "A pro handles your socials and claps back at haters. (+4% Fans earned).",
+        price: 3600,
+        icon: `<svg width="28" height="28" viewBox="0 0 24 24" fill="#2979FF"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>`,
+        type: 'fans_multiplier',
+        boost: 0.04
+    },
+    {
+        id: 'item_manager',
+        name: "Experienced Manager",
+        desc: "Optimises your bookings and deals. XP multiplied (+5%).",
+        price: 6000,
+        icon: `<svg width="28" height="28" viewBox="0 0 24 24" fill="#00E676"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>`,
+        type: 'xp_multiplier',
+        boost: 0.05
+    },
+    {
+        id: 'item_bodyguard',
+        name: "Personal Bodyguard",
+        desc: "You move safely. Stay focused on the music (+6% XP).",
+        price: 7200,
+        icon: `<svg width="28" height="28" viewBox="0 0 24 24" fill="#FF5252"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 4c1.4 0 2.8 1.1 2.8 2.5S13.4 10 12 10c-1.4 0-2.8-1.1-2.8-2.5S10.6 5 12 5zm0 9c-2.3 0-4.3-1.1-5.5-2.9.8-1.4 2.7-2.1 5.5-2.1s4.7.7 5.5 2.1C16.3 12.9 14.3 14 12 14z"/></svg>`,
+        type: 'xp_multiplier',
+        boost: 0.06
+    },
+    {
+        id: 'item_beatmaker',
+        name: "Exclusive Beatmaker",
+        desc: "A dedicated producer crafting beats just for you. Track quality (+8%).",
+        price: 9000,
+        icon: `<svg width="28" height="28" viewBox="0 0 24 24" fill="#7C4DFF"><path d="M20 1v3h-2V1h-3v3h-2V1H8v3H6V1H4c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V3c0-1.1-.9-2-2-2h-2zM9 17H7v-2h2v2zm0-4H7v-2h2v2zm4 4h-2v-2h2v2zm0-4h-2v-2h2v2zm4 4h-2v-2h2v2zm0-4h-2v-2h2v2z"/></svg>`,
+        type: 'quality_boost',
+        boost: 8
+    },
+    {
+        id: 'item_tesla',
+        name: "Tesla Model Y",
+        desc: "Futuristic and eco-friendly. Your first proper motors. (+4% Fans).",
+        price: 12000,
+        icon: `<svg width="28" height="28" viewBox="0 0 24 24" fill="#00E676"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"/></svg>`,
+        type: 'fans_multiplier',
+        boost: 0.04
+    },
+    {
+        id: 'item_rolex',
+        name: "Luxury Watch (Rolex)",
+        desc: "Time is money — and yours is dripping in diamonds. Massive notoriety boost (+20 Buzz).",
+        price: 15000,
+        icon: `<svg width="28" height="28" viewBox="0 0 24 24" fill="#FFD700"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>`,
+        type: 'buzz_boost',
+        boost: 20
+    },
+    {
+        id: 'item_stylist',
+        name: "Personal Stylist",
+        desc: "Always dressed right for every appearance. (+5% Fans).",
+        price: 18000,
+        icon: `<svg width="28" height="28" viewBox="0 0 24 24" fill="#FF9100"><path d="M12.87 15.07l-2.54-2.51.03-.03c1.74-1.94 2.98-4.17 3.71-6.53H17V4h-7V2H8v2H1v1.99h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z"/></svg>`,
+        type: 'fans_multiplier',
+        boost: 0.05
+    },
+    {
+        id: 'item_ghostwriter',
+        name: "Ghostwriter",
+        desc: "A secret pen crafts your best hooks. (+10% Quality).",
+        price: 21000,
+        icon: `<svg width="28" height="28" viewBox="0 0 24 24" fill="#7C4DFF"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>`,
+        type: 'quality_boost',
+        boost: 10
+    },
+    {
+        id: 'item_range',
+        name: "Range Rover Sport",
+        desc: "The ride of choice for UK stars from Brixton to Birmingham. XP optimised (+8%).",
+        price: 27000,
+        icon: `<svg width="28" height="28" viewBox="0 0 24 24" fill="#00E676"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"/></svg>`,
+        type: 'xp_multiplier',
+        boost: 0.08
+    },
+    {
+        id: 'item_studio_pro',
+        name: "Private Recording Studio",
+        desc: "Your own top-tier studio with a sound engineer. Quality (+12%).",
+        price: 30000,
+        icon: `<svg width="28" height="28" viewBox="0 0 24 24" fill="#2979FF"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>`,
+        type: 'quality_boost',
+        boost: 12
+    },
+    {
+        id: 'item_gclass',
+        name: "Mercedes G-Class",
+        desc: "You pull up like a don. Commands serious respect (+8% Fans).",
+        price: 51000,
+        icon: `<svg width="28" height="28" viewBox="0 0 24 24" fill="#A1A1AA"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"/></svg>`,
+        type: 'fans_multiplier',
+        boost: 0.08
+    },
+    {
+        id: 'item_ferrari',
+        name: "Ferrari F8 Tributo",
+        desc: "Aggressive red supercar. Moving too fast for the haters (+10% XP).",
+        price: 60000,
+        icon: `<svg width="28" height="28" viewBox="0 0 24 24" fill="#FF5252"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"/></svg>`,
+        type: 'xp_multiplier',
+        boost: 0.10
+    },
+    {
+        id: 'item_assinie',
+        name: "Holiday Villa (Ibiza)",
+        desc: "Your weekend retreat — poolside and fully private (+8% Fans).",
+        price: 72000,
+        icon: `<svg width="28" height="28" viewBox="0 0 24 24" fill="#00E676"><path d="M17 12h2L12 2 5 12h2v5H3v2h18v-2h-4v-5zm-4 5h-2v-7h2v7z"/></svg>`,
+        type: 'fans_multiplier',
+        boost: 0.08
+    },
+    {
+        id: 'item_urus',
+        name: "Lamborghini Urus",
+        desc: "The flashiest SUV on the road. Everyone clocks it when you pull up (+12% XP).",
+        price: 90000,
+        icon: `<svg width="28" height="28" viewBox="0 0 24 24" fill="#FF9100"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"/></svg>`,
+        type: 'xp_multiplier',
+        boost: 0.12
+    },
+    {
+        id: 'item_richardmille',
+        name: "Richard Mille Watch",
+        desc: "The watch of billionaires. An absolutely astronomical flex! (+30 Buzz).",
+        price: 120000,
+        icon: `<svg width="28" height="28" viewBox="0 0 24 24" fill="#7C4DFF"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>`,
+        type: 'buzz_boost',
+        boost: 30
+    },
+    {
+        id: 'item_villa',
+        name: "Mansion in Surrey",
+        desc: "The peak of property success. Your life is what others dream of (+10% Fans).",
+        price: 150000,
+        icon: `<svg width="28" height="28" viewBox="0 0 24 24" fill="#00E676"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>`,
+        type: 'fans_multiplier',
+        boost: 0.10
+    },
+    {
+        id: 'item_yacht',
+        name: "Yacht in the Med",
+        desc: "Private parties on the water — Ibiza, Monaco, the works (+12% Fans).",
+        price: 210000,
+        icon: `<svg width="28" height="28" viewBox="0 0 24 24" fill="#2979FF"><path d="M20 21c-1.39 0-2.78-.47-4-1.32-2.44 1.71-5.56 1.71-8 0C6.78 20.53 5.39 21 4 21H2v2h2c1.38 0 2.74-.35 4-.99 2.52 1.29 5.48 1.29 8 0 1.26.64 2.62.99 4 .99h2v-2h-2zM3.95 19H4c1.6 0 3.02-.88 4-2 .98 1.12 2.4 2 4 2s3.02-.88 4-2c.98 1.12 2.4 2 4 2h.05l1.89-6.68c.08-.26.06-.54-.06-.78s-.34-.42-.6-.5L20 10.62V6c0-1.1-.9-2-2-2h-3V1H9v3H6c-1.1 0-2 .9-2 2v4.62l-1.29.42c-.26.08-.48.26-.6.5s-.14.52-.06.78L3.95 19zM6 6h12v3.97L12 8 6 9.97V6z"/></svg>`,
+        type: 'fans_multiplier',
+        boost: 0.12
+    },
+    {
+        id: 'item_club',
+        name: "Nightclub Owner",
+        desc: "Your own VIP venue in East London. You run the night (+15% XP).",
+        price: 300000,
+        icon: `<svg width="28" height="28" viewBox="0 0 24 24" fill="#FF9100"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6zm-2 16c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/></svg>`,
+        type: 'xp_multiplier',
+        boost: 0.15
+    },
+    {
+        id: 'item_penthouse',
+        name: "Central London Penthouse",
+        desc: "A glass apartment with a view across the whole city (+15% Fans).",
+        price: 450000,
+        icon: `<svg width="28" height="28" viewBox="0 0 24 24" fill="#7C4DFF"><path d="M17 11V3H7v4H3v14h8v-4h2v4h8V11h-4zM7 19H5v-2h2v2zm0-4H5v-2h2v2zm0-4H5v-2h2v2zm4 4H9v-2h2v2zm0-4H9v-2h2v2zm0-4H9V5h2v2zm4 8h-2v-2h2v2zm0-4h-2v-2h2v2zm0-4h-2V5h2v2zm4 12h-2v-2h2v2zm0-4h-2v-2h2v2z"/></svg>`,
+        type: 'fans_multiplier',
+        boost: 0.15
+    },
+    {
+        id: 'item_bugatti',
+        name: "Bugatti Chiron",
+        desc: "The ultimate hypercar. One of a handful in the whole country — and it's yours (+18% XP).",
+        price: 600000,
+        icon: `<svg width="28" height="28" viewBox="0 0 24 24" fill="#FF5252"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"/></svg>`,
+        type: 'xp_multiplier',
+        boost: 0.18
+    },
+    {
+        id: 'item_jet',
+        name: "Private Jet",
+        desc: "You don't touch the ground anymore. Absolute legend status. (+20% Fans).",
+        price: 900000,
+        icon: `<svg width="28" height="28" viewBox="0 0 24 24" fill="#2979FF"><path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg>`,
+        type: 'fans_multiplier',
+        boost: 0.20
+    },
+    {
+        id: 'item_island',
+        name: "Private Island",
+        desc: "You literally bought a piece of the planet. You are the final boss (+25% Fans).",
+        price: 1800000,
+        icon: `<svg width="28" height="28" viewBox="0 0 24 24" fill="#00E676"><path d="M13.127 14.56l1.43-1.43 6.44 6.443L19.57 21zm4.293-5.73l2.43-2.43c-1.98-1.98-4.81-2.56-7.34-1.74L14.96 7c1.71-.33 3.53.19 4.46 1.83zM5.95 5.98l1.43 1.43C4.58 9.21 4 12.04 4.82 14.57L7 12.41c-.33-1.72.19-3.53 1.83-4.46l1.43 1.43 2.43-2.43C10.58 5.08 7.73 4.04 5.95 5.98zm2.38 2.38L5.95 11.74c1.71-.34 3.53.18 4.46 1.82l1.43-1.43c-1.51-1.51-3.96-1.91-3.51-3.77z"/></svg>`,
+        type: 'fans_multiplier',
+        boost: 0.25
+    }
+];
+
 // Notify the loader that data is ready
 if (typeof window.onPackLoaded === 'function') window.onPackLoaded(window.PACK_DATA);
 
