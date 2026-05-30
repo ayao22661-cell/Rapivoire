@@ -219,6 +219,90 @@ window.PACK_DATA = {
         social_instagram: 'Instagram',
         social_youtube: 'YouTube',
         social_local: 'Snapchat',
+
+        // ── Contract news ──
+        contractSignedNews: 'SIGNED',
+        contractJoined: 'You linked up with',
+        contractAdvance: 'Advance of',
+        contractSponsorNews: 'SPONSOR',
+        contractSponsorPartner: 'is now your official partner.',
+        contractDeclinedNews: 'You turned down the offer from',
+        contractStayIndependent: 'You stay independent, fam!',
+
+        // ── Discography empty states ──
+        discEmptyHere: 'No tings here.',
+        discEmptyStock: 'No tracks in stock.',
+        discEmptyStockHint: 'Go to the Studio to record, then come back here to drop.',
+        discUnreleasedWarning: 'Unreleased tracks = 0 streams',
+
+        // ── Song card labels ──
+        songThemeLabel: 'Theme',
+        songQualityLabel: 'Quality',
+        songAge: 'Age',
+        weekShort: 'wks',
+        songReleaseSuccess: 'Big hype on the socials.',
+        songReleaseMixed: 'Mixed reviews, bruv...',
+
+        // ── Album modal ──
+        albumOnlineTitle: 'ALBUM LIVE!',
+        albumOnlineDesc1: 'Your project',
+        albumOnlineDesc2: 'dropped with a quality of',
+        albumOnlineDesc3: 'The mandem reacted immediately!',
+
+        // ── Shop labels ──
+        shopOwned: 'OWNED',
+        shopConditionLabel: 'CONDITION',
+        shopBtnBuy: 'BUY IT',
+        shopBtnTooExpensive: 'TOO PRICEY',
+        shopBtnRepair: 'FIX IT',
+        shopOwnedNew: 'OWNED (NEW)',
+
+        // ── Concert labels ──
+        concertPriceLabel: 'Price',
+        concertCapacityLabel: 'Capacity',
+        concertTicketLabel: 'Ticket',
+        concertFansReq: 'Fans req.',
+        concertSongsReq: 'Tracks req.',
+        concertPlaces: 'capacity',
+        concertBtnBook: 'BOOK IT',
+        concertBtnLocked: 'REQUIREMENTS NOT MET',
+        concertTitleGreat: 'LEGENDARY SHOW!',
+        concertDescGreat1: 'You packed the venue at',
+        concertDescGreat2: 'The crowd went mad!',
+        concertTitleOk: 'DECENT SHOW',
+        concertDescOk1: 'The venue was filled at',
+        concertDescOk2: 'Vibes were good.',
+        concertTitleFlop: 'MASSIVE FLOP...',
+        concertDescFlop1: 'Only',
+        concertDescFlop2: 'of the venue filled',
+        concertDescFlop3: 'It was bare dead in there.',
+
+        // ── Clash news ──
+        clashWinNews: 'CLASH',
+        clashWinDesc1: 'You rinsed',
+        clashFansStolen: 'Fans nicked',
+        clashFailNews: 'L TAKEN',
+        clashFailDesc2: 'put you in your place.',
+        clashFailDesc: 'bodied you in public. Their fans are gassing on the socials.',
+
+        // ── Level up ──
+        levelUpTitle: 'LEVEL UP!',
+        levelUpMsg: 'You move to Level',
+        levelUpMsg2: 'The road to the top gets harder. You get 2 talent points.',
+
+        // ── Misc ──
+        notifImproDone: 'Improv done',
+        newsAdvicePrefix: 'TIP',
+        newsEventPrefix: 'EVENT',
+        newsRevenues: 'Revenues',
+
+        // ── Share card ──
+        shareBtnGenerating: 'Generating...',
+        shareBtnSaved: 'CARD SAVED',
+        shareDownloadBtn: 'DOWNLOAD THE CARD',
+        shareErrorCapture: 'Capture failed. Take a screenshot manually.',
+        shareBtnCopied: 'NICKED!',
+        shareCopyBtn: 'COPY THE TEXT',
     },
 
     // ─────────────────────────────────────────
