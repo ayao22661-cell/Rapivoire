@@ -730,7 +730,7 @@ input:focus, select:focus {
         </div>
         <div id="clash-list" class="p-4 space-y-3 max-h-[60vh] overflow-y-auto">
             </div>
-        <div class="p-4 bg-black/20 text-[10px] text-zinc-500 text-center uppercase tracking-widest font-bold">
+        <div id="clash-cost-label" class="p-4 bg-black/20 text-[10px] text-zinc-500 text-center uppercase tracking-widest font-bold">
             Consomme 30 Énergie & 1 Action
         </div>
     </div>
@@ -2256,7 +2256,7 @@ function init() {
     let aUneSauvegarde = loadGame();
 
     setTimeout(() => {
-        document.getElementById('loading-text').textContent = "Chargement terminé...";
+        document.getElementById('loading-text').textContent = uiStr('loadingDone', 'Chargement terminé...');
         setTimeout(() => {
             const screen = document.getElementById('loading-screen');
             screen.classList.add('opacity-0');
@@ -2268,7 +2268,7 @@ function init() {
                     const welcomeScreen = document.getElementById('onboarding-overlay'); 
                     if(welcomeScreen) welcomeScreen.classList.add('hidden');
                     
-                    addNews("Bon retour dans le Game, " + game.player.name + " !", "info");
+                    addNews(uiStr('welcomeBack', 'Bon retour dans le Game, ') + game.player.name + " !", "info");
 
                     // NOUVEAU : Si le joueur a déjà un avatar sauvegardé, on l'affiche
                     if(game.player && game.player.avatarUrl) {
@@ -2280,7 +2280,7 @@ function init() {
                     }
 
                 } else {
-                    addNews("Bienvenue dans le Game. Le chemin sera long.", "info");
+                    addNews(uiStr('newGame', 'Bienvenue dans le Game. Le chemin sera long.'), "info");
                     
                     // NOUVEAU : On lance l'écran de choix de personnage pour une nouvelle partie
                     showCharacterSelection();
@@ -2380,26 +2380,36 @@ function updateUI() {
     // Énergie
     document.getElementById('stat-energy').textContent = `${Math.floor(game.player.energy)}/${game.player.energyMax}`;
     
-    // 2. DATES
-    const months = ["Jan", "Fév", "Mar", "Avr", "Mai", "Juin", "Juil", "Août", "Sep", "Oct", "Nov", "Déc"];
-    const currentMonth = months[Math.floor(((game.world.week - 1) % 48) / 4)];
-    document.getElementById('game-date').textContent = `Semaine ${game.world.week} - ${currentMonth} ${game.world.year}`;
+    // 2. DATES — mois localisés depuis UI_STRINGS si dispo
+    const _monthsCI = ["Jan", "Fév", "Mar", "Avr", "Mai", "Juin", "Juil", "Août", "Sep", "Oct", "Nov", "Déc"];
+    const _monthsUI = (window.UI_STRINGS && window.UI_STRINGS.months) ? window.UI_STRINGS.months : _monthsCI;
+    const currentMonth = _monthsUI[Math.floor(((game.world.week - 1) % 48) / 4)];
+    const _weekLabel = uiStr('weekPrefix', 'Semaine ');
+    document.getElementById('game-date').textContent = `${_weekLabel}${game.world.week} - ${currentMonth} ${game.world.year}`;
 
-    // 3. TITRES (Logiciel intact)
-    let title = "INCONNU DU QUARTIER";
-    if(game.player.fans > 100) title = "FREESTYLER DU GHETTO";
-    if(game.player.fans > 500) title = "ARTISTE LOCAL";
-    if(game.player.fans > 1500) title = "PÉPITE DU TIEKS";
-    if(game.player.fans > 5000) title = "RECONNU EN VILLE";
-    if(game.player.fans > 10000) title = "PHÉNOMÈNE WEB";
-    if(game.player.fans > 25000) title = "STAR D'ABIDJAN";
-    if(game.player.fans > 50000) title = "VALIDÉ PAR LA RUE";
-    if(game.player.fans > 100000) title = "BOSS DU RAP IVOIRE";
-    if(game.player.fans > 250000) title = "CÉLÉBRITÉ NATIONALE";
-    if(game.player.fans > 500000) title = "FIERTÉ DE LA NATION";
-    if(game.player.fans > 1000000) title = "ICÔNE AFRICAINE";
-    if(game.player.fans > 5000000) title = "SUPERSTAR INTERNATIONALE";
-    if(game.player.fans > 10000000) title = "LÉGENDE VIVANTE";
+    // 3. TITRES — utilise PLAYER_TITLES du pack actif si dispo, sinon fallback CI
+    let title;
+    if (window.PLAYER_TITLES && window.PLAYER_TITLES.length > 0) {
+        title = window.PLAYER_TITLES[0].label || 'ROOKIE';
+        for (let _i = 0; _i < window.PLAYER_TITLES.length; _i++) {
+            if (game.player.fans >= window.PLAYER_TITLES[_i].req) title = window.PLAYER_TITLES[_i].label;
+        }
+    } else {
+        title = "INCONNU DU QUARTIER";
+        if(game.player.fans > 100) title = "FREESTYLER DU GHETTO";
+        if(game.player.fans > 500) title = "ARTISTE LOCAL";
+        if(game.player.fans > 1500) title = "PÉPITE DU TIEKS";
+        if(game.player.fans > 5000) title = "RECONNU EN VILLE";
+        if(game.player.fans > 10000) title = "PHÉNOMÈNE WEB";
+        if(game.player.fans > 25000) title = "STAR D'ABIDJAN";
+        if(game.player.fans > 50000) title = "VALIDÉ PAR LA RUE";
+        if(game.player.fans > 100000) title = "BOSS DU RAP IVOIRE";
+        if(game.player.fans > 250000) title = "CÉLÉBRITÉ NATIONALE";
+        if(game.player.fans > 500000) title = "FIERTÉ DE LA NATION";
+        if(game.player.fans > 1000000) title = "ICÔNE AFRICAINE";
+        if(game.player.fans > 5000000) title = "SUPERSTAR INTERNATIONALE";
+        if(game.player.fans > 10000000) title = "LÉGENDE VIVANTE";
+    }
 
     document.getElementById('player-title').textContent = title;
 
@@ -2936,7 +2946,7 @@ function finishRecording() {
         // Impro : petits gains, pas de son sauvegardé
         addXP(10);
         game.player.buzz = Math.min(100, game.player.buzz + 1);
-        notify(`Impro terminée ! Qualité : ${finalQuality}% — +10 XP, +1 Buzz`);
+        notify(`${uiStr('notifImproDone','Impro terminée')} ! ${uiStr('notifSongQuality','% Qualité').replace('%','')}: ${finalQuality}% — +10 XP, +1 Buzz`);
         pendingSongData = null;
         updateUI();
         return;
@@ -2948,8 +2958,8 @@ function finishRecording() {
     closeAllMenus();
     updateUI();
     
-    addNews(`Nouveau son enregistré : "${name}" (${finalQuality}% Qualité)`, "success");
-    notify(`Enregistrement terminé !`);
+    addNews(`${uiStr('notifSongRecorded','Nouveau son enregistré : ')}"${name}" (${finalQuality}${uiStr('notifSongQuality','% Qualité')})`, "success");
+    notify(uiStr('notifRecordDone','Enregistrement terminé !'));
     
     // Clean input et data
     document.getElementById('input-song-name').value = "";
@@ -2975,9 +2985,9 @@ function renderSongsList() {
     const list = currentTab === 'inventory' ? game.player.inventory.songs : game.player.inventory.released;
     
     if(list.length === 0) {
-        let emptyMsg = `<div class="text-center text-zinc-500 mt-10 text-sm italic">Aucun son ici.</div>`;
+        let emptyMsg = `<div class="text-center text-zinc-500 mt-10 text-sm italic">${uiStr('discEmptyHere','Aucun son ici.')}</div>`;
         if (currentTab === 'inventory') {
-            emptyMsg = `<div class="text-center mt-10"><div class="text-zinc-400 text-sm italic mb-2">Aucun son en stock.</div><div class="text-[11px] text-zinc-600">Va au Studio pour enregistrer, puis reviens ici pour publier.</div></div>`;
+            emptyMsg = `<div class="text-center mt-10"><div class="text-zinc-400 text-sm italic mb-2">${uiStr('discEmptyStock','Aucun son en stock.')}</div><div class="text-[11px] text-zinc-600">${uiStr('discEmptyStockHint','Va au Studio pour enregistrer, puis reviens ici pour publier.')}</div></div>`;
         }
         container.innerHTML = emptyMsg;
         return;
@@ -2991,8 +3001,8 @@ function renderSongsList() {
         warningBanner.innerHTML = `
             <svg width="20" height="20" viewBox="0 0 24 24" fill="#FF9100" style="flex-shrink:0"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>
             <div>
-                <div class="font-black text-[11px] uppercase tracking-wider" style="color:#FF9100;">Sons non publiés = 0 stream</div>
-                <div class="text-[10px] text-zinc-400 mt-0.5">Ces sons ne génèrent rien tant qu'ils ne sont pas sortis. Appuie sur <strong class="text-white">SORTIR LE SON</strong> pour commencer à gagner des écoutes.</div>
+                <div class="font-black text-[11px] uppercase tracking-wider" style="color:#FF9100;">${uiStr('discUnreleasedWarning','Sons non publiés = 0 stream')}</div>
+                <div class="text-[10px] text-zinc-400 mt-0.5">${uiStr('releaseHint','Ces sons ne génèrent rien tant qu\'ils ne sont pas sortis. Appuie sur')} <strong class="text-white">${uiStr('releaseHintBtn','SORTIR LE SON')}</strong> ${uiStr('releaseHintEnd','pour commencer à gagner des écoutes.')}</div>
             </div>
         `;
         container.appendChild(warningBanner);
@@ -3007,7 +3017,7 @@ function renderSongsList() {
         let platformDetails = "";
 
         if(currentTab === 'inventory') {
-            actionsHtml = `<button onclick="releaseSong('${song.id}')" class="mt-3 pill-button bg-green-grad text-xs py-2 w-full flex items-center justify-center gap-2"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M9.19 6.35c-2.04 2.29-3.44 5.58-3.57 5.89L2 10l4.06-4.06c.61-.61 1.62-.65 2.28-.1l.85.51zM11.17 18c.31-.13 3.58-1.53 5.87-3.57l.51.84c.55.67.51 1.67-.1 2.28L13.39 22l-2.22-4zm7.37-14.38A14.99 14.99 0 0 0 8.1 7.15L16.85 15.9a14.99 14.99 0 0 0 3.53-10.44 1 1 0 0 0-1.84-.84zM14 10a2 2 0 0 1-2-2 2 2 0 0 1 2-2 2 2 0 0 1 2 2 2 2 0 0 1-2 2zm-8.5 8.5L2 22l3.5-3.5L14 10 10 18.5z"/></svg>SORTIR LE SON</button>`;
+            actionsHtml = `<button onclick="releaseSong('${song.id}')" class="mt-3 pill-button bg-green-grad text-xs py-2 w-full flex items-center justify-center gap-2"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M9.19 6.35c-2.04 2.29-3.44 5.58-3.57 5.89L2 10l4.06-4.06c.61-.61 1.62-.65 2.28-.1l.85.51zM11.17 18c.31-.13 3.58-1.53 5.87-3.57l.51.84c.55.67.51 1.67-.1 2.28L13.39 22l-2.22-4zm7.37-14.38A14.99 14.99 0 0 0 8.1 7.15L16.85 15.9a14.99 14.99 0 0 0 3.53-10.44 1 1 0 0 0-1.84-.84zM14 10a2 2 0 0 1-2-2 2 2 0 0 1 2-2 2 2 0 0 1 2 2 2 2 0 0 1-2 2zm-8.5 8.5L2 22l3.5-3.5L14 10 10 18.5z"/></svg>${uiStr('btnReleaseSong','SORTIR LE SON')}</button>`;
             statsHtml = `<span class="badge-inventory text-[10px] px-2 py-0.5 rounded font-bold uppercase tracking-widest">En Stock</span>`;
         } else {
             statsHtml = `<span class="badge-released text-[10px] px-2 py-0.5 rounded font-bold uppercase tracking-widest">En Ligne</span>`;
@@ -3027,8 +3037,8 @@ function renderSongsList() {
             actionsHtml = `
                 <div class="mt-3 bg-black/30 p-2 rounded-lg border border-white/5">
                     <div class="grid grid-cols-2 gap-2 text-center text-xs pb-2">
-                        <div><div class="text-zinc-500 uppercase text-[9px]">Total Streams</div><div class="font-black text-info">${Math.floor(song.streams).toLocaleString()}</div></div>
-                        <div><div class="text-zinc-500 uppercase text-[9px]">Ancienneté</div><div class="font-bold text-white">${song.weeksOld} sem.</div></div>
+                        <div><div class="text-zinc-500 uppercase text-[9px]">${uiStr('discTotalStreams','Total Streams')}</div><div class="font-black text-info">${Math.floor(song.streams).toLocaleString()}</div></div>
+                        <div><div class="text-zinc-500 uppercase text-[9px]">${uiStr('songAge','Ancienneté')}</div><div class="font-bold text-white">${song.weeksOld} ${uiStr('weekShort','sem.')}</div></div>
                     </div>
                     ${platformDetails}
                 </div>
@@ -3039,12 +3049,12 @@ function renderSongsList() {
             <div class="flex justify-between items-start">
                 <div>
                     <div class="font-black text-lg text-white">${song.name}</div>
-                    <div class="text-[10px] text-zinc-400 uppercase mt-0.5">Thème : ${song.theme}</div>
+                    <div class="text-[10px] text-zinc-400 uppercase mt-0.5">${uiStr('songThemeLabel','Thème')} : ${song.theme}</div>
                 </div>
                 ${statsHtml}
             </div>
             <div class="mt-3 flex items-center gap-2">
-                <div class="text-xs font-bold text-zinc-300">Qualité:</div>
+                <div class="text-xs font-bold text-zinc-300">${uiStr('songQualityLabel','Qualité')}:</div>
                 <div class="flex-1 progress-container h-2 !mt-0">
                     <div class="progress-fill ${song.quality >= 80 ? 'bg-primary' : song.quality >= 50 ? 'bg-accent' : 'bg-danger'}" style="width: ${song.quality}%"></div>
                 </div>
@@ -3079,11 +3089,11 @@ function releaseSong(id) {
     addXP(50);
     
     // Notification dynamique selon la qualité
-    let message = `Sortie de "${song.name}" ! Gros engouement sur les réseaux.`;
-    if(song.quality < 50) message = `Sortie de "${song.name}". Les critiques sont mitigées...`;
+    let message = `${uiStr('notifSongReleased','Sortie de')} "${song.name}" ! ${uiStr('songReleaseSuccess','Gros engouement sur les réseaux.')}`;
+    if(song.quality < 50) message = `${uiStr('notifSongReleased','Sortie de')} "${song.name}". ${uiStr('songReleaseMixed','Les critiques sont mitigées...')}`;
     
     addNews(message, song.quality >= 50 ? "success" : "info");
-    notify(`Son publié ! +${fanBoost} Fans`);
+    notify(`${uiStr('notifSongReleased','Son publié !')} +${fanBoost} ${uiStr('notifSongReleasedFans','Fans')}`);
     
     switchSongTab('released');
     updateUI();
@@ -3096,11 +3106,11 @@ function releaseAlbum() {
 
     if (game.player.cash < cost) {
         const symbol = (window.CURRENCY && window.CURRENCY.symbol) ? window.CURRENCY.symbol : 'F';
-        notify(`Fonds insuffisants ! Il te faut ${cost.toLocaleString()} ${symbol}.`, 3000);
+        notify(`${uiStr('notifNoMoneyAlbum','Fonds insuffisants ! Il te faut')} ${cost.toLocaleString()} ${symbol}.`, 3000);
         return;
     }
     if (game.player.energy < energyReq) {
-        notify("Pas assez d'énergie ! Il te faut 90⚡. Repose-toi.", 3000);
+        notify(uiStr('notifNoEnergyAlbum',"Pas assez d'énergie ! Il te faut 90⚡. Repose-toi."), 3000);
         return;
     }
 
@@ -3143,12 +3153,12 @@ function releaseAlbum() {
     game.player.buzz += buzzGain;
     
     // Notifications
-    addNews(`ALBUM SORTI : "${albumName}" (${albumQuality}%) est disponible !`, "success");
+    addNews(`${uiStr('notifAlbumReleased','ALBUM SORTI')} : "${albumName}" (${albumQuality}%) ${uiStr('notifAlbumAvailable','est disponible !')}`, "success");
     
     if(typeof showEventModal === "function") {
         showEventModal(
-            "ALBUM EN LIGNE !", 
-            `Ton projet "${albumName}" est sorti avec une qualité de ${albumQuality}%. Le public réagit immédiatement !`,
+            uiStr('albumOnlineTitle','ALBUM EN LIGNE !'), 
+            `${uiStr('albumOnlineDesc1','Ton projet')} "${albumName}" ${uiStr('albumOnlineDesc2','est sorti avec une qualité de')} ${albumQuality}%. ${uiStr('albumOnlineDesc3','Le public réagit immédiatement !')}`,
             [
                 { icon: '💰', val: `+${fansGain.toLocaleString()} Fans` },
                 { icon: '🔥', val: `+${buzzGain} Buzz` },
@@ -3206,7 +3216,7 @@ function renderShop() {
                     <h3 class="text-base font-black text-white m-0 tracking-tight">${item.name}</h3>
                     <p class="text-[13px] text-[#A1A1AA] mt-1 leading-snug">${item.desc}</p>
                 </div>
-                ${owned ? '<span class="bg-white/10 text-white px-2 py-1 rounded text-[10px] font-black tracking-wider whitespace-nowrap flex items-center gap-1"><svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> ACQUIS</span>' : ''}
+                ${owned ? `<span class="bg-white/10 text-white px-2 py-1 rounded text-[10px] font-black tracking-wider whitespace-nowrap flex items-center gap-1"><svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> ${uiStr('shopOwned','ACQUIS')}</span>` : ''}
             </div>
         `;
         
@@ -3216,7 +3226,7 @@ function renderShop() {
             htmlContent += `
                 <div class="mt-2 bg-white/5 p-2 rounded-lg border border-white/5">
                     <div class="flex justify-between text-[10px] text-[#A1A1AA] mb-1.5 font-bold tracking-wide">
-                        <span>ÉTAT D'USURE</span>
+                        <span>${uiStr('shopConditionLabel',"ÉTAT D'USURE")}</span>
                         <span class="${condition <= 20 ? 'text-[#FF5252]' : ''}">${condition}%</span>
                     </div>
                     <div class="w-full bg-black/50 rounded-full h-1.5 overflow-hidden">
@@ -3239,7 +3249,7 @@ function renderShop() {
                 <button onclick="buyItem('${item.id}', ${displayPrice})" 
                         class="pill-button px-4 py-2 text-xs w-auto ${canAfford ? 'btn-primary text-black' : 'btn-secondary opacity-50'}" 
                         ${!canAfford ? 'disabled' : ''}>
-                    ${canAfford ? 'ACHETER' : 'TROP CHER'}
+                    ${canAfford ? uiStr('shopBtnBuy','ACHETER') : uiStr('shopBtnTooExpensive','TROP CHER')}
                 </button>
             `;
         } else if (condition < 100) {
@@ -3252,7 +3262,7 @@ function renderShop() {
                 <button onclick="repairItem('${item.id}', ${displayPrice})" 
                         class="pill-button px-4 py-2 text-xs w-auto font-bold transition-colors ${canAffordRepair ? 'bg-[#FF9100] hover:bg-[#FF9100]/80 text-black' : 'bg-white/5 text-[#A1A1AA] opacity-50'}" 
                         ${!canAffordRepair ? 'disabled' : ''}>
-                    ${canAffordRepair ? 'RÉPARER' : 'TROP CHER'}
+                    ${canAffordRepair ? uiStr('shopBtnRepair','RÉPARER') : uiStr('shopBtnTooExpensive','TROP CHER')}
                 </button>
             `;
         } else {
@@ -3262,7 +3272,7 @@ function renderShop() {
                     ---
                 </span>
                 <button class="pill-button px-4 py-2 text-xs w-auto btn-secondary opacity-50" disabled>
-                    POSSÉDÉ (NEUF)
+                    ${uiStr('shopOwnedNew','POSSÉDÉ (NEUF)')}
                 </button>
             `;
         }
@@ -3324,7 +3334,7 @@ function buyItem(id, price) {
     const repairCost = Math.floor(itemPrice * 0.35 * (missingCondition / 100));
     
     if (game.player.cash < repairCost) {
-        notify(`Fonds insuffisants. Il faut ${repairCost.toLocaleString()} ${((window.CURRENCY && window.CURRENCY.symbol) ? window.CURRENCY.symbol : 'F')} pour réparer.`);
+        notify(`${uiStr('notifItemRepairNoMoney','Fonds insuffisants. Il faut')} ${repairCost.toLocaleString()} ${((window.CURRENCY && window.CURRENCY.symbol) ? window.CURRENCY.symbol : 'F')} ${uiStr('notifItemRepairNoMoneyEnd','pour réparer.')}`);
         return;
     }
     
@@ -3332,7 +3342,7 @@ function buyItem(id, price) {
     game.player.cash -= repairCost;
     game.player.itemConditions[id] = 100;
     
-    notify(`🔧 ${item.name} réparé(e) pour ${repairCost.toLocaleString()} ${((window.CURRENCY && window.CURRENCY.symbol) ? window.CURRENCY.symbol : 'F')} !`);
+    notify(`🔧 ${item.name} ${uiStr('notifItemRepaired','réparé(e) pour')} ${repairCost.toLocaleString()} ${((window.CURRENCY && window.CURRENCY.symbol) ? window.CURRENCY.symbol : 'F')} !`);
     
     renderShop(); // Rafraîchit l'affichage
     updateUI();
@@ -3368,19 +3378,19 @@ function renderConcerts() {
                 <div class="flex justify-between items-start mb-2">
                     <h3 class="text-base font-black text-white m-0 tracking-tight">${venue.name}</h3>
                     <span class="px-3 py-1 rounded-lg text-xs font-bold ${canAfford ? 'bg-[#00E676]/10 text-[#00E676]' : 'bg-white/5 text-[#A1A1AA]'}">
-                        Prix: ${cost.toLocaleString()} ${currSymbol}
+                        ${uiStr('concertPriceLabel','Prix')}: ${cost.toLocaleString()} ${currSymbol}
                     </span>
                 </div>
-                <div class="text-[12px] text-[#A1A1AA] mb-3">Capacité: ${venue.capacity.toLocaleString()} pl. | Ticket: ${ticketPriceConverted}${currSymbol}</div>
+                <div class="text-[12px] text-[#A1A1AA] mb-3">${uiStr('concertCapacityLabel','Capacité')}: ${venue.capacity.toLocaleString()} pl. | ${uiStr('concertTicketLabel','Ticket')}: ${ticketPriceConverted}${currSymbol}</div>
                 
                 <div class="flex flex-wrap gap-2">
                     <span class="px-2 py-1 rounded-md text-xs font-bold ${hasFans ? 'bg-white/10 text-white' : 'bg-white/5 text-[#A1A1AA]'} flex items-center gap-1">
                         <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
-                        ${venue.reqFans.toLocaleString()} Fans req.
+                        ${venue.reqFans.toLocaleString()} ${uiStr('concertFansReq','Fans req.')}
                     </span>
                     <span class="px-2 py-1 rounded-md text-xs font-bold ${hasSongs ? 'bg-[#7C4DFF]/10 text-[#7C4DFF]' : 'bg-white/5 text-[#A1A1AA]'} flex items-center gap-1">
                         <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
-                        ${venue.reqSongs} Sons req.
+                        ${venue.reqSongs} ${uiStr('concertSongsReq','Sons req.')}
                     </span>
                 </div>
             </div>
@@ -3388,7 +3398,7 @@ function renderConcerts() {
             <button onclick="bookConcert('${venue.id}', ${cost})" 
                     class="pill-button mt-2 ${unlocked && canAfford ? 'btn-primary text-black' : 'btn-secondary opacity-50'}" 
                     ${!(unlocked && canAfford) ? 'disabled' : ''}>
-                ${unlocked && canAfford ? 'ORGANISER' : 'PRÉREQUIS MANQUANTS'}
+                ${unlocked && canAfford ? uiStr('concertBtnBook','ORGANISER') : uiStr('concertBtnLocked','PRÉREQUIS MANQUANTS')}
             </button>
         `;
         container.appendChild(div);
@@ -3455,20 +3465,20 @@ function bookConcert(id, cost) {
         // Gros succès
         buzzGain = 15;
         xpGain = venue.rewardXP;
-        modalTitle = "CONCERT INCROYABLE !";
-        modalDesc = `Tu as rempli la salle à ${Math.floor(fillRate*100)}% (${ticketsSold.toLocaleString()} places). Le public était en feu !`;
+        modalTitle = uiStr('concertTitleGreat','CONCERT INCROYABLE !');
+        modalDesc = `${uiStr('concertDescGreat1','Tu as rempli la salle à')} ${Math.floor(fillRate*100)}% (${ticketsSold.toLocaleString()} ${uiStr('concertPlaces','places')}). ${uiStr('concertDescGreat2','Le public était en feu !')}`;
     } else if (fillRate >= 0.4) {
         // Succès moyen
         buzzGain = 5;
         xpGain = Math.floor(venue.rewardXP / 2);
-        modalTitle = "CONCERT CORRECT";
-        modalDesc = `La salle était remplie à ${Math.floor(fillRate*100)}% (${ticketsSold.toLocaleString()} places). L'ambiance était bonne.`;
+        modalTitle = uiStr('concertTitleOk','CONCERT CORRECT');
+        modalDesc = `${uiStr('concertDescOk1','La salle était remplie à')} ${Math.floor(fillRate*100)}% (${ticketsSold.toLocaleString()} ${uiStr('concertPlaces','places')}). ${uiStr('concertDescOk2','L\'ambiance était bonne.')}`;
     } else {
         // Flop (salle vide)
         buzzGain = -10;
         xpGain = Math.floor(venue.rewardXP / 4);
-        modalTitle = "GROS FLOP...";
-        modalDesc = `Seulement ${Math.floor(fillRate*100)}% de la salle remplie (${ticketsSold.toLocaleString()} places)... C'était très vide.`;
+        modalTitle = uiStr('concertTitleFlop','GROS FLOP...');
+        modalDesc = `${uiStr('concertDescFlop1','Seulement')} ${Math.floor(fillRate*100)}% ${uiStr('concertDescFlop2','de la salle remplie')} (${ticketsSold.toLocaleString()} ${uiStr('concertPlaces','places')})... ${uiStr('concertDescFlop3','C\'était très vide.')}`;
         modalIcon = 'down';
     }
 
@@ -3584,8 +3594,8 @@ function checkLevelUp() {
         game.world.actionsMax = newActionsMax;
         
         showEventModal(
-            "LEVEL UP !", 
-            `Tu passes au Niveau ${game.player.level} ! La route vers le sommet se durcit. Tu gagnes 2 points de talent.`,
+            uiStr('levelUpTitle','LEVEL UP !'), 
+            `${uiStr('levelUpMsg','Tu passes au Niveau')} ${game.player.level} ! ${uiStr('levelUpMsg2','La route vers le sommet se durcit. Tu gagnes 2 points de talent.')}`,
             [{ icon: '✨', val: '+2 Points' }],
             'star'
         );
@@ -3711,7 +3721,7 @@ function executeFinalClash(target) {
         game.player.buzz += buzzGain;
         game.player.fans += fansStolen;
         addXP(target.power * 5);
-        addNews(`🔥 CLASH : Tu as humilié ${target.name} ! +${buzzGain} Buzz, +${fansStolen.toLocaleString()} Fans volés`, "success");
+        addNews(`🔥 ${uiStr('clashWinNews','CLASH')} : ${uiStr('clashWinDesc1','Tu as humilié')} ${target.name} ! +${buzzGain} Buzz, +${fansStolen.toLocaleString()} ${uiStr('clashFansStolen','Fans volés')}`, "success");
 
         showEventModal(
             `${target.name} DÉTRUIT 💀`,
@@ -3729,7 +3739,7 @@ function executeFinalClash(target) {
         const fansLost   = Math.min(500, Math.max(20, Math.floor(game.player.fans * 0.04 * target.power)));
         game.player.energy = Math.max(0, game.player.energy - energyLoss);
         game.player.fans   = Math.max(0, game.player.fans - fansLost);
-        addNews(`💀 ÉCHEC : ${target.name} t'a remis à ta place. -${energyLoss}⚡, -${fansLost.toLocaleString()} Fans`, "danger");
+        addNews(`💀 ${uiStr('clashFailNews','ÉCHEC')} : ${target.name} ${uiStr('clashFailDesc2','t\'a remis à ta place.')} -${energyLoss}⚡, -${fansLost.toLocaleString()} Fans`, "danger");
 
         showEventModal(
             `${target.name} T'A ÉCRASÉ 😤`,
@@ -4119,8 +4129,8 @@ function processNextWeek() {
         game.stats.totalEarnings += incomeThisWeek;
         
         if(typeof addNews === "function") {
-            addNews(`Total Streams : +${totalStreamsThisWeek.toLocaleString()}.`, "info");
-            addNews(`Revenus : +${incomeThisWeek.toLocaleString()} ${((window.CURRENCY && window.CURRENCY.symbol) ? window.CURRENCY.symbol : 'F')}.`, "success");
+            addNews(`${uiStr('discTotalStreams','Total Streams')} : +${totalStreamsThisWeek.toLocaleString()}.`, "info");
+            addNews(`${uiStr('newsRevenues','Revenus')} : +${incomeThisWeek.toLocaleString()} ${((window.CURRENCY && window.CURRENCY.symbol) ? window.CURRENCY.symbol : 'F')}.`, "success");
         }
     }
 
@@ -4214,7 +4224,7 @@ function processNextWeek() {
             }
             if (typeof addNews === "function") {
                 const eventIcon = event.type === 'positive' ? '🟢' : '🔴';
-                addNews(`${eventIcon} ÉVÉNEMENT : ${event.title}`, event.type === 'positive' ? "success" : "error");
+                addNews(`${eventIcon} ${uiStr('newsEventPrefix','ÉVÉNEMENT')} : ${event.title}`, event.type === 'positive' ? "success" : "error");
             }
         }
     }
@@ -4321,7 +4331,7 @@ function processNextWeek() {
     if (cashGainedThisWeek > 0)   weekEffects.push({ icon: '💰', val: '+' + cashGainedThisWeek.toLocaleString() + ' ' + ((window.CURRENCY && window.CURRENCY.symbol) ? window.CURRENCY.symbol : 'F') });
     
     if (weekEffects.length > 0) {
-        setTimeout(() => showEventModal(weekTitle, `Semaine ${game.world.week - 1} terminée. Continue sur cette lancée.`, weekEffects, fansGainedThisWeek > 5000 ? 'fire' : 'bell'), 300);
+        setTimeout(() => showEventModal(weekTitle, `${uiStr('weekPrefix','Semaine ')}${game.world.week - 1} — ${uiStr('weekSummary','terminée. Continue sur cette lancée.')}`, weekEffects, fansGainedThisWeek > 5000 ? 'fire' : 'bell'), 300);
     }
 
     if (typeof checkMilestones === "function") checkMilestones();
@@ -4345,13 +4355,13 @@ function processNextWeek() {
         const lowBuzz = game.player.buzz < 20;
         const lowCash = game.player.cash < 5000;
 
-        let tip = "Essaie de varier tes actions cette semaine.";
-        if (noSongs)       tip = "⚠️ Tu n'as encore sorti aucun son. Va au Studio, crée et publie un son — c'est lui qui ramène des fans chaque semaine.";
-        else if (lowBuzz)  tip = "⚠️ Ton Buzz est trop bas. Fais un Challenge TikTok ou un Clash pour le remonter.";
-        else if (lowCash)  tip = "⚠️ T'as plus de cash. Fais un freestyle Gbaka ou un petit gombo pour renflouer.";
+        let tip = uiStr('weekTipGeneric', "Essaie de varier tes actions cette semaine.");
+        if (noSongs)       tip = uiStr('weekTipNoSongs', "⚠️ Tu n'as encore sorti aucun son. Va au Studio, crée et publie un son — c'est lui qui ramène des fans chaque semaine.");
+        else if (lowBuzz)  tip = uiStr('weekTipLowBuzz', "⚠️ Ton Buzz est trop bas. Fais un Challenge TikTok ou un Clash pour le remonter.");
+        else if (lowCash)  tip = uiStr('weekTipLowCash', "⚠️ T'as plus de cash. Fais un freestyle Gbaka ou un petit gombo pour renflouer.");
 
         setTimeout(() => {
-            addNews(`💡 CONSEIL : ${tip}`, "info");
+            addNews(`💡 ${uiStr('newsAdvicePrefix','CONSEIL')} : ${tip}`, "info");
         }, 800);
     }
 }
@@ -4725,17 +4735,17 @@ function offerContract(contract, type) {
     pendingContract = { data: contract, type: type };
     const overlay = document.getElementById('contract-overlay');
     
-    let title = type === 'label' ? "Offre de Maison de Disque" : "Nouveau Sponsor";
+    let title = type === 'label' ? uiStr('contractLabelTitle', 'Offre de Maison de Disque') : uiStr('contractSponsorTitle', 'Nouveau Sponsor');
     
     // Contenu spécifique selon le type de contrat
     let gainHtml = type === 'label' ? 
         `<div class="text-[#00E676] font-black text-2xl">+ ${(typeof window.convertPrice === 'function' ? window.convertPrice(contract.bonusCash) : contract.bonusCash).toLocaleString()} ${((window.CURRENCY && window.CURRENCY.symbol) ? window.CURRENCY.symbol : 'F')}</div>
-         <div class="text-zinc-500 text-[10px] uppercase font-bold mt-1">Avance à la signature</div>
+         <div class="text-zinc-500 text-[10px] uppercase font-bold mt-1">${uiStr('contractSigningBonus','Avance à la signature')}</div>
          <div class="mt-4 pt-4 border-t border-white/5 text-[10px] text-zinc-400">
-            Redevance : <span class="text-[#FF5252]">${contract.cut * 100}%</span> sur tes revenus
+            ${uiStr('contractRoyalties','Redevance')} : <span class="text-[#FF5252]">${contract.cut * 100}%</span> ${uiStr('contractOnRevenues','sur tes revenus')}
          </div>` :
         `<div class="text-[#00E676] font-black text-2xl">+ ${contract.weekly.toLocaleString()} ${((window.CURRENCY && window.CURRENCY.symbol) ? window.CURRENCY.symbol : 'F')}</div>
-         <div class="text-zinc-500 text-[10px] uppercase font-bold mt-1">Revenu hebdomadaire</div>`;
+         <div class="text-zinc-500 text-[10px] uppercase font-bold mt-1">${uiStr('contractWeeklyIncome','Revenu hebdomadaire')}</div>`;
 
     overlay.innerHTML = `
         <div class="glass-card w-full max-w-sm p-8 text-center animate-[slideUp_0.3s_ease-out]">
@@ -4758,8 +4768,8 @@ function offerContract(contract, type) {
             </div>
             
             <div class="flex flex-col gap-3">
-                <button onclick="handleContract(true)" class="pill-button btn-primary py-4 text-sm font-black">SIGNER LE CONTRAT</button>
-                <button onclick="handleContract(false)" class="pill-button btn-secondary py-3 text-xs opacity-60 hover:opacity-100 transition-opacity">Rester indépendant</button>
+                <button onclick="handleContract(true)" class="pill-button btn-primary py-4 text-sm font-black">${uiStr('contractSignBtn','SIGNER LE CONTRAT')}</button>
+                <button onclick="handleContract(false)" class="pill-button btn-secondary py-3 text-xs opacity-60 hover:opacity-100 transition-opacity">${uiStr('contractDeclineBtn','Rester indépendant')}</button>
             </div>
         </div>
     `;
@@ -4779,15 +4789,15 @@ function handleContract(accepted) {
             game.player.label = data;
             const _bonusConverted = typeof window.convertPrice === 'function' ? window.convertPrice(data.bonusCash) : data.bonusCash;
             game.player.cash += _bonusConverted;
-            addNews(`🚨 SIGNATURE : Tu rejoins l'écurie ${data.name} ! Avance de ${_bonusConverted.toLocaleString()} ${((window.CURRENCY && window.CURRENCY.symbol) ? window.CURRENCY.symbol : 'F')}.`, "success");
+            addNews(`🚨 ${uiStr('contractSignedNews','SIGNATURE')} : ${uiStr('contractJoined','Tu rejoins l\'écurie')} ${data.name} ! ${uiStr('contractAdvance','Avance de')} ${_bonusConverted.toLocaleString()} ${((window.CURRENCY && window.CURRENCY.symbol) ? window.CURRENCY.symbol : 'F')}.`, "success");
         } else if (type === 'sponsor') {
             game.player.sponsors.push(data);
-            addNews(`🤝 SPONSOR : ${data.name} devient ton partenaire officiel.`, "success");
+            addNews(`🤝 ${uiStr('contractSponsorNews','SPONSOR')} : ${data.name} ${uiStr('contractSponsorPartner','devient ton partenaire officiel.')}`,"success");
         }
         updateUI(); // Met à jour l'argent en haut de l'écran
     } else {
         game.player.declinedContracts.push(data.id);
-        addNews(`Tu as refusé l'offre de ${data.name}. Tu gardes ton indépendance !`, "info");
+        addNews(`${uiStr('contractDeclinedNews','Tu as refusé l\'offre de')} ${data.name}. ${uiStr('contractStayIndependent','Tu gardes ton indépendance !')}`, "info");
     }
     
     pendingContract = null;
@@ -4851,8 +4861,8 @@ function animateLoadingBar() {
     let w = 0;
     const msgs = [
         "Initialisation du studio...",
-        "Chargement des beats...",
-        "Connexion au game...",
+        uiStr('loadingBeats', "Chargement des beats..."),
+        uiStr('loadingConnect', "Connexion au game..."),
         "BUZZKING prêt 👑"
     ];
     let step = 0;
@@ -5021,7 +5031,7 @@ function buildShareText() {
 async function downloadShareCard() {
     const card = document.getElementById('share-card');
     const btn = event.currentTarget;
-    btn.textContent = 'Génération...';
+    btn.textContent = uiStr('shareBtnGenerating','Génération...');
     btn.disabled = true;
 
     try {
@@ -5039,11 +5049,11 @@ async function downloadShareCard() {
         link.download = `buzzking-${game.player.name || 'card'}.png`;
         link.href = canvas.toDataURL('image/png');
         link.click();
-        btn.textContent = '✓ CARTE SAUVEGARDÉE';
-        setTimeout(() => { btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg> TÉLÉCHARGER LA CARTE'; btn.disabled = false; }, 2000);
+        btn.textContent = `✓ ${uiStr('shareBtnSaved','CARTE SAUVEGARDÉE')}`;
+        setTimeout(() => { btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg> ${uiStr('shareDownloadBtn','TÉLÉCHARGER LA CARTE')}`; btn.disabled = false; }, 2000);
     } catch(e) {
-        notify('Erreur de capture. Fais une capture d\'écran manuelle.', 3000);
-        btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg> TÉLÉCHARGER LA CARTE';
+        notify(uiStr('shareErrorCapture',"Erreur de capture. Fais une capture d'écran manuelle."), 3000);
+        btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg> ${uiStr('shareDownloadBtn','TÉLÉCHARGER LA CARTE')}`;
         btn.disabled = false;
     }
 }
@@ -5091,8 +5101,8 @@ function copyShareText() {
     const btn = document.getElementById('btn-copy-text');
     if (navigator.clipboard) {
         navigator.clipboard.writeText(text).then(() => {
-            btn.textContent = '✓ COPIÉ !';
-            setTimeout(() => { btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg> COPIER LE TEXTE'; }, 2000);
+            btn.textContent = `✓ ${uiStr('shareBtnCopied','COPIÉ !')}`;
+            setTimeout(() => { btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg> ${uiStr('shareCopyBtn','COPIER LE TEXTE')}`; }, 2000);
         });
     } else {
         const ta = document.createElement('textarea');
@@ -5101,8 +5111,8 @@ function copyShareText() {
         ta.select();
         document.execCommand('copy');
         ta.remove();
-        btn.textContent = '✓ COPIÉ !';
-        setTimeout(() => { btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg> COPIER LE TEXTE'; }, 2000);
+        btn.textContent = `✓ ${uiStr('shareBtnCopied','COPIÉ !')}`;
+        setTimeout(() => { btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg> ${uiStr('shareCopyBtn','COPIER LE TEXTE')}`; }, 2000);
     }
 }
 
