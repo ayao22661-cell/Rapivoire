@@ -3351,7 +3351,10 @@ function renderConcerts() {
     venues.forEach(venue => {
         const rawCost = Math.max(0, Math.floor((venue.cost || 0) * bizDiscount));
         const cost = typeof window.convertPrice === 'function' ? window.convertPrice(rawCost) : rawCost;
-        const ticketPriceConverted = typeof window.convertPrice === 'function' ? window.convertPrice(venue.ticketPrice) : venue.ticketPrice;
+        const _nativePrices = window.CURRENCY && window.CURRENCY.nativePrices;
+        const ticketPriceConverted = (!_nativePrices && typeof window.convertPrice === 'function')
+            ? window.convertPrice(venue.ticketPrice)
+            : venue.ticketPrice;
         const canAfford = game.player.cash >= cost;
         const hasFans = game.player.fans >= venue.reqFans;
         const hasSongs = game.player.inventory.released.length >= venue.reqSongs;
@@ -3404,7 +3407,10 @@ function bookConcert(id, cost) {
         const rawCost = Math.max(0, Math.floor((venue.cost || 0) * bizDiscount));
         cost = typeof window.convertPrice === 'function' ? window.convertPrice(rawCost) : rawCost;
     }
-    const ticketPriceConverted = typeof window.convertPrice === 'function' ? window.convertPrice(venue.ticketPrice) : venue.ticketPrice;
+    const _nativePrices = window.CURRENCY && window.CURRENCY.nativePrices;
+    const ticketPriceConverted = (!_nativePrices && typeof window.convertPrice === 'function')
+        ? window.convertPrice(venue.ticketPrice)
+        : venue.ticketPrice;
 
     // 1. Initialisation et Vérification du Quota Annuel (Max 4 par an)
     if (typeof game.player.concertsThisYear === 'undefined') {
