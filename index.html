@@ -3546,7 +3546,7 @@ function renderPerks() {
             </div>
             <div class="flex gap-1 mb-3">${blocks}</div>
             <button onclick="upgradePerk('${key}', ${nextCost})" class="w-full py-2 rounded-xl text-xs font-bold transition ${isMaxed ? 'bg-teal-900/30 text-teal-600 cursor-not-allowed' : canAfford ? 'bg-teal-500 hover:bg-teal-400 text-black shadow-[0_0_15px_rgba(45,212,191,0.3)]' : 'bg-zinc-800 text-zinc-500 cursor-not-allowed'}">
-                ${isMaxed ? 'MAXIMUM ATTEINT' : `AMÉLIORER (-${nextCost} PT)`}
+                ${isMaxed ? uiStr('perksMaxedBtn','MAXIMUM ATTEINT') : `${uiStr('perksUpgradeBtn','AMÉLIORER')} (-${nextCost} PT)`}
             </button>
         `;
         container.appendChild(div);
@@ -3555,12 +3555,12 @@ function renderPerks() {
 
 function upgradePerk(key, cost) {
     if(game.player.skills[key] >= PERKS_TREE[key].levels.length - 1) return;
-    if(game.player.perkPoints < cost) { notify("Pas assez de points !"); return; }
+    if(game.player.perkPoints < cost) { notify(uiStr('perksNoPointsNotif', "Pas assez de points !")); return; }
     
     game.player.perkPoints -= cost;
     game.player.skills[key]++;
     
-    notify("Compétence améliorée !");
+    notify(uiStr('perksUpgradeNotif', "Compétence améliorée !"));
     renderPerks();
     updateUI();
 }
@@ -4320,11 +4320,11 @@ function processNextWeek() {
     const cashGainedThisWeek = game.player.cash - _cashBeforeWeek;
 
     // Titre progressif basé sur les fans
-    let weekTitle = "SEMAINE TRANQUILLE";
-    if (fansGainedThisWeek > 500)   weekTitle = "BON FLOW !";
-    if (fansGainedThisWeek > 2000)  weekTitle = "TU MONTES !";
-    if (fansGainedThisWeek > 10000) weekTitle = "SEMAINE DE FEU 🔥";
-    if (fansGainedThisWeek > 50000) weekTitle = "VIRAL ! 🚀";
+    let weekTitle = uiStr('weekTitleCalm', "SEMAINE TRANQUILLE");
+    if (fansGainedThisWeek > 500)   weekTitle = uiStr('weekTitleGood', "BON FLOW !");
+    if (fansGainedThisWeek > 2000)  weekTitle = uiStr('weekTitleRising', "TU MONTES !");
+    if (fansGainedThisWeek > 10000) weekTitle = uiStr('weekTitleFire', "SEMAINE DE FEU 🔥");
+    if (fansGainedThisWeek > 50000) weekTitle = uiStr('weekTitleViral', "VIRAL ! 🚀");
 
     const weekEffects = [];
     if (fansGainedThisWeek !== 0) weekEffects.push({ icon: '👥', val: (fansGainedThisWeek >= 0 ? '+' : '') + fansGainedThisWeek.toLocaleString() + ' Fans' });
@@ -4824,7 +4824,7 @@ function submitPseudo() {
     // On cache l'étape 1 et on affiche l'étape 2 (Tuto)
     document.getElementById('step-pseudo').classList.add('hidden');
     document.getElementById('step-tutorial').classList.remove('hidden');
-    document.getElementById('welcome-pseudo-text').innerText = `Bienvenue dans le game, ${pseudo} !`;
+    document.getElementById('welcome-pseudo-text').innerText = `${uiStr('tutorialWelcomePrefix', 'Bienvenue dans le game,')} ${pseudo} !`;
     saveGame();
 }
 
@@ -4845,7 +4845,7 @@ function startGameOnboarding() {
         overlay.classList.add('hidden');
         
         // On annonce l'arrivée du joueur dans le fil d'actualité !
-        addNews(`🔥 La carrière de ${game.player.name} commence aujourd'hui sur BUZZKING !`, "success");
+        addNews(`🔥 ${uiStr('onboardingStartNews', 'La carrière de')} ${game.player.name} ${uiStr('onboardingStartNews2', 'commence aujourd\'hui sur BUZZKING !')}`, "success");
         updateUI();
     }, 500);
 }
@@ -5024,7 +5024,7 @@ function buildShareText() {
     const p = game.player;
     const fansFormatted = p.fans >= 1000000 ? (p.fans/1000000).toFixed(1)+'M' : p.fans >= 1000 ? (p.fans/1000).toFixed(0)+'K' : p.fans;
     const title = document.getElementById('share-career-title')?.textContent || '';
-    return `🎤 ${p.name} vient d'atteindre "${title}" sur BUZZKING !\n👥 ${fansFormatted} Fans · Niveau ${p.level}\n\nDeviens une légende du Rap Ivoire 👑\nbuzzking.vercel.app`;
+    return `🎤 ${p.name} ${uiStr('shareCareerReaches', "vient d'atteindre")} "${title}" sur BUZZKING !\n👥 ${fansFormatted} Fans · ${uiStr('perksLevelShort','Niv.')} ${p.level}\n\n${uiStr('shareLegendLine', 'Deviens une légende du Rap Ivoire 👑')}\nbuzzking.vercel.app`;
 }
 
 // 1. Télécharger la carte en PNG
@@ -5242,19 +5242,19 @@ function showLegendModal() {
             </div>
             <div style="background:rgba(255,145,0,0.07);border:1px solid rgba(255,145,0,0.2);border-radius:12px;padding:10px;text-align:center;">
                 <div style="font-size:1.3rem;font-weight:900;color:#FF9100;">${game.world.week}</div>
-                <div style="font-size:8px;font-weight:700;color:#555;text-transform:uppercase;letter-spacing:.1em;margin-top:2px;">Semaines</div>
+                <div style="font-size:8px;font-weight:700;color:#555;text-transform:uppercase;letter-spacing:.1em;margin-top:2px;">${uiStr('legendWeeksLabel','Semaines')}</div>
             </div>
             <div style="background:rgba(41,121,255,0.07);border:1px solid rgba(41,121,255,0.2);border-radius:12px;padding:10px;text-align:center;">
                 <div style="font-size:1.3rem;font-weight:900;color:#2979FF;">${sonsSortis}</div>
-                <div style="font-size:8px;font-weight:700;color:#555;text-transform:uppercase;letter-spacing:.1em;margin-top:2px;">Sons sortis</div>
+                <div style="font-size:8px;font-weight:700;color:#555;text-transform:uppercase;letter-spacing:.1em;margin-top:2px;">${uiStr('legendSonsSortisLabel','Sons sortis')}</div>
             </div>
             <div style="background:rgba(255,215,0,0.07);border:1px solid rgba(255,215,0,0.2);border-radius:12px;padding:10px;text-align:center;">
-                <div style="font-size:1.3rem;font-weight:900;color:#FFD700;">${fmt(p.cash)}F</div>
-                <div style="font-size:8px;font-weight:700;color:#555;text-transform:uppercase;letter-spacing:.1em;margin-top:2px;">Cash</div>
+                <div style="font-size:1.3rem;font-weight:900;color:#FFD700;">${fmt(p.cash)}${(window.CURRENCY && window.CURRENCY.symbol) ? window.CURRENCY.symbol : 'F'}</div>
+                <div style="font-size:8px;font-weight:700;color:#555;text-transform:uppercase;letter-spacing:.1em;margin-top:2px;">${uiStr('legendCashLabel','Cash')}</div>
             </div>
             <div style="background:rgba(0,230,118,0.07);border:1px solid rgba(0,230,118,0.2);border-radius:12px;padding:10px;text-align:center;">
                 <div style="font-size:1.3rem;font-weight:900;color:#00E676;">${sponsorCount}</div>
-                <div style="font-size:8px;font-weight:700;color:#555;text-transform:uppercase;letter-spacing:.1em;margin-top:2px;">Sponsors</div>
+                <div style="font-size:8px;font-weight:700;color:#555;text-transform:uppercase;letter-spacing:.1em;margin-top:2px;">${uiStr('legendSponsorsLabel','Sponsors')}</div>
             </div>
         </div>
     `;
