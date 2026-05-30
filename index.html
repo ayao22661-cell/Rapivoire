@@ -2613,18 +2613,18 @@ function renderActions() {
 
         div.innerHTML = `
             <div class="flex justify-between w-full font-black items-center">
-                <span>${isLocked ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="display:inline;vertical-align:middle;margin-right:4px"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>Niveau ' + act.reqLevel : act.title}</span>
+                <span>${isLocked ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="display:inline;vertical-align:middle;margin-right:4px"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>' + uiStr('actionLockedLevel','Niveau') + ' ' + act.reqLevel : act.title}</span>
                 <div class="flex gap-1">${costHtml}</div>
             </div>
             <p class="text-[11px] opacity-90 mt-2 leading-tight text-left">${act.desc}</p>
-            ${!isLocked ? `<div class="mt-2 text-[9px] uppercase font-bold opacity-75">Gains : +${act.buzz} Buzz | +${act.fans} Fans | +${act.xp} XP</div>` : ''}
+            ${!isLocked ? `<div class="mt-2 text-[9px] uppercase font-bold opacity-75">${uiStr('actionGainsLabel','Gains')} : +${act.buzz} Buzz | +${act.fans} Fans | +${act.xp} XP</div>` : ''}
         `;
         
         if(!isLocked && canAfford && game.world.actionsLeft > 0) {
             div.onclick = () => performAction(act);
         } else if (!isLocked && !canAfford) {
             div.classList.add('opacity-50');
-            div.onclick = () => notify("Ressources insuffisantes (Énergie ou Cash).");
+            div.onclick = () => notify(uiStr('notifLowResources', "Ressources insuffisantes (Énergie ou Cash)."));
         }
         
         list.appendChild(div);
@@ -2734,7 +2734,8 @@ function renderStudioBeats() {
 
     (window.BEATS_POOL || BEATS_POOL).forEach((beat, index) => {
         const rawPrice = (beat.price && !isNaN(beat.price)) ? beat.price : 0;
-        const rawPriceConverted = typeof window.convertPrice === 'function' ? window.convertPrice(rawPrice) : rawPrice;
+        const _nativePrices = window.CURRENCY && window.CURRENCY.nativePrices;
+        const rawPriceConverted = _nativePrices ? rawPrice : (typeof window.convertPrice === 'function' ? window.convertPrice(rawPrice) : rawPrice);
         const price = Math.max(0, Math.floor(rawPriceConverted * bizDiscount));
         const div = document.createElement('div');
         div.className = `p-3 rounded-xl border cursor-pointer transition ${index === 0 ? 'bg-info/20 border-info' : 'bg-black/30 border-white/10 hover:border-white/30'}`;
@@ -2743,10 +2744,10 @@ function renderStudioBeats() {
         div.innerHTML = `
             <div class="flex justify-between items-center mb-1">
                 <span class="font-bold text-sm text-white">${beat.name}</span>
-                <span class="text-xs font-black ${price === 0 ? 'text-green-400' : 'text-accent'}">${price === 0 ? 'GRATUIT' : price.toLocaleString() + ' ' + ((window.CURRENCY && window.CURRENCY.symbol) ? window.CURRENCY.symbol : 'F')}</span>
+                <span class="text-xs font-black ${price === 0 ? 'text-green-400' : 'text-accent'}">${price === 0 ? uiStr('beatFree','GRATUIT') : price.toLocaleString() + ' ' + ((window.CURRENCY && window.CURRENCY.symbol) ? window.CURRENCY.symbol : 'F')}</span>
             </div>
             <div class="text-[10px] text-zinc-400">${beat.desc}</div>
-            <div class="text-[9px] mt-2 text-info">Potentiel Qualité : ${beat.qualityMin}-${beat.qualityMax}%</div>
+            <div class="text-[9px] mt-2 text-info">${uiStr('beatQualityPotential','Potentiel Qualité')} : ${beat.qualityMin}-${beat.qualityMax}%</div>
         `;
         
         div.onclick = () => {
@@ -2795,7 +2796,8 @@ function startRecording() {
     
     // price est toujours un nombre >= 0, jamais NaN — converti dans la devise active
     const rawPrice = (beat.price && !isNaN(beat.price)) ? beat.price : 0;
-    const rawPriceConverted = typeof window.convertPrice === 'function' ? window.convertPrice(rawPrice) : rawPrice;
+    const _nativePrices = window.CURRENCY && window.CURRENCY.nativePrices;
+    const rawPriceConverted = _nativePrices ? rawPrice : (typeof window.convertPrice === 'function' ? window.convertPrice(rawPrice) : rawPrice);
     const price = Math.max(0, Math.floor(rawPriceConverted * bizDiscount));
 
     // Beat gratuit : on ne bloque jamais
