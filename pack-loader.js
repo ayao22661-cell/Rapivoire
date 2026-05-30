@@ -374,6 +374,100 @@ window.UI_STRINGS = {
     social_instagram: 'Instagram',
     social_youtube: 'YouTube',
     social_local: 'Facebook',
+
+    // ── Dashboard ──
+    dashActionsTitle: 'Actions Rapides',
+    dashActionsLeft: 'Restants',
+    dashImproTitle: 'Impro Rapide',
+    dashImproSub: 'Mini-Jeu',
+    dashBuzzLabel: 'Popularité (Buzz)',
+    dashSonsLabel: 'Sons',
+
+    // ── Studio statique ──
+    studioEnergyLabel: 'Énergie',
+    studioInStockLabel: 'En Stock',
+    studioOnlineLabel: 'En Ligne',
+    studioSongNameLabel: 'Nom du Titre',
+    studioBeatLabel: "Choix de l'Instru (Beat)",
+    studioThemeLabel: 'Thème des Lyrics',
+    studioEnterBooth: 'ENTRER EN CABINE',
+
+    // ── Business statique ──
+    bizPassiveLabel: 'Revenus Passifs / Semaine',
+    bizConcertTitle: 'Booker un Concert',
+    bizLifestyleTitle: 'Lifestyle & Achats',
+
+    // ── Perks statique ──
+    perksMenuTitle: 'Talents',
+    perksMenuSub: 'Évolue et progresse',
+    perksAvailableLabel: 'Points Disponibles',
+    perksLevelShort: 'Niv.',
+    perksMaxedBtn: 'MAXIMUM ATTEINT',
+    perksUpgradeBtn: 'AMÉLIORER',
+    perksUpgradeNotif: 'Compétence améliorée !',
+    perksNoPointsNotif: 'Pas assez de points !',
+
+    // ── Settings ──
+    settingsTitle: 'Paramètres',
+    settingsMusicLabel: 'Musique',
+    settingsMusicSub: 'Activer / désactiver la bande son',
+    settingsSaveLabel: 'Sauvegarder',
+    settingsSaveSub: 'Enregistrer la progression',
+    settingsResetLabel: 'Recommencer à zéro',
+    settingsResetSub: 'Effacer toute la progression',
+
+    // ── Reset modal ──
+    resetTitle: 'Effacer la carrière ?',
+    resetDesc: 'Toute ta progression sera perdue. Cette action est irréversible.',
+    resetConfirmBtn: 'OUI, TOUT EFFACER',
+    resetCancelBtn: 'ANNULER',
+
+    // ── Onboarding statique ──
+    onboardingHeadline: 'CRÉE TA LÉGENDE',
+    onboardingBody: "Tout grand rappeur a besoin d'un blase qui claque. Comment va-t-on t'appeler dans les rues d'Abidjan ?",
+    onboardingInputPlaceholder: 'Ton nom de scène...',
+    onboardingValidateBtn: 'VALIDER MON BLASE',
+    onboardingStartNews: 'La carrière de',
+    onboardingStartNews2: 'commence aujourd\'hui sur BUZZKING !',
+
+    // ── Tutorial statique ──
+    tutorialHeadline: 'COMMENT JOUER ?',
+    tutorialWelcomePrefix: 'Bienvenue dans le game,',
+    tutorialEnergyTitle: "L'Énergie :",
+    tutorialEnergyText: "Chaque action coûte de l'énergie. Une fois tes 4 actions utilisées, clique sur",
+    tutorialEnergyHighlight: '"Terminer la Semaine"',
+    tutorialEnergyText2: "pour te reposer — c'est ce bouton qui génère tes revenus et te redonne 50 NRJ. Tant qu'il reste des actions disponibles, le bouton est grisé : il faut d'abord tout dépenser.",
+    tutorialProjectsTitle: 'Les Projets :',
+    tutorialProjectsText: 'Sors des sons et économise 2 Millions pour sortir un',
+    tutorialAlbumWord: 'Album',
+    tutorialAlbumText: "(les streams de l'album sont multipliés par 10 !).",
+    tutorialClashTitle: 'Les Clashs :',
+    tutorialClashText: "Attaque les autres rappeurs pour voler leur Buzz. Plus de buzz = plus d'écoutes sur tes sons.",
+    tutorialContractsTitle: 'Les Contrats :',
+    tutorialContractsText: "Fais grimper tes Fans et tes Streams pour attirer des Sponsors (revenus hebdos) et des Maisons de disques (jusqu'à 50 Millions d'avance).",
+    tutorialBtn: "J'AI COMPRIS, AU BOULOT !",
+
+    // ── Clash overlay statique ──
+    clashOverlayTitle: 'CHOISIR UNE CIBLE',
+    clashOverlayCost: 'Consomme 30 Énergie & 1 Action',
+
+    // ── Lyrics overlay statique ──
+    lyricsOverlayTitle: 'CHOIX DU COUPLET',
+
+    // ── Character selection statique ──
+    charSelectHeadline: 'Qui es-tu ?',
+    charSelectSubHeadline: 'Choisis ton profil de départ.',
+    charSelectBtn: 'SÉLECTIONNER CE PROFIL',
+
+    // ── Share card ──
+    shareCareerReaches: 'vient d\'atteindre',
+    shareLegendLine: 'Deviens une légende du Rap Ivoire 👑',
+
+    // ── Legend modal ──
+    legendWeeksLabel: 'Semaines',
+    legendSonsSortisLabel: 'Sons sortis',
+    legendCashLabel: 'Cash',
+    legendSponsorsLabel: 'Sponsors',
 };
 
 // ─────────────────────────────────────────────
@@ -789,6 +883,150 @@ function applyUI(ui) {
 
     // ── Subtitle app ──
     setTextQ('.app-subtitle', ui.appSubtitle);
+
+    // ── Dashboard ──
+    setTextQ('#main-dashboard h3', ui.dashActionsTitle);
+    setTextQ('#action-count + span, #action-count ~ span', ui.dashActionsLeft);
+    setTextQ('#main-dashboard .font-black.text-\\[11px\\].text-white.uppercase.tracking-wider:not([id])', ui.dashImproTitle);
+    // Injection directe plus fiable pour les éléments dashboard
+    document.querySelectorAll('#main-dashboard .grid.grid-cols-2 button').forEach(btn => {
+        const spans = btn.querySelectorAll('span');
+        spans.forEach(sp => {
+            if (sp.textContent.trim() === 'Activités') sp.textContent = ui.menuActionsTitle || 'Activités';
+            if (sp.textContent.trim() === 'Restants') sp.textContent = ui.dashActionsLeft || 'Restants';
+            if (sp.textContent.trim() === 'Impro Rapide') sp.textContent = ui.dashImproTitle || 'Impro Rapide';
+            if (sp.textContent.trim() === 'Mini-Jeu') sp.textContent = ui.dashImproSub || 'Mini-Jeu';
+        });
+    });
+
+    // Buzz label & Sons label
+    document.querySelectorAll('#main-dashboard .text-\\[9px\\].font-black').forEach(el => {
+        if (el.textContent.includes('Popularité') || el.textContent.includes('Buzz')) el.textContent = ui.dashBuzzLabel || el.textContent;
+    });
+    document.querySelectorAll('#main-dashboard .text-\\[8px\\].font-bold.text-zinc-500').forEach(el => {
+        if (el.textContent.trim() === 'Sons') el.textContent = ui.dashSonsLabel || 'Sons';
+    });
+
+    // Bouton Semaine Suivante
+    const btnNextWeekSpan = document.querySelector('#btn-next-week span');
+    if (btnNextWeekSpan) btnNextWeekSpan.textContent = ui.btnNextWeek || 'SEMAINE SUIVANTE';
+
+    // ── Studio statique ──
+    document.querySelectorAll('#menu-studio .text-\\[8px\\].font-bold.text-zinc-500').forEach(el => {
+        const t = el.textContent.trim();
+        if (t === 'Énergie' || t === 'Energy') el.textContent = ui.studioEnergyLabel || t;
+        if (t === 'En Stock' || t === 'In Stock') el.textContent = ui.studioInStockLabel || t;
+        if (t === 'En Ligne' || t === 'Online') el.textContent = ui.studioOnlineLabel || t;
+    });
+    document.querySelectorAll('#menu-studio label').forEach(el => {
+        const t = el.textContent.trim();
+        if (t.includes('Nom du Titre') || t.includes('Track Name')) el.textContent = ui.studioSongNameLabel || t;
+        if (t.includes('Instru') || t.includes('Beat')) el.textContent = ui.studioBeatLabel || t;
+        if (t.includes('Lyrics') || t.includes('Thème') || t.includes('Theme')) el.textContent = ui.studioThemeLabel || t;
+    });
+    const boothBtn = document.querySelector('#menu-studio button[onclick="startRecording()"]');
+    if (boothBtn) {
+        const textNode = Array.from(boothBtn.childNodes).find(n => n.nodeType === 3 && n.textContent.trim().length > 2);
+        if (textNode) textNode.textContent = ' ' + (ui.studioEnterBooth || 'ENTRER EN CABINE') + ' ';
+    }
+
+    // ── Business statique ──
+    document.querySelectorAll('#menu-biz .text-\\[10px\\].font-black.text-white\\/50').forEach(el => {
+        if (el.textContent.includes('Revenus') || el.textContent.includes('Passive')) el.textContent = ui.bizPassiveLabel || el.textContent;
+    });
+    document.querySelectorAll('#menu-biz h3').forEach(el => {
+        const t = el.textContent.trim();
+        if (t.includes('Concert') || t.includes('Venue')) el.innerHTML = el.innerHTML.replace(/Booker un Concert|Book a Venue/, ui.bizConcertTitle || t);
+        if (t.includes('Lifestyle')) el.innerHTML = el.innerHTML.replace(/Lifestyle & Achats|Lifestyle & Purchases/, ui.bizLifestyleTitle || t);
+    });
+
+    // ── Perks statique ──
+    const perksH2 = document.querySelector('#menu-perks .sticky h2');
+    if (perksH2) perksH2.textContent = ui.perksMenuTitle || 'Talents';
+    const perksP = document.querySelector('#menu-perks .sticky p');
+    if (perksP) perksP.textContent = ui.perksMenuSub || 'Évolue et progresse';
+    const perksPointsLbl = document.querySelector('#menu-perks .px-6.py-8 span.text-zinc-400');
+    if (perksPointsLbl) perksPointsLbl.textContent = ui.perksAvailableLabel || 'Points Disponibles';
+
+    // ── Clash overlay statique ──
+    const clashH3 = document.querySelector('#clash-overlay h3');
+    if (clashH3) {
+        clashH3.childNodes.forEach(n => { if (n.nodeType === 3) n.textContent = ' ' + (ui.clashOverlayTitle || 'CHOISIR UNE CIBLE'); });
+    }
+    const clashCostEl = document.getElementById('clash-cost-label');
+    if (clashCostEl) clashCostEl.textContent = ui.clashOverlayCost || 'Consomme 30 Énergie & 1 Action';
+
+    // ── Lyrics overlay statique ──
+    const lyricsH3 = document.querySelector('#lyrics-overlay h3');
+    if (lyricsH3) {
+        lyricsH3.childNodes.forEach(n => { if (n.nodeType === 3) n.textContent = ' ' + (ui.lyricsOverlayTitle || 'CHOIX DU COUPLET'); });
+    }
+
+    // ── Character selection statique ──
+    const charH2 = document.querySelector('#character-selection-screen h2');
+    if (charH2) charH2.textContent = ui.charSelectHeadline || 'Qui es-tu ?';
+    const charP = document.querySelector('#character-selection-screen .text-center p');
+    if (charP) charP.textContent = ui.charSelectSubHeadline || 'Choisis ton profil de départ.';
+    const charBtn = document.getElementById('btn-confirm-avatar');
+    if (charBtn) charBtn.textContent = ui.charSelectBtn || 'SÉLECTIONNER CE PROFIL';
+
+    // ── Settings modal ──
+    const settingsH3 = document.querySelector('#settings-modal h3');
+    if (settingsH3) settingsH3.textContent = ui.settingsTitle || 'Paramètres';
+    document.querySelectorAll('#settings-modal .text-white.font-bold.text-sm').forEach(el => {
+        const t = el.textContent.trim();
+        if (t === 'Musique' || t === 'Music') el.textContent = ui.settingsMusicLabel || t;
+        if (t === 'Sauvegarder' || t === 'Save') el.textContent = ui.settingsSaveLabel || t;
+        if (t.includes('zéro') || t.includes('Reset') || t.includes('Recommencer')) el.textContent = ui.settingsResetLabel || t;
+    });
+    document.querySelectorAll('#settings-modal .text-zinc-500.text-xs').forEach(el => {
+        const t = el.textContent.trim();
+        if (t.includes('bande son') || t.includes('soundtrack')) el.textContent = ui.settingsMusicSub || t;
+        if (t.includes('progression') && !t.includes('Effacer')) el.textContent = ui.settingsSaveSub || t;
+        if (t.includes('Effacer') || t.includes('irréversible') || t.includes('irreversible')) el.textContent = ui.settingsResetSub || t;
+    });
+
+    // ── Reset confirm modal ──
+    const resetH3 = document.querySelector('#reset-confirm-modal h3');
+    if (resetH3) resetH3.textContent = ui.resetTitle || 'Effacer la carrière ?';
+    const resetP = document.querySelector('#reset-confirm-modal p');
+    if (resetP) resetP.textContent = ui.resetDesc || 'Toute ta progression sera perdue. Cette action est irréversible.';
+    document.querySelectorAll('#reset-confirm-modal button').forEach(btn => {
+        const t = btn.textContent.trim();
+        if (t.includes('EFFACER') || t.includes('DELETE') || t.includes('YES')) btn.textContent = ui.resetConfirmBtn || t;
+        if (t === 'ANNULER' || t === 'CANCEL') btn.textContent = ui.resetCancelBtn || t;
+    });
+
+    // ── Onboarding statique ──
+    const onbH2 = document.querySelector('#step-pseudo h2');
+    if (onbH2) onbH2.textContent = ui.onboardingHeadline || 'CRÉE TA LÉGENDE';
+    const onbP = document.querySelector('#step-pseudo p');
+    if (onbP) onbP.textContent = ui.onboardingBody || '';
+    const onbInput = document.getElementById('player-pseudo-input');
+    if (onbInput) onbInput.placeholder = ui.onboardingInputPlaceholder || 'Ton nom de scène...';
+    const onbBtn = document.querySelector('#step-pseudo button[onclick="submitPseudo()"]');
+    if (onbBtn) onbBtn.textContent = ui.onboardingValidateBtn || 'VALIDER MON BLASE';
+
+    // ── Tutorial statique ──
+    const tutH2 = document.querySelector('#step-tutorial h2');
+    if (tutH2) tutH2.textContent = ui.tutorialHeadline || 'COMMENT JOUER ?';
+    const tutBlocks = document.querySelectorAll('#step-tutorial .space-y-3 .bg-white\\/5');
+    if (tutBlocks[0]) tutBlocks[0].innerHTML = `
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="#2979FF" class="inline align-middle mr-2"><path d="M7 2v11h3v9l7-12h-4l4-8z"/></svg>
+        <strong class="text-white">${ui.tutorialEnergyTitle || "L'Énergie :"}</strong> ${ui.tutorialEnergyText || ''} <strong class="text-primary">${ui.tutorialEnergyHighlight || '"Terminer la Semaine"'}</strong> ${ui.tutorialEnergyText2 || ''}`;
+    if (tutBlocks[1]) tutBlocks[1].innerHTML = `
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="#00E676" class="inline align-middle mr-2"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
+        <strong class="text-white">${ui.tutorialProjectsTitle || 'Les Projets :'}</strong> ${ui.tutorialProjectsText || ''} <strong>${ui.tutorialAlbumWord || 'Album'}</strong> ${ui.tutorialAlbumText || ''}`;
+    if (tutBlocks[2]) tutBlocks[2].innerHTML = `
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="#FF9100" class="inline align-middle mr-2"><path d="M13.5.67s.74 2.65.74 4.8c0 2.06-1.35 3.73-3.41 3.73-2.07 0-3.63-1.67-3.63-3.73l.03-.36C5.21 7.51 4 10.62 4 14c0 4.42 3.58 8 8 8s8-3.58 8-8C20 8.61 17.41 3.8 13.5.67z"/></svg>
+        <strong class="text-white">${ui.tutorialClashTitle || 'Les Clashs :'}</strong> ${ui.tutorialClashText || ''}`;
+    if (tutBlocks[3]) tutBlocks[3].innerHTML = `
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="#7C4DFF" class="inline align-middle mr-2"><path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12s4.48 10 10 10 10-4.48 10-10zm-10 6c-3.31 0-6-2.69-6-6 0-.34.03-.67.08-1H12v2h3.96c-.51 2.28-2.49 4-4.96 4z"/></svg>
+        <strong class="text-white">${ui.tutorialContractsTitle || 'Les Contrats :'}</strong> ${ui.tutorialContractsText || ''}`;
+    const tutBtn = document.querySelector('#step-tutorial button[onclick="startGameOnboarding()"]');
+    if (tutBtn) {
+        tutBtn.childNodes.forEach(n => { if (n.nodeType === 3 && n.textContent.trim().length > 2) n.textContent = ui.tutorialBtn || "J'AI COMPRIS, AU BOULOT !"; });
+    }
 
     // ── Stocker dans window.UI_STRINGS pour usage dynamique dans le JS du jeu ──
     window.UI_STRINGS = ui;
