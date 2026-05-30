@@ -724,6 +724,14 @@ function applyPackData(data) {
         window.SOCIAL_NETWORKS = data.SOCIAL_NETWORKS;
     }
 
+    // 18. Shop items localisés (lifestyle & purchases)
+    if (data.SHOP_ITEMS) {
+        window.SHOP_ITEMS = data.SHOP_ITEMS;
+        // Re-render shop if already open
+        if (typeof renderShop === 'function') renderShop();
+        else if (typeof renderBizSection === 'function') renderBizSection();
+    }
+
     // 16. Config Relations localisée
     if (data.RELATIONS_CONFIG) {
         window.RELATIONS_CONFIG = data.RELATIONS_CONFIG;
