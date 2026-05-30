@@ -11,7 +11,7 @@ window.PACK_DATA = {
     // ─────────────────────────────────────────
     // DEVISE
     // ─────────────────────────────────────────
-    CURRENCY: { symbol: '€', code: 'EUR', locale: 'fr-FR', rate: 0.00152 },
+    CURRENCY: { symbol: '€', code: 'EUR', locale: 'fr-FR', rate: 0.00152, nativePrices: true },
 
     // ─────────────────────────────────────────
     // TRADUCTIONS UI
