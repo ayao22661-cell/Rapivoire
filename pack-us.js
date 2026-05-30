@@ -1,4 +1,3 @@
-cat > /home/claude/pack-us.js << 'ENDOFFILE'
 /**
  * BUZZKING — PACK USA 🇺🇸
  * New York / Atlanta / LA — Trap, Drill, Hip-Hop & R&B
