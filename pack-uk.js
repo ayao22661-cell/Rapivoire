@@ -159,6 +159,24 @@ window.PACK_DATA = {
         notifAvatarSelected: 'Profile locked in!',
         notifNoStyle: 'No style available.',
 
+        // ── Dates ──
+        months: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+
+        // ── Loading bar ──
+        loadingDone: 'Loaded, fam!',
+        loadingBeats: 'Loading beats...',
+        loadingConnect: 'Connecting to the scene...',
+
+        // ── Contracts ──
+        contractLabelTitle: 'Label Offer',
+        contractSponsorTitle: 'New Sponsor',
+        contractSigningBonus: 'Signing advance',
+        contractRoyalties: 'Royalties',
+        contractOnRevenues: 'on your earnings',
+        contractWeeklyIncome: 'Weekly income',
+        contractSignBtn: 'SIGN THE DEAL',
+        contractDeclineBtn: 'Stay independent',
+
         // ── Week summary ──
         weekTitleCalm: 'QUIET WEEK',
         weekTitleGood: 'DECENT FLOW!',
