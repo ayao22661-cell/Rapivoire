@@ -220,6 +220,100 @@ window.PACK_DATA = {
         social_youtube: 'YouTube',
         social_local: 'Snapchat',
 
+        // ── Dashboard ──
+        dashActionsTitle: 'Quick Moves',
+        dashActionsLeft: 'Left',
+        dashImproTitle: 'Quick Freestyle',
+        dashImproSub: 'Mini-Game',
+        dashBuzzLabel: 'Popularity (Buzz)',
+        dashSonsLabel: 'Tracks',
+
+        // ── Studio static ──
+        studioEnergyLabel: 'Energy',
+        studioInStockLabel: 'In Stock',
+        studioOnlineLabel: 'Online',
+        studioSongNameLabel: 'Track Name',
+        studioBeatLabel: 'Beat Selection',
+        studioThemeLabel: 'Lyrics Theme',
+        studioEnterBooth: 'STEP IN THE BOOTH',
+
+        // ── Business static ──
+        bizPassiveLabel: 'Passive Income / Week',
+        bizConcertTitle: 'Book a Venue',
+        bizLifestyleTitle: 'Lifestyle & Purchases',
+
+        // ── Perks static ──
+        perksMenuTitle: 'Skills',
+        perksMenuSub: 'Level up your game',
+        perksAvailableLabel: 'Available Points',
+        perksLevelShort: 'Lv.',
+        perksMaxedBtn: 'MAXED OUT',
+        perksUpgradeBtn: 'UPGRADE',
+        perksUpgradeNotif: 'Skill upgraded!',
+        perksNoPointsNotif: 'Not enough points!',
+
+        // ── Settings ──
+        settingsTitle: 'Settings',
+        settingsMusicLabel: 'Music',
+        settingsMusicSub: 'Toggle the soundtrack on / off',
+        settingsSaveLabel: 'Save',
+        settingsSaveSub: 'Save your progress',
+        settingsResetLabel: 'Start Over',
+        settingsResetSub: 'Wipe all your progress',
+
+        // ── Reset modal ──
+        resetTitle: 'Delete your career?',
+        resetDesc: 'All your progress will be lost. This cannot be undone.',
+        resetConfirmBtn: 'YES, WIPE EVERYTHING',
+        resetCancelBtn: 'CANCEL',
+
+        // ── Onboarding static ──
+        onboardingHeadline: 'BUILD YOUR LEGEND',
+        onboardingBody: "Every legend needs a name that rings bells on road. What are they gonna call you in the ends of London?",
+        onboardingInputPlaceholder: 'Your road name...',
+        onboardingValidateBtn: 'LOCK IN MY NAME',
+        onboardingStartNews: 'The career of',
+        onboardingStartNews2: 'starts today on BUZZKING!',
+
+        // ── Tutorial static ──
+        tutorialHeadline: 'HOW TO PLAY?',
+        tutorialWelcomePrefix: 'Welcome to the game,',
+        tutorialEnergyTitle: 'Energy:',
+        tutorialEnergyText: 'Every action costs energy. Once your 4 actions are done, hit',
+        tutorialEnergyHighlight: '"Next Week"',
+        tutorialEnergyText2: "to rest — that's what generates your income and restores 50 NRJ. While actions remain, the button is greyed: spend them all first.",
+        tutorialProjectsTitle: 'Projects:',
+        tutorialProjectsText: 'Drop tings and save up to release an',
+        tutorialAlbumWord: 'Album',
+        tutorialAlbumText: '(album streams are multiplied by 10!).',
+        tutorialClashTitle: 'Clashes:',
+        tutorialClashText: 'Diss other rappers to steal their Buzz. More buzz = more plays on your tings.',
+        tutorialContractsTitle: 'Contracts:',
+        tutorialContractsText: "Grow your Fans and Streams to land Sponsors (weekly income) and Labels (up to £50K advance).",
+        tutorialBtn: "SAY NUTTIN, LET'S GO!",
+
+        // ── Clash overlay static ──
+        clashOverlayTitle: 'PICK A WASTEMAN',
+        clashOverlayCost: 'Costs 30 Energy & 1 Action',
+
+        // ── Lyrics overlay static ──
+        lyricsOverlayTitle: 'PICK YOUR BAR',
+
+        // ── Character selection static ──
+        charSelectHeadline: "Who's this mandem?",
+        charSelectSubHeadline: 'Pick your starting profile, fam.',
+        charSelectBtn: 'LOCK IN THIS TING',
+
+        // ── Share card ──
+        shareCareerReaches: 'just reached',
+        shareLegendLine: 'Become a UK Drill legend 👑',
+
+        // ── Legend modal ──
+        legendWeeksLabel: 'Weeks',
+        legendSonsSortisLabel: 'Tracks dropped',
+        legendCashLabel: 'Cash',
+        legendSponsorsLabel: 'Sponsors',
+
         // ── Contract news ──
         contractSignedNews: 'SIGNED',
         contractJoined: 'You linked up with',
@@ -477,25 +571,24 @@ window.PACK_DATA = {
         { id: 'n1_tube',        title: "Tube Station Freestyle",    reqLevel: 1, desc: "Spit bars on the underground platform. You never know who's watching.", energy: 20, cash: 2, buzz: 2, fans: 5, xp: 10, color: 'bg-green-grad' },
         { id: 'gombo',          title: "Deliveroo Run",             reqLevel: 1, desc: "Cycling deliveries to fund the studio time. P's before the music.", energy: 25, cash: 2700, buzz: -1, fans: 0, xp: 5, color: 'bg-green-grad' },
         { id: 'n1_tiktok',      title: "TikTok Challenge",          reqLevel: 1, desc: "Try to launch a new UK Drill challenge. Could go viral.", energy: 15, cash: 0, buzz: 8, fans: 25, xp: 10, color: 'bg-pink-grad' },
-        { id: 'n1_clash_rue',   title: "Estate Battle Rap",         reqLevel: 1, desc: "Challenge the best freestyler on your estate. Respect on the line.", energy: 25, cash: 0, buzz: 15, fans: -2, xp: 20, color: 'bg-danger text-white border-none' },
-        { id: 'n1_gbaka',       title: "Bus Stop Freestyle",        reqLevel: 1, desc: "Spit bars for passengers on the night bus. Someone might be recording.", energy: 20, cash: 2, buzz: 2, fans: 5, xp: 10, color: 'bg-green-grad' },
+        { id: 'n1_clash_estate',title: "Estate Battle Rap",         reqLevel: 1, desc: "Challenge the best freestyler on your estate. Respect on the line.", energy: 25, cash: 0, buzz: 15, fans: -2, xp: 20, color: 'bg-danger text-white border-none' },
         { id: 'fb_live',        title: "Instagram Live",            reqLevel: 2, desc: "Go live on Instagram and interact with your early followers.", energy: 30, cash: 0, buzz: 3, fans: 15, xp: 8, color: 'bg-blue-grad' },
         { id: 'n2_live',        title: "Big Twitch Stream",         reqLevel: 2, desc: "Go live and settle scores in front of thousands. Mad drama potential.", energy: 45, cash: 0, buzz: 15, fans: 20, xp: 15, color: 'bg-blue-grad' },
-        { id: 'promo_boomplay', title: "Spotify 'UK Rap' Playlist", reqLevel: 2, desc: "Pay a curator to get you onto a big independent playlist.", energy: 20, cash: -1200, buzz: 5, fans: 60, xp: 15, color: 'bg-blue-grad' },
-        { id: 'n2_clash_arr',   title: "Fake Twitter Drama",        reqLevel: 2, desc: "Create manufactured beef with another artist. Risky buzz play.", energy: 40, cash: 0, buzz: 25, fans: -25, xp: 15, color: 'bg-danger text-white border-none' },
-        { id: 'n2_show_bar',    title: "Rave Performance",          reqLevel: 2, desc: "Shut down a massive rave in South London. Real coins.", energy: 60, cash: 1200, buzz: 5, fans: 30, xp: 30, color: 'bg-teal-grad' },
+        { id: 'promo_playlist', title: "Spotify 'UK Rap' Playlist", reqLevel: 2, desc: "Pay a curator to get you onto a big independent playlist.", energy: 20, cash: -1200, buzz: 5, fans: 60, xp: 15, color: 'bg-blue-grad' },
+        { id: 'n2_drama',       title: "Fake Twitter Drama",        reqLevel: 2, desc: "Create manufactured beef with another artist. Risky buzz play.", energy: 40, cash: 0, buzz: 25, fans: -25, xp: 15, color: 'bg-danger text-white border-none' },
+        { id: 'n2_rave',        title: "Rave Performance",          reqLevel: 2, desc: "Shut down a massive rave in South London. Real coins.", energy: 60, cash: 1200, buzz: 5, fans: 30, xp: 30, color: 'bg-teal-grad' },
         { id: 'radio',          title: "BBC 1Xtra Session",         reqLevel: 3, desc: "Buy your spot for a live freestyle on the most influential UK station.", energy: 30, cash: -2000, buzz: 10, fans: 80, xp: 15, color: 'bg-purple-grad' },
         { id: 'promo_youtube',  title: "YouTube Pre-roll Ad",       reqLevel: 3, desc: "Your video plays before major UK artists' content.", energy: 20, cash: -3000, buzz: 15, fans: 150, xp: 30, color: 'bg-red-500 text-white' },
-        { id: 'n3_tv',          title: "No Jumper UK Interview",    reqLevel: 3, desc: "Go on the hardest-hitting UK podcast. You might say something mad.", energy: 45, cash: 0, buzz: 35, fans: -30, xp: 40, color: 'bg-blue-grad' },
+        { id: 'n3_interview',   title: "No Jumper UK Interview",    reqLevel: 3, desc: "Go on the hardest-hitting UK podcast. You might say something mad.", energy: 45, cash: 0, buzz: 35, fans: -30, xp: 40, color: 'bg-blue-grad' },
         { id: 'n3_diss',        title: "Diss Track (Full Ting)",    reqLevel: 3, desc: "Destroy a rival's career with a surgical diss track. No mercy.", energy: 50, cash: -1200, buzz: 40, fans: 30, xp: 45, color: 'bg-danger text-white border-none' },
         { id: 'n3_clip',        title: "Luxury Video Shoot (Ibiza)",reqLevel: 3, desc: "Rent a villa and yacht in Ibiza for the video. Proper flex.", energy: 70, cash: -12000, buzz: 25, fans: 300, xp: 70, color: 'bg-teal-grad' },
         { id: 'promo_spotify',  title: "Spotify Editorial Playlist",reqLevel: 4, desc: "Target placement on the official UK Drill or UK Hip-Hop editorial.", energy: 30, cash: -11500, buzz: 15, fans: 500, xp: 60, color: 'bg-green-grad' },
         { id: 'clash',          title: "Clash an Influencer",       reqLevel: 4, desc: "Big TikTok buzz, but you lose credibility with the real rap fanbase.", energy: 35, cash: 0, buzz: 30, fans: -150, xp: 10, color: 'bg-pink-grad' },
-        { id: 'n4_feat_fr',     title: "International Feature",     reqLevel: 4, desc: "Pay a US or African artist for a collab. Opens doors worldwide.", energy: 80, cash: -38000, buzz: 60, fans: 1000, xp: 100, color: 'bg-blue-grad' },
+        { id: 'n4_feat_int',    title: "International Feature",     reqLevel: 4, desc: "Pay a US or African artist for a collab. Opens doors worldwide.", energy: 80, cash: -38000, buzz: 60, fans: 1000, xp: 100, color: 'bg-blue-grad' },
         { id: 'n4_boycott',     title: "Diva Moment",               reqLevel: 4, desc: "Refuse to perform at a major festival. Massive buzz, massive backlash.", energy: 20, cash: 0, buzz: 80, fans: -350, xp: 30, color: 'bg-pink-grad' },
         { id: 'showcase',       title: "West End Showcase",         reqLevel: 5, desc: "Perform at a sold-out Central London venue. Real coins, real fans.", energy: 75, cash: 5800, buzz: 5, fans: 150, xp: 25, color: 'bg-teal-grad' },
         { id: 'n5_label',       title: "Start Your Label",          reqLevel: 5, desc: "Become a CEO. Build your empire and sign the next generation.", energy: 90, cash: -150000, buzz: 100, fans: 1500, xp: 300, color: 'bg-purple-grad' },
-        { id: 'n5_clash_etat',  title: "Call Out the Government",   reqLevel: 5, desc: "Drop a politically charged track. Enormous buzz, enormous backlash.", energy: 80, cash: -7600, buzz: 200, fans: -1500, xp: 150, color: 'bg-danger text-white border-none' },
+        { id: 'n5_clash_govt',  title: "Call Out the Government",   reqLevel: 5, desc: "Drop a politically charged track. Enormous buzz, enormous backlash.", energy: 80, cash: -7600, buzz: 200, fans: -1500, xp: 150, color: 'bg-danger text-white border-none' },
     ],
 
     // ─────────────────────────────────────────
