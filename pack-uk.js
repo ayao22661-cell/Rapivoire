@@ -314,6 +314,14 @@ window.PACK_DATA = {
         legendCashLabel: 'Cash',
         legendSponsorsLabel: 'Sponsors',
 
+        // ── Studio beats ──
+        beatFree: 'FREE',
+        beatQualityPotential: 'Quality Potential',
+
+        // ── Actions ──
+        actionLockedLevel: 'Level',
+        actionGainsLabel: 'Gains',
+
         // ── Contract news ──
         contractSignedNews: 'SIGNED',
         contractJoined: 'You linked up with',
