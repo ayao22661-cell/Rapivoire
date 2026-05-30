@@ -468,6 +468,14 @@ window.UI_STRINGS = {
     legendSonsSortisLabel: 'Sons sortis',
     legendCashLabel: 'Cash',
     legendSponsorsLabel: 'Sponsors',
+
+    // ── Studio beats ──
+    beatFree: 'GRATUIT',
+    beatQualityPotential: 'Potentiel Qualité',
+
+    // ── Actions ──
+    actionLockedLevel: 'Niveau',
+    actionGainsLabel: 'Gains',
 };
 
 // ─────────────────────────────────────────────
