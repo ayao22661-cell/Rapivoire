@@ -252,6 +252,34 @@ window.PACK_DATA = {
         perksUpgradeNotif: 'Skill upgraded!',
         perksNoPointsNotif: 'Not enough points!',
 
+        // ── Skill tree (names & descriptions) ──
+        perksFlowName: 'Flow & Technique',
+        perksFlowDesc: 'Boosts the max quality of your jams.',
+        perksLyricsName: 'Pen Game (Lyrics)',
+        perksLyricsDesc: 'Boosts the min quality of your jams.',
+        perksCharismeName: 'Charisma',
+        perksCharismeDesc: 'Multiplies the streams you dey generate every week.',
+        perksBizName: 'Business Sense',
+        perksBizDesc: 'E dey cut your studio and show costs.',
+
+        // ── Share card: career titles (by level) ──
+        careerTitleLvl1: 'Local Champion',
+        careerTitleLvl2: 'Underground Rapper',
+        careerTitleLvl3: 'Rising Star',
+        careerTitleLvl4: 'Certified Star',
+        careerTitleLvl5: 'Living Legend',
+
+        // ── Share card: milestone titles ──
+        milestoneFans500: 'FIRST 500 FANS 🔥',
+        milestoneFans5k: '5,000 FANS',
+        milestoneFans25k: '25,000 FANS',
+        milestoneFans100k: '100K FANS DONE REACH',
+        milestoneFans1m: '1 MILLION FANS 🔥',
+        milestoneAlbum: 'FIRST ALBUM DROPPED',
+        milestoneClashWin: 'CLASH WON',
+        milestoneLevelUp: 'NEW LEVEL',
+        milestoneGameOver: 'CAREER DONE',
+
         // ── Settings ──
         settingsTitle: 'Settings',
         settingsMusicLabel: 'Music',
