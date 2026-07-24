@@ -846,12 +846,12 @@ function applyUI(ui) {
     setTextQ('#nav-songs span, #nav-catalogue span', ui.navCatalogue);
 
     // ── Menu Actions ──
-    setTextQ('#menu-actions .menu-header h2', ui.menuActionsTitle);
-    setTextQ('#menu-actions .menu-header p', ui.menuActionsSubtitle);
+    setTextQ('#menu-actions .sticky h2', ui.menuActionsTitle);
+    setTextQ('#menu-actions .sticky p', ui.menuActionsSubtitle);
 
     // ── Menu Studio ──
-    setTextQ('#menu-studio .menu-header h2', ui.menuStudioTitle);
-    setTextQ('#menu-studio .menu-header p', ui.menuStudioSubtitle);
+    setTextQ('#menu-studio .sticky h2', ui.menuStudioTitle);
+    setTextQ('#menu-studio .sticky p', ui.menuStudioSubtitle);
     // Labels du formulaire studio
     setText('studio-label-songname', ui.studioSongName);
     setText('studio-label-beat', ui.studioBeatChoice);
@@ -866,8 +866,8 @@ function applyUI(ui) {
     setText('disc-label-bestsong', ui.discBestSong);
 
     // ── Menu Business & Life ──
-    setTextQ('#menu-biz .menu-header h2', ui.menuBizTitle);
-    setTextQ('#menu-biz .menu-header p', ui.menuBizSubtitle);
+    setTextQ('#menu-biz .sticky h2', ui.menuBizTitle);
+    setTextQ('#menu-biz .sticky p', ui.menuBizSubtitle);
     setText('biz-passive-label', ui.bizPassiveIncome);
     setText('biz-streams-label', ui.bizStreamsLabel);
     setText('biz-sponsors-label', ui.bizSponsorsLabel);
@@ -875,8 +875,8 @@ function applyUI(ui) {
     setText('biz-shop-title', ui.bizLifestyle);
 
     // ── Menu Talents / Perks ──
-    setTextQ('#menu-perks .menu-header h2', ui.menuPerksTitle);
-    setTextQ('#menu-perks .menu-header p', ui.menuPerksSubtitle);
+    setTextQ('#menu-perks .sticky h2', ui.menuPerksTitle);
+    setTextQ('#menu-perks .sticky p', ui.menuPerksSubtitle);
     setText('perks-points-label', ui.perksPointsLabel);
 
     // ── Section news (HOME) ──
@@ -902,7 +902,11 @@ function applyUI(ui) {
 
     // ── Dashboard ──
     setTextQ('#main-dashboard h3', ui.dashActionsTitle);
-    setTextQ('#action-count + span, #action-count ~ span', ui.dashActionsLeft);
+    setText('dash-actions-left-label', ui.dashActionsLeft);
+    setText('dash-level-label', ui.actionLockedLevel);
+    setText('rel-btn-label', ui.relBtnLabel);
+    setText('socials-section-title', ui.socialsSectionTitle);
+    setText('btn-event-understood', ui.btnUnderstood);
     setTextQ('#main-dashboard .font-black.text-\\[11px\\].text-white.uppercase.tracking-wider:not([id])', ui.dashImproTitle);
     // Injection directe plus fiable pour les éléments dashboard
     document.querySelectorAll('#main-dashboard .grid.grid-cols-2 button').forEach(btn => {
