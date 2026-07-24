@@ -252,6 +252,34 @@ window.PACK_DATA = {
         perksUpgradeNotif: 'Skill geupgradet!',
         perksNoPointsNotif: 'Nicht genug Punkte!',
 
+        // ── Skill-Baum (Namen & Beschreibungen) ──
+        perksFlowName: 'Flow & Technik',
+        perksFlowDesc: 'Erhöht die maximale Qualität deiner Tracks.',
+        perksLyricsName: 'Punchlines (Text)',
+        perksLyricsDesc: 'Erhöht die minimale Qualität deiner Tracks.',
+        perksCharismeName: 'Charisma',
+        perksCharismeDesc: 'Multipliziert die Streams, die du jede Woche generierst.',
+        perksBizName: 'Geschäftssinn',
+        perksBizDesc: 'Senkt deine Studio- und Show-Kosten.',
+
+        // ── Share Card: Karriere-Titel (nach Level) ──
+        careerTitleLvl1: 'Hoffnung vom Kiez',
+        careerTitleLvl2: 'Underground-Rapper',
+        careerTitleLvl3: 'Aufsteigender Künstler',
+        careerTitleLvl4: 'Bestätigter Star',
+        careerTitleLvl5: 'Lebende Legende',
+
+        // ── Share Card: Meilenstein-Titel ──
+        milestoneFans500: 'ERSTE 500 FANS 🔥',
+        milestoneFans5k: '5.000 FANS',
+        milestoneFans25k: '25.000 FANS',
+        milestoneFans100k: '100K FANS ERREICHT',
+        milestoneFans1m: '1 MILLION FANS 🔥',
+        milestoneAlbum: 'ERSTES ALBUM RELEASED',
+        milestoneClashWin: 'CLASH GEWONNEN',
+        milestoneLevelUp: 'NEUES LEVEL',
+        milestoneGameOver: 'KARRIERE VORBEI',
+
         // ── Settings ──
         settingsTitle: 'Einstellungen',
         settingsMusicLabel: 'Musik',
