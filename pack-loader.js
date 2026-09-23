@@ -880,7 +880,7 @@ function applyUI(ui) {
     setText('perks-points-label', ui.perksPointsLabel);
 
     // ── Section news (HOME) ──
-    setTextQ('#news-section h3', ui.newsTitle);
+    setText('news-title', ui.newsTitle);
     setTextQ('.perks-btn-label', ui.talentsBtn);
 
     // ── Lyrics overlay ──
@@ -901,13 +901,15 @@ function applyUI(ui) {
     setTextQ('.app-subtitle', ui.appSubtitle);
 
     // ── Dashboard ──
-    setTextQ('#main-dashboard h3', ui.dashActionsTitle);
+    setText('dash-actions-title', ui.dashActionsTitle);
     setText('dash-actions-left-label', ui.dashActionsLeft);
     setText('dash-level-label', ui.actionLockedLevel);
     setText('rel-btn-label', ui.relBtnLabel);
     setText('socials-section-title', ui.socialsSectionTitle);
     setText('btn-event-understood', ui.btnUnderstood);
-    setTextQ('#main-dashboard .font-black.text-\\[11px\\].text-white.uppercase.tracking-wider:not([id])', ui.dashImproTitle);
+    setText('dash-activities-label', ui.menuActionsTitle);
+    setText('dash-impro-label', ui.dashImproTitle);
+    setText('dash-impro-sub', ui.dashImproSub);
     // Injection directe plus fiable pour les éléments dashboard
     document.querySelectorAll('#main-dashboard .grid.grid-cols-2 button').forEach(btn => {
         const spans = btn.querySelectorAll('span');
