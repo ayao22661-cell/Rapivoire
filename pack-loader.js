@@ -910,24 +910,10 @@ function applyUI(ui) {
     setText('dash-activities-label', ui.menuActionsTitle);
     setText('dash-impro-label', ui.dashImproTitle);
     setText('dash-impro-sub', ui.dashImproSub);
-    // Injection directe plus fiable pour les éléments dashboard
-    document.querySelectorAll('#main-dashboard .grid.grid-cols-2 button').forEach(btn => {
-        const spans = btn.querySelectorAll('span');
-        spans.forEach(sp => {
-            if (sp.textContent.trim() === 'Activités') sp.textContent = ui.menuActionsTitle || 'Activités';
-            if (sp.textContent.trim() === 'Restants') sp.textContent = ui.dashActionsLeft || 'Restants';
-            if (sp.textContent.trim() === 'Impro Rapide') sp.textContent = ui.dashImproTitle || 'Impro Rapide';
-            if (sp.textContent.trim() === 'Mini-Jeu') sp.textContent = ui.dashImproSub || 'Mini-Jeu';
-        });
-    });
-
-    // Buzz label & Sons label
-    document.querySelectorAll('#main-dashboard .text-\\[9px\\].font-black').forEach(el => {
-        if (el.textContent.includes('Popularité') || el.textContent.includes('Buzz')) el.textContent = ui.dashBuzzLabel || el.textContent;
-    });
-    document.querySelectorAll('#main-dashboard .text-\\[8px\\].font-bold.text-zinc-500').forEach(el => {
-        if (el.textContent.trim() === 'Sons') el.textContent = ui.dashSonsLabel || 'Sons';
-    });
+    // Libellés de l'accueil (ciblés par ID)
+    setText('dash-actions-left-label', ui.dashActionsLeft);
+    setText('dash-buzz-label', ui.dashBuzzLabel);
+    setText('dash-sons-label', ui.dashSonsLabel);
 
     // Bouton Semaine Suivante
     const btnNextWeekSpan = document.querySelector('#btn-next-week span');

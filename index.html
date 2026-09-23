@@ -187,19 +187,150 @@ body {
 }
 .avatar-selected h3 { color: #00E676 !important; }
 
-/* Carte d'accueil : scène 3D */
-#hero-stage { height: 220px; }
-#hero-stage-canvas {
-    position: absolute; inset: 0; width: 100%; height: 100%;
-    display: block; outline: none; opacity: 0; transition: opacity .8s ease;
+/* =========================================
+   ACCUEIL « JEU MOBILE » : scène 3D plein écran + HUD
+   ========================================= */
+.game-hud {
+    position: absolute; top: 0; left: 0; right: 0; z-index: 50;
+    padding-top: max(12px, env(safe-area-inset-top));
+    background: linear-gradient(to bottom, rgba(9,9,14,0.95) 0%, rgba(9,9,14,0.6) 65%, rgba(9,9,14,0) 100%);
 }
-#hero-stage.stage-ready #hero-stage-canvas { opacity: 1; }
-#hero-stage.stage-ready .hero-tint { opacity: 0; }
-.hero-fallback-img {
-    position: absolute; inset: 0; width: 100%; height: 100%;
-    object-fit: cover; object-position: center 25%; display: none;
+.home-screen {
+    position: absolute; inset: 0; overflow: hidden;
+    background: radial-gradient(ellipse at 50% 38%, #1d1538 0%, #09090E 70%);
 }
-#hero-stage.stage-fallback .hero-fallback-img[src]:not([src=""]) { display: block; }
+#home-scene-canvas {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    display: block; outline: none; touch-action: none;
+    opacity: 0; transition: opacity .8s ease;
+}
+.home-screen.scene-ready #home-scene-canvas { opacity: 1; }
+.home-fallback-img {
+    display: none; position: absolute; left: 50%; top: 24%; width: 58%;
+    transform: translateX(-50%); aspect-ratio: 1; object-fit: cover;
+    border-radius: 28px; border: 2px solid rgba(0,230,118,0.5);
+    box-shadow: 0 0 60px rgba(124,77,255,0.35);
+}
+.home-screen.scene-fallback .home-fallback-img[src]:not([src=""]) { display: block; }
+.home-vignette {
+    position: absolute; inset: 0; pointer-events: none;
+    background:
+        linear-gradient(to bottom, rgba(9,9,14,0) 58%, rgba(9,9,14,0.9) 90%),
+        radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,0.45) 100%);
+}
+
+.sr-only { position: absolute !important; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+
+/* Verre dépoli commun au HUD */
+.hud-glass, .hud-level, .hud-buzz, .news-ticker, .news-panel, .stat-chip {
+    background: rgba(12,12,22,0.62);
+    -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.09);
+}
+
+.home-top {
+    position: absolute; top: calc(max(12px, env(safe-area-inset-top)) + 70px); left: 12px; right: 12px;
+    display: flex; justify-content: space-between; align-items: center; gap: 10px; z-index: 10;
+}
+.hud-level {
+    display: flex; align-items: center; gap: 8px; padding: 5px 12px 5px 5px;
+    border-radius: 999px; cursor: pointer; color: #fff; font-family: inherit;
+}
+.hud-level:active, .side-btn:active, .news-ticker:active { transform: scale(0.95); }
+.hud-level-badge {
+    width: 42px; height: 42px; border-radius: 50%; flex-shrink: 0;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    background: linear-gradient(135deg, #00E676, #7C4DFF);
+    box-shadow: 0 0 16px rgba(0,230,118,0.35), inset 0 -3px 0 rgba(0,0,0,0.25);
+    font-weight: 900; font-size: 17px; line-height: 1; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+}
+.hud-level-caption { font-size: 6px; letter-spacing: 0.12em; text-transform: uppercase; opacity: 0.9; margin-bottom: 1px; }
+.hud-bar { display: block; height: 6px; border-radius: 99px; background: rgba(0,0,0,0.55); overflow: hidden; }
+.hud-bar > span { display: block; height: 100%; border-radius: inherit; transition: width .6s cubic-bezier(.4,0,.2,1); }
+.hud-bar-xp { width: 64px; }
+.hud-bar-xp > span { background: linear-gradient(90deg, #00E676, #B6FF3B); }
+.hud-buzz {
+    flex: 1; max-width: 200px; display: flex; align-items: center; gap: 8px;
+    padding: 7px 12px 8px 8px; border-radius: 16px;
+}
+.hud-buzz-icon { width: 24px; height: 24px; object-fit: contain; filter: drop-shadow(0 0 6px rgba(255,145,0,0.6)); }
+.hud-caption { font-size: 8px; font-weight: 900; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.65); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.hud-buzz-value { font-size: 12px; font-weight: 900; color: #FF9100; }
+.hud-bar-buzz { margin-top: 4px; }
+.hud-bar-buzz > span { background: linear-gradient(90deg, #FF9100, #FF5252); }
+
+/* Fil d'infos */
+.home-news { position: absolute; top: calc(max(12px, env(safe-area-inset-top)) + 126px); left: 12px; right: 12px; z-index: 12; }
+.news-ticker {
+    width: 100%; display: flex; align-items: center; gap: 8px; padding: 8px 12px;
+    border-radius: 12px; color: #fff; font-family: inherit; cursor: pointer; text-align: left;
+}
+.news-live-dot { width: 8px; height: 8px; border-radius: 50%; background: #00E676; flex-shrink: 0; box-shadow: 0 0 0 0 rgba(0,230,118,0.6); animation: liveDot 1.6s infinite; }
+@keyframes liveDot { 0% { box-shadow: 0 0 0 0 rgba(0,230,118,0.6); } 70% { box-shadow: 0 0 0 8px rgba(0,230,118,0); } 100% { box-shadow: 0 0 0 0 rgba(0,230,118,0); } }
+.news-ticker-text { flex: 1; min-width: 0; font-size: 11px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.news-ticker-text.news-flash { animation: newsFlash .6s ease; }
+@keyframes newsFlash { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.news-chevron { color: rgba(255,255,255,0.5); transition: transform .2s ease; flex-shrink: 0; }
+.home-news.open .news-chevron { transform: rotate(180deg); }
+.news-panel {
+    display: none; margin-top: 6px; padding: 10px; border-radius: 14px;
+    max-height: 42vh; overflow-y: auto; background: rgba(12,12,22,0.9);
+}
+.home-news.open .news-panel { display: block; animation: newsFlash .25s ease; }
+.news-panel-title { font-size: 9px; font-weight: 900; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255,255,255,0.5); margin: 0 0 8px; }
+
+/* Boutons ronds latéraux */
+.home-side {
+    position: absolute; top: 36%; z-index: 10;
+    display: flex; flex-direction: column; gap: 14px; align-items: center;
+}
+.home-side-left { left: 8px; }
+.home-side-right { right: 8px; }
+.side-btn {
+    position: relative; width: 70px; display: flex; flex-direction: column; align-items: center; gap: 4px;
+    background: none; border: none; padding: 0; cursor: pointer; font-family: inherit; transition: transform .12s ease;
+}
+.side-btn-icon {
+    width: 54px; height: 54px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    background: radial-gradient(circle at 35% 30%, rgba(255,255,255,0.18), rgba(12,12,22,0.85) 70%);
+    border: 2px solid var(--ring, rgba(255,255,255,0.2));
+    box-shadow: 0 0 18px -2px var(--ring, transparent), inset 0 -4px 0 rgba(0,0,0,0.35);
+}
+.side-btn-icon img { width: 30px; height: 30px; object-fit: contain; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.5)); }
+.side-btn-main .side-btn-icon { width: 64px; height: 64px; }
+.side-btn-main .side-btn-icon img { width: 36px; height: 36px; }
+.side-red { --ring: #FF5252; }
+.side-violet { --ring: #7C4DFF; }
+.side-green { --ring: #00E676; }
+.side-blue { --ring: #2979FF; }
+.side-btn-label {
+    font-size: 8.5px; font-weight: 900; letter-spacing: 0.06em; text-transform: uppercase; color: #fff;
+    text-align: center; line-height: 1.15; text-shadow: 0 1px 3px #000, 0 0 8px rgba(0,0,0,0.8);
+}
+.side-badge {
+    position: absolute; top: -3px; right: 4px; min-width: 20px; height: 20px; padding: 0 5px;
+    border-radius: 99px; background: #7C4DFF; color: #fff; font-size: 10px; font-weight: 900;
+    display: flex; align-items: center; justify-content: center; border: 2px solid #09090E;
+}
+.side-badge-green { background: #00E676; color: #000; }
+
+/* Bas de l'écran */
+.home-bottom {
+    position: absolute; left: 12px; right: 12px; bottom: calc(80px + var(--safe-bottom)); z-index: 10;
+    display: flex; flex-direction: column; gap: 10px;
+}
+.home-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.stat-chip { border-radius: 14px; padding: 7px 4px; text-align: center; display: flex; flex-direction: column; gap: 2px; }
+.stat-chip-value { font-size: 16px; font-weight: 900; color: #fff; line-height: 1.1; }
+.stat-chip-label { font-size: 8px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.5); }
+#btn-next-week span { font-weight: 900; font-size: 14px; letter-spacing: 0.1em; text-transform: uppercase; color: #000; }
+
+@media (max-height: 700px) {
+    .home-side { top: 31%; gap: 8px; }
+    .side-btn-icon { width: 46px; height: 46px; }
+    .side-btn-main .side-btn-icon { width: 54px; height: 54px; }
+}
 
 /* Exception UI : Actions destructrices (Reset) */
 .text-danger { color: #FF5252 !important; }
@@ -815,7 +946,7 @@ input:focus, select:focus {
 <!-- ============================================================
      HEADER — Style Mobile Game
      ============================================================ -->
-<header class="flex justify-between items-center px-4 py-3 bg-[#0b0c14]/90 backdrop-blur-md border-b border-white/5 sticky top-0 z-50">
+<header class="game-hud flex justify-between items-center px-4 py-3">
     <div class="flex items-center gap-3">
         <div class="relative">
             <img id="player-avatar-img" src="" alt="Avatar" class="w-10 h-10 rounded-xl border-2 border-[#00e676] object-cover shadow-[0_0_15px_rgba(0,230,118,0.2)] hidden">
@@ -845,111 +976,94 @@ input:focus, select:focus {
     </div>
 </header>
 
-    <main class="flex-1 overflow-y-auto pb-28 px-4 pt-4 space-y-4" id="main-dashboard">
+    <main id="main-dashboard" class="home-screen">
 
-    <section id="news-section">
-        <div class="flex items-center gap-2 mb-2">
-            <span class="relative flex h-2.5 w-2.5">
-                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00e676] opacity-75"></span>
-                <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#00e676]"></span>
+    <!-- ═══ SCÈNE 3D PLEIN ÉCRAN (stage3d.js) ═══ -->
+    <canvas id="home-scene-canvas" aria-label="Scène 3D : ton rappeur sur scène" touch-action="none"></canvas>
+    <img id="home-fallback-img" src="" alt="" aria-hidden="true" class="home-fallback-img">
+    <div class="home-vignette" aria-hidden="true"></div>
+
+    <!-- ═══ HUD HAUT : niveau/XP + buzz ═══ -->
+    <div class="home-top">
+        <button class="hud-level" onclick="openMenu('perks'); setActiveNav('nav-home')" aria-label="Niveau et talents">
+            <span class="hud-level-badge">
+                <span id="dash-level-label" class="hud-level-caption">Niveau</span>
+                <span id="stat-level">1</span>
             </span>
-            <h3 id="news-title" class="text-[10px] font-black text-white/50 uppercase tracking-[0.2em] m-0">Dernières Infos</h3>
-        </div>
-        <div id="news-container" class="space-y-2"></div>
-    </section>
-
-    <section id="hero-stage" class="relative w-full rounded-2xl overflow-hidden shadow-lg border border-white/10 group bg-zinc-900">
-        <!-- Fallback 2D (sans WebGL) : avatar en fond -->
-        <img id="hero-fallback-img" src="" alt="" aria-hidden="true" class="hero-fallback-img">
-        <!-- Scène 3D Babylon.js (stage3d.js) -->
-        <canvas id="hero-stage-canvas" aria-label="Scène de concert 3D" touch-action="none"></canvas>
-        <div class="absolute inset-0 bg-gradient-to-r from-[#7C4DFF]/20 to-[#00E676]/20 opacity-50 hero-tint pointer-events-none"></div>
-        <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/10 to-transparent pointer-events-none"></div>
-        
-        <div class="absolute bottom-3 left-3 right-3 flex justify-between items-end">
-            <div>
-                <div class="text-[10px] text-[#00E676] font-black uppercase tracking-widest mb-1 flex items-center gap-1">
-                    <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg>
-                    <span id="dash-level-label">Niveau</span> <span id="stat-level">1</span>
+            <span class="hud-bar hud-bar-xp"><span id="bar-xp" style="width:0%"></span></span>
+        </button>
+        <div class="hud-buzz">
+            <img src="assets/icons/flamme-de-feu.png" alt="" class="hud-buzz-icon">
+            <div class="flex-1 min-w-0">
+                <div class="flex justify-between items-baseline gap-2">
+                    <span id="dash-buzz-label" class="hud-caption">Popularité (Buzz)</span>
+                    <span id="stat-buzz-text" class="hud-buzz-value">15%</span>
                 </div>
-                <div class="w-24 h-1 bg-white/20 rounded-full overflow-hidden mt-1">
-                    <div id="bar-xp" class="h-full bg-[#00E676] transition-all duration-500" style="width:0%"></div>
-                </div>
+                <span class="hud-bar hud-bar-buzz"><span id="bar-buzz" style="width:15%"></span></span>
             </div>
-            
-<div class="flex items-center gap-2">
-                <button onclick="openRelations()" class="bg-black/50 backdrop-blur-sm border border-white/10 px-3 py-1.5 rounded-xl flex items-center gap-1.5 hover:bg-white/10 transition-colors active:scale-95">
-                    <svg width="10" height="10" viewBox="0 0 24 24" fill="#FF5252"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
-                    <span class="text-[10px] font-bold text-white uppercase tracking-wider" id="rel-btn-label">Relations</span>
-                </button>
-                <button onclick="openMenu('perks')" class="bg-black/50 backdrop-blur-sm border border-white/10 px-3 py-1.5 rounded-xl flex items-center gap-1.5 hover:bg-white/10 transition-colors active:scale-95">
-                    <span class="text-[10px] font-bold text-white uppercase tracking-wider perks-btn-label">Talents</span>
-                    <span id="stat-xp-points" class="bg-[#7c4dff] text-white text-[9px] font-black px-1.5 py-0.5 rounded">0</span>
-                </button>
-            </div>
+        </div>
+    </div>
+
+    <!-- ═══ FIL D'INFOS : une ligne, s'ouvre au toucher ═══ -->
+    <section id="news-section" class="home-news">
+        <button class="news-ticker" onclick="toggleNewsPanel()" aria-expanded="false" aria-controls="news-panel">
+            <span class="news-live-dot" aria-hidden="true"></span>
+            <span id="news-ticker-text" class="news-ticker-text">…</span>
+            <svg class="news-chevron" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg>
+        </button>
+        <div id="news-panel" class="news-panel">
+            <h3 id="news-title" class="news-panel-title">Dernières Infos</h3>
+            <div id="news-container"></div>
         </div>
     </section>
 
-    <section class="bg-[#15161D] rounded-2xl p-4 border border-white/5 shadow-xl relative overflow-hidden">
-        <div class="absolute -top-10 -right-10 w-32 h-32 bg-[#FF9100]/10 rounded-full blur-2xl pointer-events-none"></div>
-        
-        <div class="flex justify-between items-center mb-2 relative z-10">
-            <div class="flex items-center gap-1.5">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="#FF9100"><path d="M13.5.67s.74 2.65.74 4.8c0 2.06-1.35 3.73-3.41 3.73-2.07 0-3.63-1.67-3.63-3.73l.03-.36C5.21 7.51 4 10.62 4 14c0 4.42 3.58 8 8 8s8-3.58 8-8C20 8.61 17.41 3.8 13.5.67z"/></svg>
-                <span class="text-[9px] font-black text-white/70 uppercase tracking-[0.15em]">Popularité (Buzz)</span>
-            </div>
-            <span id="stat-buzz-text" class="text-xs font-black text-[#FF9100]">15%</span>
-        </div>
-        <div class="w-full h-1.5 bg-black/50 rounded-full overflow-hidden mb-4 relative z-10">
-            <div id="bar-buzz" class="h-full bg-gradient-to-r from-[#FF9100] to-[#FF5252] transition-all duration-500 relative" style="width:15%;">
-                <div class="absolute top-0 left-0 right-0 bottom-0 bg-white/20 animate-pulse"></div>
-            </div>
-        </div>
+    <!-- ═══ BOUTONS LATÉRAUX (style jeu mobile) ═══ -->
+    <h3 id="dash-actions-title" class="sr-only">Actions Rapides</h3>
+    <div class="home-side home-side-left">
+        <button class="side-btn" onclick="openRelations()">
+            <span class="side-btn-icon side-red"><img src="assets/icons/bague.png" alt=""></span>
+            <span id="rel-btn-label" class="side-btn-label">Relations</span>
+        </button>
+        <button class="side-btn" onclick="openMenu('perks')">
+            <span class="side-btn-icon side-violet"><img src="assets/icons/diamant.png" alt=""></span>
+            <span class="side-btn-label perks-btn-label">Talents</span>
+            <span id="stat-xp-points" class="side-badge">0</span>
+        </button>
+    </div>
+    <div class="home-side home-side-right">
+        <button class="side-btn side-btn-main" onclick="openMenu('actions')">
+            <span class="side-btn-icon side-green"><img src="assets/icons/flamme-de-feu.png" alt=""></span>
+            <span id="dash-activities-label" class="side-btn-label">Activités</span>
+            <span class="side-badge side-badge-green"><span id="action-count">4</span><span id="dash-actions-left-label" class="sr-only">Restants</span></span>
+        </button>
+        <button class="side-btn" onclick="launchImproRapide()">
+            <span class="side-btn-icon side-blue"><img src="assets/icons/micro.png" alt=""></span>
+            <span id="dash-impro-label" class="side-btn-label">Impro Rapide</span>
+            <span id="dash-impro-sub" class="sr-only">Mini-Jeu</span>
+        </button>
+    </div>
 
-        <div class="grid grid-cols-3 gap-2 relative z-10">
-            <div class="bg-black/30 rounded-xl p-2 text-center border border-white/5 flex flex-col justify-center">
-                <div id="stat-fans" class="text-lg font-black text-white leading-none mb-1">120</div>
-                <div class="text-[8px] font-bold text-zinc-500 uppercase tracking-widest">Fans</div>
+    <!-- ═══ BAS : stats + semaine suivante ═══ -->
+    <div class="home-bottom">
+        <div class="home-stats">
+            <div class="stat-chip">
+                <span id="stat-fans" class="stat-chip-value">0</span>
+                <span id="dash-fans-label" class="stat-chip-label">Fans</span>
             </div>
-            <div class="bg-black/30 rounded-xl p-2 text-center border border-white/5 flex flex-col justify-center">
-                <div id="stat-streams" class="text-lg font-black text-white leading-none mb-1">0</div>
-                <div class="text-[8px] font-bold text-zinc-500 uppercase tracking-widest">Streams</div>
+            <div class="stat-chip">
+                <span id="stat-streams" class="stat-chip-value">0</span>
+                <span id="dash-streams-label" class="stat-chip-label">Streams</span>
             </div>
-            <div class="bg-black/30 rounded-xl p-2 text-center border border-white/5 flex flex-col justify-center">
-                <div id="stat-beats" class="text-lg font-black text-white leading-none mb-1">0</div>
-                <div class="text-[8px] font-bold text-zinc-500 uppercase tracking-widest">Sons</div>
+            <div class="stat-chip">
+                <span id="stat-beats" class="stat-chip-value">0</span>
+                <span id="dash-sons-label" class="stat-chip-label">Sons</span>
             </div>
         </div>
-    </section>
-
-    <section class="mt-2">
-        <h3 id="dash-actions-title" class="text-[10px] font-black text-white/50 uppercase tracking-[0.15em] mb-3 px-1">Actions Rapides</h3>
-        
-        <div class="grid grid-cols-2 gap-3">
-            
-            <button onclick="openMenu('actions')" class="relative overflow-hidden bg-[#15161D] border border-[#7C4DFF]/30 rounded-2xl p-4 flex flex-col items-center justify-center gap-2 hover:bg-[#7C4DFF]/10 transition-colors active:scale-95 group">
-                <div class="absolute -right-4 -top-4 w-16 h-16 bg-[#7C4DFF]/10 rounded-full blur-xl group-hover:bg-[#7C4DFF]/20 transition-all"></div>
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="#7c4dff" class="mb-1"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg>
-                <span id="dash-activities-label" class="font-black text-[11px] text-white uppercase tracking-wider">Activités</span>
-                <span class="text-[9px] text-[#7C4DFF] font-bold bg-[#7C4DFF]/10 px-2 py-0.5 rounded-full"><span id="action-count">3</span> <span id="dash-actions-left-label">Restants</span></span>
-            </button>
-
-            <button onclick="launchImproRapide()" class="relative overflow-hidden bg-[#15161D] border border-[#2979FF]/30 rounded-2xl p-4 flex flex-col items-center justify-center gap-2 hover:bg-[#2979FF]/10 transition-colors active:scale-95 group">
-                <div class="absolute -right-4 -top-4 w-16 h-16 bg-[#2979FF]/10 rounded-full blur-xl group-hover:bg-[#2979FF]/20 transition-all"></div>
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="#2979FF" class="mb-1"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
-                <span id="dash-impro-label" class="font-black text-[11px] text-white uppercase tracking-wider">Impro Rapide</span>
-                <span id="dash-impro-sub" class="text-[9px] text-[#2979FF] font-bold bg-[#2979FF]/10 px-2 py-0.5 rounded-full">Mini-Jeu</span>
-            </button>
-
-            <button onclick="processNextWeek()" id="btn-next-week" class="col-span-2 relative overflow-hidden bg-[#00E676] rounded-2xl p-4 flex items-center justify-center gap-3 shadow-[0_0_20px_rgba(0,230,118,0.2)] hover:brightness-110 active:scale-[0.98] transition-all">
-                <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full hover:animate-[shimmer_1.5s_infinite]"></div>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="#000000"><path d="M6 18l8.5-6L6 6v12zm2-8.14L11.03 12 8 14.14V9.86zM16 6h2v12h-2z"/></svg>
-                <span class="font-black text-[13px] text-black uppercase tracking-[0.1em]">Semaine Suivante</span>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="#000000"><path d="M6 18l8.5-6L6 6v12zm2-8.14L11.03 12 8 14.14V9.86zM16 6h2v12h-2z"/></svg>
-            </button>
-            
-        </div>
-    </section>
+        <button onclick="processNextWeek()" id="btn-next-week" class="w-full flex items-center justify-center">
+            <span>Semaine Suivante</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="#000000"><path d="M6 18l8.5-6L6 6v12zm2-8.14L11.03 12 8 14.14V9.86zM16 6h2v12h-2z"/></svg>
+        </button>
+    </div>
 
 </main>
 
@@ -4796,6 +4910,27 @@ function notify(txt, duration = 2000) {
     }, duration);
 }
 
+// Fil d'infos de l'accueil : la dernière info en une ligne, le reste dans un panneau repliable
+function syncNewsTicker() {
+    const c = document.getElementById('news-container');
+    const t = document.getElementById('news-ticker-text');
+    if (!c || !t) return;
+    const first = c.firstElementChild;
+    t.innerHTML = first ? first.innerHTML : '';
+    t.classList.remove('news-flash');
+    void t.offsetWidth;
+    t.classList.add('news-flash');
+}
+
+function toggleNewsPanel(force) {
+    const sec = document.getElementById('news-section');
+    if (!sec) return;
+    const open = typeof force === 'boolean' ? force : !sec.classList.contains('open');
+    sec.classList.toggle('open', open);
+    const btn = sec.querySelector('.news-ticker');
+    if (btn) btn.setAttribute('aria-expanded', String(open));
+}
+
 function addNews(txt, type="info") {
     const c = document.getElementById('news-container');
     if (c && c.style.display !== 'none') {
@@ -4812,6 +4947,7 @@ function addNews(txt, type="info") {
         
         // Garder seulement les 8 dernières news
         if(c.children.length > 8) c.removeChild(c.lastChild);
+        syncNewsTicker();
     } 
     
     if (typeof notify === "function") {
