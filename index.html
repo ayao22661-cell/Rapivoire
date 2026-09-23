@@ -8,6 +8,7 @@
     <title>BUZZKING</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="pack-loader.js"></script>
+    <script src="stage3d.js" defer></script>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Space+Grotesk:wght@300;500;700&display=swap" rel="stylesheet">
     <style>
        /* =========================================
@@ -149,6 +150,56 @@ body {
     border-radius: 16px !important;
 }
 .btn-secondary:hover { background: #252842 !important; }
+
+/* Cartes d'activités : fond neutre + accent unique (lisibilité) */
+.action-card {
+    display: flex; gap: 12px; align-items: flex-start;
+    background: linear-gradient(135deg, color-mix(in srgb, var(--accent) 10%, #15161D) 0%, #15161D 60%);
+    border: 1px solid color-mix(in srgb, var(--accent) 28%, transparent);
+    border-left: 3px solid var(--accent);
+    border-radius: 16px; padding: 14px; margin-bottom: 10px;
+    cursor: pointer; transition: transform .15s ease, background .2s ease;
+}
+.action-card:active { transform: scale(0.97); }
+.action-card.is-locked { filter: grayscale(1); opacity: .45; cursor: not-allowed; }
+.action-icon {
+    width: 44px; height: 44px; flex-shrink: 0; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    background: color-mix(in srgb, var(--accent) 14%, #0b0c14);
+    border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+    color: var(--accent);
+}
+.action-icon img { width: 28px; height: 28px; object-fit: contain; }
+.action-title { font-weight: 900; font-size: 13px; color: #fff; line-height: 1.2; }
+.action-desc { font-size: 11px; color: var(--text-muted); margin-top: 4px; line-height: 1.4; }
+.action-gains { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; font-size: 10px; font-weight: 800; letter-spacing: .03em; }
+.action-chip { display: inline-flex; align-items: center; gap: 3px; font-size: 10px; font-weight: 900; padding: 3px 7px; border-radius: 8px; white-space: nowrap; }
+.chip-energy { background: rgba(41,121,255,.15); color: #82B1FF; }
+.chip-good { background: rgba(0,230,118,.14); color: #00E676; }
+.chip-bad { background: rgba(255,82,82,.15); color: #FF8A80; }
+
+/* Carte personnage sélectionnée */
+.avatar-selected {
+    border-color: #00E676 !important;
+    background: rgba(0,230,118,0.10) !important;
+    box-shadow: 0 0 0 1px #00E676, 0 0 24px rgba(0,230,118,0.35);
+    transform: translateY(-2px);
+}
+.avatar-selected h3 { color: #00E676 !important; }
+
+/* Carte d'accueil : scène 3D */
+#hero-stage { height: 220px; }
+#hero-stage-canvas {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    display: block; outline: none; opacity: 0; transition: opacity .8s ease;
+}
+#hero-stage.stage-ready #hero-stage-canvas { opacity: 1; }
+#hero-stage.stage-ready .hero-tint { opacity: 0; }
+.hero-fallback-img {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    object-fit: cover; object-position: center 25%; display: none;
+}
+#hero-stage.stage-fallback .hero-fallback-img[src]:not([src=""]) { display: block; }
 
 /* Exception UI : Actions destructrices (Reset) */
 .text-danger { color: #FF5252 !important; }
@@ -780,8 +831,8 @@ input:focus, select:focus {
 
     <div class="flex items-center gap-2">
         <div class="bg-[#1a1b2a] border border-[#00e676]/20 rounded-xl px-2.5 py-1.5 flex items-center gap-1.5 shadow-inner">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="#00e676"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>
             <span id="stat-cash" class="text-xs font-black text-[#00e676]">1 500</span>
+            <span id="stat-cash-sym" class="text-[11px] font-black text-[#00e676]/70">F</span>
         </div>
         <div class="bg-[#1a1b2a] border border-[#2979FF]/20 rounded-xl px-2.5 py-1.5 flex items-center gap-1.5 shadow-inner relative overflow-hidden group">
             <div class="absolute inset-0 bg-[#2979FF]/10 w-full h-full"></div>
@@ -802,14 +853,18 @@ input:focus, select:focus {
                 <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00e676] opacity-75"></span>
                 <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#00e676]"></span>
             </span>
-            <h3 class="text-[10px] font-black text-white/50 uppercase tracking-[0.2em] m-0">Dernières Infos</h3>
+            <h3 id="news-title" class="text-[10px] font-black text-white/50 uppercase tracking-[0.2em] m-0">Dernières Infos</h3>
         </div>
         <div id="news-container" class="space-y-2"></div>
     </section>
 
-    <section class="relative w-full h-32 rounded-2xl overflow-hidden shadow-lg border border-white/10 group bg-zinc-900">
-        <div class="absolute inset-0 bg-gradient-to-r from-[#7C4DFF]/20 to-[#00E676]/20 opacity-50"></div>
-        <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
+    <section id="hero-stage" class="relative w-full rounded-2xl overflow-hidden shadow-lg border border-white/10 group bg-zinc-900">
+        <!-- Fallback 2D (sans WebGL) : avatar en fond -->
+        <img id="hero-fallback-img" src="" alt="" aria-hidden="true" class="hero-fallback-img">
+        <!-- Scène 3D Babylon.js (stage3d.js) -->
+        <canvas id="hero-stage-canvas" aria-label="Scène de concert 3D" touch-action="none"></canvas>
+        <div class="absolute inset-0 bg-gradient-to-r from-[#7C4DFF]/20 to-[#00E676]/20 opacity-50 hero-tint pointer-events-none"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/10 to-transparent pointer-events-none"></div>
         
         <div class="absolute bottom-3 left-3 right-3 flex justify-between items-end">
             <div>
@@ -868,22 +923,22 @@ input:focus, select:focus {
     </section>
 
     <section class="mt-2">
-        <h3 class="text-[10px] font-black text-white/50 uppercase tracking-[0.15em] mb-3 px-1">Actions Rapides</h3>
+        <h3 id="dash-actions-title" class="text-[10px] font-black text-white/50 uppercase tracking-[0.15em] mb-3 px-1">Actions Rapides</h3>
         
         <div class="grid grid-cols-2 gap-3">
             
             <button onclick="openMenu('actions')" class="relative overflow-hidden bg-[#15161D] border border-[#7C4DFF]/30 rounded-2xl p-4 flex flex-col items-center justify-center gap-2 hover:bg-[#7C4DFF]/10 transition-colors active:scale-95 group">
                 <div class="absolute -right-4 -top-4 w-16 h-16 bg-[#7C4DFF]/10 rounded-full blur-xl group-hover:bg-[#7C4DFF]/20 transition-all"></div>
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="#7c4dff" class="mb-1"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg>
-                <span class="font-black text-[11px] text-white uppercase tracking-wider">Activités</span>
+                <span id="dash-activities-label" class="font-black text-[11px] text-white uppercase tracking-wider">Activités</span>
                 <span class="text-[9px] text-[#7C4DFF] font-bold bg-[#7C4DFF]/10 px-2 py-0.5 rounded-full"><span id="action-count">3</span> <span id="dash-actions-left-label">Restants</span></span>
             </button>
 
             <button onclick="launchImproRapide()" class="relative overflow-hidden bg-[#15161D] border border-[#2979FF]/30 rounded-2xl p-4 flex flex-col items-center justify-center gap-2 hover:bg-[#2979FF]/10 transition-colors active:scale-95 group">
                 <div class="absolute -right-4 -top-4 w-16 h-16 bg-[#2979FF]/10 rounded-full blur-xl group-hover:bg-[#2979FF]/20 transition-all"></div>
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="#2979FF" class="mb-1"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
-                <span class="font-black text-[11px] text-white uppercase tracking-wider">Impro Rapide</span>
-                <span class="text-[9px] text-[#2979FF] font-bold bg-[#2979FF]/10 px-2 py-0.5 rounded-full">Mini-Jeu</span>
+                <span id="dash-impro-label" class="font-black text-[11px] text-white uppercase tracking-wider">Impro Rapide</span>
+                <span id="dash-impro-sub" class="text-[9px] text-[#2979FF] font-bold bg-[#2979FF]/10 px-2 py-0.5 rounded-full">Mini-Jeu</span>
             </button>
 
             <button onclick="processNextWeek()" id="btn-next-week" class="col-span-2 relative overflow-hidden bg-[#00E676] rounded-2xl p-4 flex items-center justify-center gap-3 shadow-[0_0_20px_rgba(0,230,118,0.2)] hover:brightness-110 active:scale-[0.98] transition-all">
@@ -2288,6 +2343,7 @@ function init() {
                 }
 
                 updateUI();
+                if (window.Stage3D) Stage3D.init();
                 renderActions();
                 if(typeof renderThemeSelect === 'function') renderThemeSelect();
                 if(typeof checkLevelUp === "function") checkLevelUp();
@@ -2369,6 +2425,9 @@ function updateUI() {
     const prevCash = parseInt(document.getElementById('stat-cash').textContent.replace(/\s/g,'').replace(/,/g,'')) || 0;
     const newCash = Math.floor(game.player.cash);
     document.getElementById('stat-cash').textContent = newCash.toLocaleString();
+    if (window.Stage3D) Stage3D.update(game);
+    const cashSymEl = document.getElementById('stat-cash-sym');
+    if (cashSymEl) cashSymEl.textContent = (window.CURRENCY && window.CURRENCY.symbol) ? window.CURRENCY.symbol : 'F';
     
     // FINITION : Flash vert si le cash augmente
     if (newCash > prevCash) {
@@ -2563,14 +2622,12 @@ function selectAvatar(id) {
     (window.AVATARS || AVATARS).forEach(avatar => {
         const card = document.getElementById(`avatar-card-${avatar.id}`);
         if(card) {
-            card.classList.remove('border-primary', 'bg-primary/10');
-            card.classList.add('border-transparent');
+            card.classList.remove('avatar-selected');
         }
     });
     
     const selectedCard = document.getElementById(`avatar-card-${id}`);
-    selectedCard.classList.remove('border-transparent');
-    selectedCard.classList.add('border-primary', 'bg-primary/10');
+    selectedCard.classList.add('avatar-selected');
     
     const btn = document.getElementById('btn-confirm-avatar');
     btn.disabled = false;
@@ -2596,38 +2653,86 @@ function confirmCharacterSelection() {
     addNews(`${avatar.name} — ${uiStr('notifAvatarSelected','Profil sélectionné !')}`, "info");
 }
 
+// Accent unique par carte (règle des 3 couleurs : vert = cash, violet = création, rouge = clash)
+function actionAccent(act) {
+    const c = act.color || '';
+    if (/danger|red-|FF5252/.test(c)) return '#FF5252';
+    if (/green-grad|yellow-grad|bg-info/.test(c)) return '#00E676';
+    return '#7C4DFF';
+}
+
+// Icône illustrée (assets/icons) déduite de l'id / du titre de l'action
+function actionIcon(act) {
+    const k = ((act.id || '') + ' ' + (act.title || '')).toLowerCase();
+    const map = [
+        [/rest|chill|repos|bendo/, 'energie'],
+        [/clash|diss|boycott|beef/, 'gant'],
+        [/showcase|concert|festival|show_bar/, 'festival'],
+        [/label|contrat|feat|deal/, 'contrat'],
+        [/clip|tv|tele/, 'tele'],
+        [/radio|promo|spotify|boomplay|youtube/, 'son'],
+        [/tiktok|trend|challenge/, 'flamme-de-feu'],
+        [/live|insta|story|news/, 'communication'],
+        [/freestyle|gbaka|micro|open.?mic|ligne/, 'micro'],
+        [/gombo|job|uber|livr|taf|work/, 'ticket'],
+    ];
+    const hit = map.find(([re]) => re.test(k));
+    return `assets/icons/${hit ? hit[1] : 'flamme-de-feu'}.png`;
+}
+
+function fmtSigned(n) {
+    if (!n) return '0';
+    return (n > 0 ? '+' : '−') + Math.abs(n).toLocaleString();
+}
+
 function renderActions() {
     const list = document.getElementById('actions-list');
     list.innerHTML = "";
-    
+    const cashSym = (window.CURRENCY && window.CURRENCY.symbol) ? window.CURRENCY.symbol : 'F';
+    const cashIcon = '<svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>';
+    const boltIcon = '<svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M7 2v11h3v9l7-12h-4l4-8z"/></svg>';
+    const lockIcon = '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>';
+
     (window.ACTIONS_POOL || ACTIONS_POOL).forEach(act => {
         const isLocked = game.player.level < act.reqLevel;
         const actCashDisp = (act.cash !== 0 && typeof window.convertPrice === 'function') ? (act.cash < 0 ? -window.convertPrice(Math.abs(act.cash)) : window.convertPrice(act.cash)) : act.cash;
         const canAfford = game.player.energy >= act.energy && game.player.cash >= Math.abs(actCashDisp < 0 ? actCashDisp : 0);
-        
+        const accent = isLocked ? '#52525B' : actionAccent(act);
+
         const div = document.createElement('div');
-        div.className = `pill-button flex-col !items-start p-4 h-auto mb-3 ${isLocked ? 'bg-zinc-800 disabled' : act.color}`;
-        
-        let costHtml = `<span class="text-[10px] bg-black/40 px-2 py-1 rounded text-white shadow-inner flex items-center gap-1"><svg width="10" height="10" viewBox="0 0 24 24" fill="#2979FF"><path d="M7 2v11h3v9l7-12h-4l4-8z"/></svg>-${act.energy}</span>`;
-        if(act.cash < 0) { const dispCash = typeof window.convertPrice === 'function' ? window.convertPrice(Math.abs(act.cash)) : Math.abs(act.cash); const cashSym = ((window.CURRENCY && window.CURRENCY.symbol) ? window.CURRENCY.symbol : 'F'); costHtml += ` <span class="text-[10px] bg-red-500/80 px-2 py-1 rounded text-white ml-1 flex items-center gap-1"><svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>-${dispCash.toLocaleString()} ${cashSym}</span>`; }
-        if(act.cash > 0) { const dispCash = typeof window.convertPrice === 'function' ? window.convertPrice(act.cash) : act.cash; const cashSym = ((window.CURRENCY && window.CURRENCY.symbol) ? window.CURRENCY.symbol : 'F'); costHtml += ` <span class="text-[10px] bg-green-500/80 px-2 py-1 rounded text-white ml-1 flex items-center gap-1"><svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>+${dispCash.toLocaleString()} ${cashSym}</span>`; }
+        div.className = `action-card${isLocked ? ' is-locked' : ''}`;
+        div.style.setProperty('--accent', accent);
+
+        // Énergie : une valeur négative dans les données = récupération
+        const energyGain = act.energy < 0;
+        let costHtml = `<span class="action-chip ${energyGain ? 'chip-good' : 'chip-energy'}">${boltIcon}${energyGain ? '+' : '−'}${Math.abs(act.energy)}</span>`;
+        if (actCashDisp < 0) costHtml += `<span class="action-chip chip-bad">${cashIcon}−${Math.abs(actCashDisp).toLocaleString()} ${cashSym}</span>`;
+        if (actCashDisp > 0) costHtml += `<span class="action-chip chip-good">${cashIcon}+${actCashDisp.toLocaleString()} ${cashSym}</span>`;
+
+        const gains = [['buzz', 'Buzz'], ['fans', 'Fans'], ['xp', 'XP']]
+            .filter(([k]) => act[k])
+            .map(([k, label]) => `<span class="${act[k] > 0 ? 'text-[#00E676]' : 'text-[#FF5252]'}">${fmtSigned(act[k])} ${label}</span>`)
+            .join('<span class="opacity-30">·</span>');
 
         div.innerHTML = `
-            <div class="flex justify-between w-full font-black items-center">
-                <span>${isLocked ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="display:inline;vertical-align:middle;margin-right:4px"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>' + uiStr('actionLockedLevel','Niveau') + ' ' + act.reqLevel : act.title}</span>
-                <div class="flex gap-1">${costHtml}</div>
+            <div class="action-icon">${isLocked ? lockIcon : `<img src="${actionIcon(act)}" alt="" loading="lazy">`}</div>
+            <div class="flex-1 min-w-0">
+                <div class="flex justify-between items-start gap-2">
+                    <span class="action-title">${isLocked ? uiStr('actionLockedLevel','Niveau') + ' ' + act.reqLevel : String(act.title).replace(/^\p{Extended_Pictographic}\uFE0F?\s*/u, '')}</span>
+                    <div class="flex gap-1 shrink-0">${costHtml}</div>
+                </div>
+                <p class="action-desc">${act.desc}</p>
+                ${!isLocked && gains ? `<div class="action-gains">${gains}</div>` : ''}
             </div>
-            <p class="text-[11px] opacity-90 mt-2 leading-tight text-left">${act.desc}</p>
-            ${!isLocked ? `<div class="mt-2 text-[9px] uppercase font-bold opacity-75">${uiStr('actionGainsLabel','Gains')} : +${act.buzz} Buzz | +${act.fans} Fans | +${act.xp} XP</div>` : ''}
         `;
-        
+
         if(!isLocked && canAfford && game.world.actionsLeft > 0) {
             div.onclick = () => performAction(act);
         } else if (!isLocked && !canAfford) {
             div.classList.add('opacity-50');
             div.onclick = () => notify(uiStr('notifLowResources', "Ressources insuffisantes (Énergie ou Cash)."));
         }
-        
+
         list.appendChild(div);
     });
 }
@@ -2680,6 +2785,7 @@ function performAction(act) {
     game.world.actionsLeft--;
 
     notify(`${uiStr('notifActionDone','Action réussie : ')}${act.title}`);
+    if (window.Stage3D) Stage3D.hype();
     updateUI();
     renderActions(); // Re-render to update states
 
