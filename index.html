@@ -204,7 +204,7 @@ body {
     display: block; outline: none; touch-action: none;
     opacity: 0; transition: opacity .8s ease;
 }
-.home-screen.scene-ready #home-scene-canvas { opacity: 1; }
+#home-scene-canvas.is-ready { opacity: 1; }
 .home-fallback-img {
     display: none; position: absolute; left: 50%; top: 24%; width: 58%;
     transform: translateX(-50%); aspect-ratio: 1; object-fit: cover;
@@ -331,6 +331,110 @@ body {
     .side-btn-icon { width: 46px; height: 46px; }
     .side-btn-main .side-btn-icon { width: 54px; height: 54px; }
 }
+
+/* =========================================
+   MENUS « JEU MOBILE » : même langage visuel que l'accueil
+   ========================================= */
+#menu-actions { --menu-accent: #00E676; }
+#menu-studio  { --menu-accent: #2979FF; }
+#menu-songs   { --menu-accent: #7C4DFF; }
+#menu-biz     { --menu-accent: #FF9100; }
+#menu-perks   { --menu-accent: #2dd4bf; }
+.full-screen-menu {
+    background: radial-gradient(120% 55% at 50% 0%, color-mix(in srgb, var(--menu-accent, #7C4DFF) 22%, #09090E) 0%, #09090E 62%) !important;
+}
+.full-screen-menu > .sticky {
+    background: rgba(9,9,14,0.55) !important;
+    -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px);
+    border-bottom: 1px solid color-mix(in srgb, var(--menu-accent, #7C4DFF) 25%, transparent) !important;
+    box-shadow: none !important;
+}
+.menu-head { display: grid; grid-template-columns: auto 1fr; column-gap: 12px; align-items: center; }
+.menu-head h2, .menu-head p { grid-column: 2; margin: 0; }
+.menu-head h2 { font-size: 19px !important; font-style: normal !important; color: #fff !important; letter-spacing: 0.06em; }
+.menu-head p { color: color-mix(in srgb, var(--menu-accent, #7C4DFF) 70%, #fff) !important; }
+.menu-title-icon {
+    grid-row: 1 / span 2; width: 46px; height: 46px; object-fit: contain; padding: 8px; border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, rgba(255,255,255,0.16), rgba(12,12,22,0.85) 70%);
+    border: 2px solid var(--menu-accent, #7C4DFF);
+    box-shadow: 0 0 18px -4px var(--menu-accent, #7C4DFF), inset 0 -3px 0 rgba(0,0,0,0.35);
+}
+.full-screen-menu > .sticky button[onclick="closeAllMenus()"] {
+    width: 42px !important; height: 42px !important; border-radius: 50% !important;
+    background: rgba(255,255,255,0.06) !important; border: 1px solid rgba(255,255,255,0.14) !important;
+}
+/* Cartes des menus : verre dépoli */
+.full-screen-menu .bg-\[\#15161D\], .full-screen-menu .glass-card {
+    background: rgba(20,21,33,0.72) !important;
+    -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+    border-color: rgba(255,255,255,0.08) !important;
+    border-radius: 20px !important;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 10px 24px -14px rgba(0,0,0,0.7);
+}
+.full-screen-menu .bg-black\/30 { background: rgba(0,0,0,0.35) !important; border-radius: 14px !important; }
+
+/* Bandeau 3D en haut des menus (le canvas de la scène y est déplacé) */
+.menu-scene {
+    position: relative; flex-shrink: 0; height: 190px; margin: 12px 16px 0;
+    border-radius: 22px; overflow: hidden; background: #0b0b14;
+    border: 1px solid color-mix(in srgb, var(--menu-accent, #7C4DFF) 40%, transparent);
+    box-shadow: 0 14px 30px -16px var(--menu-accent, #7C4DFF);
+}
+.menu-scene::after {
+    content: ''; position: absolute; inset: 0; pointer-events: none;
+    background: linear-gradient(to top, rgba(9,9,14,0.65), transparent 45%);
+}
+.menu-scene canvas { position: absolute !important; inset: 0; width: 100% !important; height: 100% !important; }
+.menu-scene-tag {
+    position: absolute; left: 12px; bottom: 10px; z-index: 2;
+    display: inline-flex; align-items: center; gap: 6px; padding: 5px 10px 5px 6px; border-radius: 999px;
+    background: rgba(9,9,14,0.7); border: 1px solid rgba(255,255,255,0.12);
+    font-size: 10px; font-weight: 900; letter-spacing: 0.12em; text-transform: uppercase; color: #fff; pointer-events: none;
+}
+.menu-scene-tag img { width: 18px; height: 18px; object-fit: contain; }
+.menu-scene-hint {
+    position: absolute; right: 12px; bottom: 12px; z-index: 2; pointer-events: none;
+    font-size: 8px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.45);
+}
+.menu-scene-clash { --menu-accent: #FF1744; height: 170px; margin: 0; border-radius: 0; border: none; border-bottom: 1px solid rgba(255,23,68,0.3); }
+
+/* Cinématique de fin de semaine */
+.week-cinematic {
+    position: absolute; inset: 0; z-index: 350; display: none; background: #09090E; cursor: pointer;
+}
+.week-cinematic.show { display: block; animation: wcIn .35s ease; }
+@keyframes wcIn { from { opacity: 0; } to { opacity: 1; } }
+.wc-scene { position: absolute; inset: 0; }
+.wc-scene canvas { position: absolute !important; inset: 0; width: 100% !important; height: 100% !important; }
+.wc-overlay {
+    position: absolute; inset: 0; pointer-events: none; display: flex; flex-direction: column; justify-content: flex-start;
+    padding: calc(max(16px, env(safe-area-inset-top)) + 24px) 20px calc(28px + var(--safe-bottom));
+    background: linear-gradient(to bottom, rgba(9,9,14,0.75), transparent 28%, transparent 62%, rgba(9,9,14,0.85));
+}
+.wc-top { text-align: center; }
+.wc-week {
+    display: block; font-size: 40px; font-weight: 900; letter-spacing: 0.06em; text-transform: uppercase; color: #fff;
+    text-shadow: 0 0 24px rgba(0,230,118,0.6), 0 3px 0 rgba(0,0,0,0.5);
+    animation: wcSlam .6s cubic-bezier(.2,1.6,.4,1) both;
+}
+.wc-title {
+    display: inline-block; margin-top: 8px; padding: 5px 14px; border-radius: 999px;
+    background: linear-gradient(135deg, #00E676, #7C4DFF); color: #000; font-size: 12px; font-weight: 900; letter-spacing: 0.1em;
+    animation: wcSlam .6s .25s cubic-bezier(.2,1.6,.4,1) both;
+}
+@keyframes wcSlam { from { opacity: 0; transform: scale(1.8); } to { opacity: 1; transform: scale(1); } }
+.wc-gains { display: flex; gap: 10px; justify-content: center; margin-top: auto; }
+.wc-gain {
+    display: flex; flex-direction: column; align-items: center; gap: 2px; min-width: 130px; padding: 12px 16px; border-radius: 18px;
+    background: rgba(12,12,22,0.7); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+    border: 1px solid rgba(0,230,118,0.35); animation: wcUp .5s .5s ease both;
+}
+.wc-gain-cash { border-color: rgba(255,196,26,0.45); animation-delay: .65s; }
+.wc-gain img { width: 26px; height: 26px; object-fit: contain; }
+.wc-gain span { font-size: 22px; font-weight: 900; color: #fff; }
+.wc-gain small { font-size: 9px; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(255,255,255,0.55); }
+@keyframes wcUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: none; } }
+.wc-skip { text-align: center; font-size: 9px; font-weight: 800; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-top: 14px; }
 
 /* Exception UI : Actions destructrices (Reset) */
 .text-danger { color: #FF5252 !important; }
@@ -910,6 +1014,9 @@ input:focus, select:focus {
             </h3>
             <button onclick="closeClashMenu()" class="text-white/50 hover:text-white p-2 flex items-center justify-center"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button>
         </div>
+        <div id="scene-slot-clash" class="menu-scene menu-scene-clash" data-mode="clash" aria-hidden="true">
+            <span class="menu-scene-tag"><img src="assets/icons/gant.png" alt="">Face à face</span>
+        </div>
         <div id="clash-list" class="p-4 space-y-3 max-h-[60vh] overflow-y-auto">
             </div>
         <div id="clash-cost-label" class="p-4 bg-black/20 text-[10px] text-zinc-500 text-center uppercase tracking-widest font-bold">
@@ -1066,6 +1173,21 @@ input:focus, select:focus {
     </div>
 
 </main>
+<!-- ═══ CINÉMATIQUE DE FIN DE SEMAINE (3D) ═══ -->
+<div id="week-cinematic" class="week-cinematic" aria-live="polite">
+    <div id="scene-slot-week" class="wc-scene"></div>
+    <div class="wc-overlay">
+        <div class="wc-top">
+            <span id="wc-week" class="wc-week">Semaine</span>
+            <span id="wc-title" class="wc-title"></span>
+        </div>
+        <div class="wc-gains">
+            <div class="wc-gain"><img src="assets/icons/flamme-de-feu.png" alt=""><span id="wc-fans">+0</span><small>Fans</small></div>
+            <div class="wc-gain wc-gain-cash"><img src="assets/icons/diamant.png" alt=""><span id="wc-cash">+0</span><small>Cash</small></div>
+        </div>
+        <div class="wc-skip">Touche pour continuer</div>
+    </div>
+</div>
 
     <!-- ============================================================
          NAV BAS — Style Mobile Game
@@ -1095,7 +1217,8 @@ input:focus, select:focus {
 
 <div id="menu-actions" class="full-screen-menu bg-[#09090E]">
         <div class="sticky top-0 z-50 flex justify-between items-center px-6 py-4 bg-[#0b0c14]/90 backdrop-blur-md border-b border-white/5">
-            <div>
+            <div class="menu-head">
+                <img class="menu-title-icon" src="assets/icons/flamme-de-feu.png" alt="">
                 <h2 class="text-lg font-black uppercase text-white tracking-wider">Activités</h2>
                 <p class="text-[10px] text-zinc-400 font-bold uppercase tracking-widest mt-0.5">Gagne du cash, buzz ou fans</p>
             </div>
@@ -1109,7 +1232,8 @@ input:focus, select:focus {
 
     <div id="menu-studio" class="full-screen-menu bg-[#09090E]">
         <div class="sticky top-0 z-50 flex justify-between items-center px-6 py-4 bg-[#15161D]/90 backdrop-blur-md border-b border-[#2979FF]/20 shadow-[0_4px_30px_rgba(41,121,255,0.1)]">
-            <div>
+            <div class="menu-head">
+                <img class="menu-title-icon" src="assets/icons/micro.png" alt="">
                 <h2 class="text-lg font-black italic uppercase text-[#2979FF] tracking-wider">Studio Record</h2>
                 <p class="text-[10px] text-[#2979FF]/70 font-bold uppercase tracking-widest mt-0.5">Crée le prochain banger</p>
             </div>
@@ -1118,6 +1242,11 @@ input:focus, select:focus {
             </button>
         </div>
         
+        <div class="menu-scene" data-mode="studio" aria-hidden="true">
+            <span class="menu-scene-tag"><img src="assets/icons/micro.png" alt="">En cabine</span>
+            <span class="menu-scene-hint">Glisse pour tourner</span>
+        </div>
+
         <div class="scroll-area px-4 py-6 space-y-5 pb-32">
 
             <!-- HERO STUDIO -->
@@ -1192,7 +1321,8 @@ input:focus, select:focus {
     <div id="menu-songs" class="full-screen-menu bg-[#09090E]">
         <div class="sticky top-0 z-50 bg-[#0b0c14]/95 backdrop-blur-md border-b border-white/5 pt-4">
             <div class="flex justify-between items-center px-6 pb-4">
-                <div>
+                <div class="menu-head">
+                    <img class="menu-title-icon" src="assets/icons/son.png" alt="">
                     <h2 class="text-lg font-black uppercase text-white tracking-wider disc-title">Discographie</h2>
                     <p class="text-[10px] text-zinc-400 font-bold uppercase tracking-widest mt-0.5 disc-subtitle">Gère tes sorties et streams</p>
                 </div>
@@ -1205,6 +1335,11 @@ input:focus, select:focus {
                 <button onclick="switchSongTab('inventory')" id="tab-inventory" class="flex-1 py-3 text-xs font-black uppercase tracking-widest border-b-2 border-primary text-white transition-all">En Stock</button>
                 <button onclick="switchSongTab('released')" id="tab-released" class="flex-1 py-3 text-xs font-black uppercase tracking-widest border-b-2 border-transparent text-zinc-500 hover:text-white transition-all">En Ligne</button>
             </div>
+        </div>
+
+        <div class="menu-scene" data-mode="catalogue" aria-hidden="true">
+            <span class="menu-scene-tag"><img src="assets/icons/son.png" alt="">Mur des disques</span>
+            <span class="menu-scene-hint">Glisse pour tourner</span>
         </div>
 
         <div class="scroll-area px-4 py-6 space-y-4 pb-32" id="songs-list-container">
@@ -1227,7 +1362,8 @@ input:focus, select:focus {
 
     <div id="menu-biz" class="full-screen-menu bg-[#09090E]">
         <div class="sticky top-0 z-50 flex justify-between items-center px-6 py-4 bg-[#15161D]/90 backdrop-blur-md border-b border-[#FF9100]/20 shadow-[0_4px_30px_rgba(255,145,0,0.1)]">
-            <div>
+            <div class="menu-head">
+                <img class="menu-title-icon" src="assets/icons/diamant.png" alt="">
                 <h2 class="text-lg font-black uppercase text-[#FF9100] tracking-wider">Business & Life</h2>
                 <p class="text-[10px] text-[#FF9100]/70 font-bold uppercase tracking-widest mt-0.5">Investis & Fais le show</p>
             </div>
@@ -1236,6 +1372,11 @@ input:focus, select:focus {
             </button>
         </div>
         
+        <div class="menu-scene" data-mode="concert" aria-hidden="true">
+            <span class="menu-scene-tag"><img src="assets/icons/festival.png" alt="">Sur scène</span>
+            <span class="menu-scene-hint">Glisse pour tourner</span>
+        </div>
+
         <div class="scroll-area px-4 py-6 space-y-8 pb-32">
 
             <!-- HERO BUSINESS -->
@@ -1288,7 +1429,8 @@ input:focus, select:focus {
 
     <div id="menu-perks" class="full-screen-menu bg-[#09090E]">
         <div class="sticky top-0 z-50 flex justify-between items-center px-6 py-4 bg-[#042f2e]/90 backdrop-blur-md border-b border-[#2dd4bf]/20 shadow-[0_4px_30px_rgba(45,212,191,0.1)]">
-            <div>
+            <div class="menu-head">
+                <img class="menu-title-icon" src="assets/icons/energie.png" alt="">
                 <h2 class="text-lg font-black uppercase text-[#2dd4bf] tracking-wider">Talents</h2>
                 <p class="text-[10px] text-[#2dd4bf]/70 font-bold uppercase tracking-widest mt-0.5">Évolue et progresse</p>
             </div>
@@ -3949,6 +4091,7 @@ function executeFinalClash(target) {
         game.player.buzz += buzzGain;
         game.player.fans += fansStolen;
         addXP(target.power * 5);
+        if (window.Stage3D) Stage3D.hype();
         addNews(`🔥 ${uiStr('clashWinNews','CLASH')} : ${uiStr('clashWinDesc1','Tu as humilié')} ${target.name} ! +${buzzGain} Buzz, +${fansStolen.toLocaleString()} ${uiStr('clashFansStolen','Fans volés')}`, "success");
 
         showEventModal(
@@ -4558,8 +4701,21 @@ function processNextWeek() {
     if (fansGainedThisWeek !== 0) weekEffects.push({ icon: '👥', val: (fansGainedThisWeek >= 0 ? '+' : '') + fansGainedThisWeek.toLocaleString() + ' Fans' });
     if (cashGainedThisWeek > 0)   weekEffects.push({ icon: '💰', val: '+' + cashGainedThisWeek.toLocaleString() + ' ' + ((window.CURRENCY && window.CURRENCY.symbol) ? window.CURRENCY.symbol : 'F') });
     
-    if (weekEffects.length > 0) {
-        setTimeout(() => showEventModal(weekTitle, `${uiStr('weekPrefix','Semaine ')}${game.world.week - 1} — ${uiStr('weekSummary','terminée. Continue sur cette lancée.')}`, weekEffects, fansGainedThisWeek > 5000 ? 'fire' : 'bell'), 300);
+    const _showWeekRecap = () => {
+        if (weekEffects.length > 0) showEventModal(weekTitle, `${uiStr('weekPrefix','Semaine ')}${game.world.week - 1} — ${uiStr('weekSummary','terminée. Continue sur cette lancée.')}`, weekEffects, fansGainedThisWeek > 5000 ? 'fire' : 'bell');
+    };
+    // Cinématique 3D de fin de semaine, puis le bilan
+    if (window.Stage3D && Stage3D.canPlay()) {
+        Stage3D.playWeek({
+            week: game.world.week - 1,
+            label: `${uiStr('weekPrefix', 'Semaine ')}${game.world.week - 1}`,
+            title: weekTitle,
+            fans: fansGainedThisWeek,
+            cash: cashGainedThisWeek,
+            currency: (window.CURRENCY && window.CURRENCY.symbol) ? window.CURRENCY.symbol : 'F'
+        }).then(() => setTimeout(_showWeekRecap, 150));
+    } else {
+        setTimeout(_showWeekRecap, 300);
     }
 
     if (typeof checkMilestones === "function") checkMilestones();
